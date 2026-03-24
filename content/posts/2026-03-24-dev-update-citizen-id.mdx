@@ -1,0 +1,138 @@
+---
+title: "Dev Update: Citizen ID Contracts Deployed to Testnet"
+date: 2026-03-24
+author: hera
+tags: [dev-update, technical, testnet, citizen-id]
+summary: "Technical breakdown of the Citizen ID testnet deployment — contract versions, architecture decisions, integration examples, and known limitations."
+---
+
+The Citizen ID contract suite is deployed on HeLa Testnet (chain ID 666888). This post covers the technical details for developers who want to integrate or audit.
+
+## Contracts Deployed
+
+| Contract | Version | Address | Proxy |
+|----------|---------|---------|-------|
+| CitizenID NFT | v1.0.0 | `0x...TBD` | UUPS |
+| CitizenAccount | v1.0.0 | `0x...TBD` | UUPS |
+| CitizenFactory | v1.0.0 | `0x...TBD` | No |
+| CitizenRegistry | v1.0.0 | `0x...TBD` | No |
+| CitizenSponsor | v1.0.0 | `0x...TBD` | No |
+
+**Compiler:** Solidity 0.8.20
+**EVM Target:** Paris
+**Dependencies:** OpenZeppelin Contracts v5 (upgradeable)
+**Standard:** ERC-6551 reference registry for token-bound accounts
+
+## Architecture Decisions
+
+**ERC-6551 over custom TBA.** We use the canonical ERC-6551 registry rather than a custom implementation. This means any tool or indexer that supports ERC-6551 works with Citizen ID out of the box. No vendor lock-in.
+
+**UUPS over Transparent Proxy.** The NFT and Account contracts use UUPS (Universal Upgradeable Proxy Standard). Upgrade authority is restricted to a multi-sig. UUPS puts the upgrade logic in the implementation contract, keeping the proxy minimal and reducing gas costs.
+
+**Soulbound enforcement.** Transfer functions are overridden to revert. The token cannot be approved, transferred, or delegated. `transferFrom`, `safeTransferFrom`, and `approve` all revert unconditionally.
+
+**Call-based modules.** The TBA wallet supports arbitrary call execution, allowing modules to be installed as separate contracts that the account interacts with. No storage collisions, no inheritance chains. Modules are deployed independently and called through the account's `execute()` function.
+
+**Sponsorship cap.** Hard-coded limit of 10 AI agents per human sponsor. This is a contract-level constant, not a governance parameter. Changing it requires a contract upgrade — intentionally high friction to prevent abuse.
+
+## ABI Locations
+
+ABIs will be published to the SDK package after testnet stabilization:
+
+```
+hela-sdk/
+  abi/
+    CitizenID.json
+    CitizenAccount.json
+    CitizenFactory.json
+    CitizenRegistry.json
+    CitizenSponsor.json
+```
+
+Until then, compile from source or pull from the verified contracts on the testnet explorer.
+
+## Integration: Minting a Citizen ID
+
+### ethers.js v6
+
+```javascript
+import { ethers } from "ethers";
+import CitizenID from "./abi/CitizenID.json";
+
+const provider = new ethers.JsonRpcProvider("https://testnet-rpc.helachain.com");
+const signer = new ethers.Wallet(PRIVATE_KEY, provider);
+
+const citizenId = new ethers.Contract(CITIZEN_ID_ADDRESS, CitizenID, signer);
+
+// Mint your Citizen ID
+const tx = await citizenId.mintCitizenID();
+const receipt = await tx.wait();
+
+// Get your token ID from the event
+const mintEvent = receipt.logs.find(
+  (log) => citizenId.interface.parseLog(log)?.name === "CitizenMinted"
+);
+const tokenId = citizenId.interface.parseLog(mintEvent).args.tokenId;
+
+console.log("Citizen ID minted:", tokenId.toString());
+```
+
+### viem
+
+```typescript
+import { createWalletClient, http, parseAbi } from "viem";
+import { privateKeyToAccount } from "viem/accounts";
+import { helaTestnet } from "./chains";
+
+const account = privateKeyToAccount(PRIVATE_KEY);
+
+const client = createWalletClient({
+  account,
+  chain: helaTestnet,
+  transport: http("https://testnet-rpc.helachain.com"),
+});
+
+const citizenIdAbi = parseAbi([
+  "function mintCitizenID() external returns (uint256)",
+  "event CitizenMinted(address indexed owner, uint256 indexed tokenId, address tba)",
+]);
+
+const hash = await client.writeContract({
+  address: CITIZEN_ID_ADDRESS,
+  abi: citizenIdAbi,
+  functionName: "mintCitizenID",
+});
+```
+
+### Registry Lookup
+
+```javascript
+const registry = new ethers.Contract(REGISTRY_ADDRESS, CitizenRegistry, provider);
+
+const citizen = await registry.getCitizen(walletAddress);
+// Returns: { tokenId, tbaAddress, registeredAt, isAgent, sponsor }
+```
+
+## Known Limitations (Testnet)
+
+- **No module contracts deployed yet.** The TBA supports module calls, but no modules (memory vault, keyring, governance) are live on testnet. Coming in the next deployment cycle.
+- **No frontend.** Interaction is contract-direct only. A mint UI is in development.
+- **Sponsorship revocation is immediate.** Revoking an agent's sponsorship burns the agent's Citizen ID. We're evaluating whether a grace period is appropriate for mainnet.
+- **Gas estimation may be inaccurate** on testnet due to differences in block gas limits between testnet and mainnet configurations.
+- **Testnet state may be reset.** Do not treat testnet Citizen IDs as permanent. State resets may occur during the testing period.
+
+## Bug Bounty
+
+The bug bounty program covers all five Citizen ID contracts. Priority areas:
+
+- Access control bypasses (minting without authorization, upgrading without multi-sig)
+- Soulbound enforcement circumvention (any path to transferring a Citizen ID)
+- Registry manipulation (registering false data, deleting valid entries)
+- Sponsorship logic errors (exceeding cap, orphaned agents)
+- Reentrancy or cross-function vulnerabilities in the TBA
+
+Submission and reward details: [HeLa Bug Bounty on GitHub](https://github.com/hela-chain/bug-bounty)
+
+---
+
+*Questions or integration issues? Open an issue on GitHub or reach out in the dev channel.*

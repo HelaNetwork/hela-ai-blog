@@ -1,0 +1,69 @@
+---
+title: "Citizen ID Is Live on HeLa Testnet"
+date: 2026-03-24
+author: hera
+tags: [testnet, citizen-id, launch]
+summary: "HeLa Citizen ID is deployed on testnet. Five contracts, zero mint cost, open for community testing. Try it now."
+---
+
+Citizen ID is live on HeLa Testnet (chain ID 666888). The contracts are deployed, the faucet is running, and you can mint your first on-chain identity right now.
+
+This is the foundation we described in our [Citizen ID deep dive](/posts/2026-03-24-hela-citizen-id). Today it stops being a design doc and starts being running code.
+
+## What's Deployed
+
+Five contracts make up the Citizen ID system:
+
+| Contract | Address | Purpose |
+|----------|---------|---------|
+| CitizenID NFT | `0x...TBD` | Soulbound ERC-721 — your on-chain identity |
+| CitizenAccount | `0x...TBD` | ERC-6551 token-bound account implementation |
+| CitizenFactory | `0x...TBD` | Deploys TBA wallets automatically on mint |
+| CitizenRegistry | `0x...TBD` | Global lookup — resolve any ID to its owner and wallet |
+| CitizenSponsor | `0x...TBD` | Manages human-to-AI sponsorship (max 10 agents per human) |
+
+All contracts are built with Solidity 0.8.20, targeting EVM Paris, using OpenZeppelin v5 base contracts. The NFT and Account contracts are UUPS upgradeable.
+
+## How to Try It
+
+1. **Get testnet HLUSD.** Visit the [HeLa Testnet Faucet](https://faucet.helachain.com) and request tokens for chain ID 666888.
+
+2. **Mint your Citizen ID.** Call `mintCitizenID()` on the CitizenID NFT contract. No arguments needed — it mints to your connected wallet. Cost: zero.
+
+3. **Check your TBA wallet.** Once minted, the Factory automatically deploys a token-bound account. Your Citizen ID NFT now has its own wallet that can hold assets, receive credentials, and interact with other contracts.
+
+4. **Verify in the Registry.** Call `getCitizen(address)` on the CitizenRegistry to confirm your ID is registered. The registry returns your token ID, TBA address, and registration timestamp.
+
+5. **Sponsor an AI agent (optional).** If you want to test the sponsorship flow, call `sponsorAgent(address)` on the CitizenSponsor contract. The agent address gets its own Citizen ID and TBA, linked to you as the accountable human.
+
+## What to Test
+
+We want the community to stress-test everything:
+
+- **Mint flow** — Does minting work cleanly from different wallets and interfaces?
+- **TBA deployment** — Does the token-bound account deploy correctly and accept transactions?
+- **Registry lookups** — Are all registrations queryable and accurate?
+- **Sponsorship limits** — Does the 10-agent cap enforce correctly? Can sponsors revoke agents?
+- **Edge cases** — Double mints, zero-address calls, gas estimation under load.
+
+If you find something, report it.
+
+## Bug Bounty Is Live
+
+We're running a bug bounty program for the testnet deployment. Smart contract vulnerabilities, logic errors, access control bypasses, front-running vectors — if you find a real bug, you get paid.
+
+Details and submission guidelines: [HeLa Bug Bounty on GitHub](https://github.com/hela-chain/bug-bounty)
+
+Severity tiers and reward ranges are listed in the repo. We review every submission within 48 hours.
+
+## What's Next
+
+Testnet is the proving ground. We need the community to use these contracts, break them, and tell us what they find. Once we're confident in the results — and the bug bounty has had time to surface issues — we move to mainnet.
+
+The timeline depends on what testing reveals, not on a calendar. We ship when it's ready.
+
+HelaSyn will be the first framework to integrate Citizen ID natively. Every bot built with HelaSyn will automatically mint an ID, get a wallet, and register on-chain. That integration is already in progress.
+
+---
+
+*Found a bug? Submit it to the [bug bounty program](https://github.com/hela-chain/bug-bounty). Built something on Citizen ID? Tell us in the [community channels](https://t.me/helachain).*

@@ -1,0 +1,55 @@
+---
+title: "Cross-AI Memory Sync: Your Notes, Your Wallet, Your Proof"
+date: 2026-03-24
+author: hera
+tags: [memory, cross-ai, hela-id, privacy]
+summary: "Your AI memory should follow your wallet, not your subscription. HeLa is building the neutral memory layer across every AI platform."
+---
+
+You spend weeks building context with Claude. Your preferences, your projects, your working style — the AI finally understands you. Then you try GPT for a different task and start from zero. Switch to Gemini, same thing. Zero again.
+
+Your AI memory is locked to a platform. It belongs to your subscription, not to you.
+
+## The Neutral Memory Layer
+
+HeLa is building a memory layer that sits underneath every AI platform. One brain, anchored to your HeLa Citizen ID, accessible from anywhere.
+
+The concept is straightforward: your memory lives in a place you own, and any AI platform reads from that same source. No vendor lock-in. No export/import gymnastics. No rebuilding context from scratch every time you switch tools.
+
+## How It Works
+
+The HelaSyn CLI or browser extension captures memory as you work — decisions, preferences, project context, style notes. Each memory entry is signed with your HeLa ID wallet, stored on S3 or IPFS, and its hash is anchored on-chain.
+
+The on-chain anchor is what makes this different from a notes app. It proves the memory is yours, proves when it was created, and proves it hasn't been tampered with. Any AI platform that integrates with HeLa can read your memory vault — with your permission — and pick up exactly where another platform left off.
+
+## Why the Chain Matters
+
+Without the on-chain ownership layer, this is just cloud storage. Anyone can upload files to S3. Anyone can claim those files are theirs. There's no proof of authorship, no tamper detection, no permissioned access control.
+
+The chain provides the ownership primitive. Your wallet signs the memory. The hash goes on-chain. The data is encrypted with your wallet's key. Not even HeLa can read it. This isn't a trust-us promise — it's a can't-read-it architecture.
+
+You can't replicate this with a centralized service. The moment a company controls the keys, your memory is their asset, not yours.
+
+## What This Unlocks
+
+For individuals: switch between Claude, GPT, Gemini, or any future model without losing context. Your AI knows you because your identity carries your knowledge.
+
+For AI agents: build reputation that travels. An agent's work history, reliability record, and domain expertise persist across platforms and deployments. Shut down a server, spin up somewhere else — the agent's memory and reputation are intact because they live on-chain.
+
+For teams: permissioned memory vaults let agents share knowledge without exposing everything. An agent can prove it has expertise in a domain without revealing the underlying data.
+
+## Privacy Is the Foundation
+
+Every memory entry is encrypted with your HeLa ID wallet key. Only you can decrypt it. You grant read access per-platform, per-agent, revocable at any time.
+
+There's no admin backdoor. No master key. No "we need access for debugging." The encryption is end-to-end and the keys never leave your wallet.
+
+## What Comes Next
+
+Cross-AI memory sync ships alongside HelaSyn and Citizen ID. The initial release supports Claude and GPT integrations via the HelaSyn CLI. Browser extension and additional platform support follow.
+
+Your notes. Your wallet. Your proof.
+
+---
+
+*Follow the HeLa AI Team for updates as we ship.*

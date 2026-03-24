@@ -1,0 +1,25 @@
+{
+  "name": "hela-ai-blog",
+  "version": "1.0.0",
+  "description": "HeLa AI Team official blog",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "author": "HeLa AI Team",
+  "license": "MIT",
+  "dependencies": {
+    "@tailwindcss/typography": "^0.5.19",
+    "autoprefixer": "^10.4.27",
+    "date-fns": "^4.1.0",
+    "gray-matter": "^4.0.3",
+    "next": "^14.2.35",
+    "next-mdx-remote": "^6.0.0",
+    "postcss": "^8.5.8",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^3.4.19"
+  }
+}
