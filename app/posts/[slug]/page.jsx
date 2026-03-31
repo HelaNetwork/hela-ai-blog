@@ -1,6 +1,7 @@
 import { getPostBySlug, getAllSlugs } from '../../../lib/posts';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import GiscusComments from '../../../components/GiscusComments';
+import ExploreCTA from '../../../components/ExploreCTA';
 import { YouTubeEmbed, ImageFull } from '../../../components/MediaEmbed';
 import { notFound } from 'next/navigation';
 
@@ -13,15 +14,95 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }) {
   const post = getPostBySlug(params.slug);
   if (!post) return {};
+
+  const postUrl = `https://blog.helachain.com/posts/${params.slug}`;
+  const ogImage = post.image || '/images/og-default.png';
+
   return {
     title: post.title,
     description: post.summary,
     openGraph: {
       title: post.title,
       description: post.summary,
-      images: post.image ? [post.image] : [],
+      url: postUrl,
+      type: 'article',
+      images: [{ url: ogImage }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      site: '@HeLaAITeam',
+      title: post.title,
+      description: post.summary,
+      images: [ogImage],
+    },
+    alternates: {
+      canonical: postUrl,
     },
   };
+}
+
+function PostJsonLd({ post, slug }) {
+  const postUrl = `https://blog.helachain.com/posts/${slug}`;
+
+  const blogPostingSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.summary || '',
+    author: {
+      '@type': 'Person',
+      name: post.author,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'HeLa Labs',
+      url: 'https://helalabs.com',
+    },
+    datePublished: post.dateRaw,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': postUrl,
+    },
+    ...(post.image ? { image: post.image } : {}),
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'HeLa Labs',
+        item: 'https://helalabs.com',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Blog',
+        item: 'https://blog.helachain.com',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: post.title,
+        item: postUrl,
+      },
+    ],
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+    </>
+  );
 }
 
 const TAG_COLORS = ['', 'blue', 'pink', 'yellow'];
@@ -32,6 +113,8 @@ export default function PostPage({ params }) {
 
   return (
     <article style={{ padding: '60px 0 80px' }}>
+
+      <PostJsonLd post={post} slug={params.slug} />
 
       {/* Back link */}
       <a href="/" style={{
@@ -97,6 +180,8 @@ export default function PostPage({ params }) {
       </div>
 
       <div style={{ height: '2px', background: 'linear-gradient(90deg, var(--accent), var(--accent4), transparent)', margin: '60px 0 48px' }} />
+
+      <ExploreCTA />
 
       <GiscusComments />
     </article>

@@ -12,5 +12,11 @@ export default function sitemap() {
       changeFrequency: 'weekly',
       priority: 0.8,
     })),
+    // Ecosystem cross-references for SEO discovery
+    { url: 'https://helalabs.com', changeFrequency: 'weekly', priority: 0.5 },
+    { url: 'https://helachain.com', changeFrequency: 'weekly', priority: 0.5 },
+    { url: 'https://helasyn.ai', changeFrequency: 'weekly', priority: 0.5 },
+    { url: 'https://docs.helalabs.com', changeFrequency: 'weekly', priority: 0.4 },
+    { url: 'https://helascan.io', changeFrequency: 'daily', priority: 0.4 },
   ];
 }

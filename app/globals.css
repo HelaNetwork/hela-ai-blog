@@ -557,6 +557,98 @@ footer.pixel-footer {
 @keyframes bob  { 0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);} }
 @keyframes bob2 { 0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);} }
 
+/* ── SEO FOOTER ── */
+footer.seo-footer {
+  border-top: 1px solid var(--border);
+  margin-top: 80px;
+  padding: 48px 32px 24px;
+}
+.seo-footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+@media (max-width: 600px) {
+  .seo-footer-inner { grid-template-columns: 1fr; gap: 32px; }
+}
+.seo-footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.seo-footer-heading {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: var(--accent3);
+  letter-spacing: 3px;
+  margin-bottom: 6px;
+}
+.seo-footer-col a {
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  color: var(--dim);
+  text-decoration: none;
+  letter-spacing: 1px;
+  transition: color 0.15s;
+}
+.seo-footer-col a:hover { color: var(--accent); }
+.seo-footer-bottom {
+  max-width: 1100px;
+  margin: 36px auto 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--border2);
+  text-align: center;
+}
+.seo-footer-copy {
+  font-family: 'VT323', monospace;
+  font-size: 15px;
+  color: var(--dim);
+  letter-spacing: 1px;
+}
+.seo-footer-copy a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.seo-footer-copy a:hover { text-decoration: underline; }
+
+/* ── EXPLORE CTA ── */
+.explore-cta {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 32px;
+  margin-bottom: 48px;
+}
+.explore-cta-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: var(--accent3);
+  letter-spacing: 3px;
+  margin-bottom: 20px;
+}
+.explore-cta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.explore-cta-link {
+  display: block;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  letter-spacing: 1px;
+  text-decoration: none;
+  text-align: center;
+  padding: 12px 10px;
+  border: 1px solid;
+  background: transparent;
+  transition: background 0.15s, opacity 0.15s;
+}
+.explore-cta-link:hover {
+  background: rgba(255, 255, 255, 0.04);
+  opacity: 0.85;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition-duration: 0ms !important; }
 }
