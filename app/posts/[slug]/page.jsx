@@ -84,10 +84,10 @@ export default function PostPage({ params }) {
         </div>
       </div>
 
-      {/* Header image */}
+      {/* Header image — compact pixel art, not blown up */}
       {post.image && (
-        <div style={{ border: '1px solid var(--border)', marginBottom: '48px', overflow: 'hidden', maxWidth: '480px' }}>
-          <img src={post.image} alt={post.title} style={{ width: '100%', display: 'block', imageRendering: 'pixelated' }} />
+        <div className="post-header-thumb">
+          <img src={post.image} alt={post.title} />
         </div>
       )}
 

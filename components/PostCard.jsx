@@ -1,14 +1,29 @@
-const ACCENT_CYCLE = ['', 'blue', 'pink', 'yellow'];
-const TAG_COLORS   = ['', 'blue', 'pink', 'yellow'];
+const TAG_COLOR_MAP = {
+  'CITIZEN ID': '',
+  'AI AGENTS':  'blue',
+  'DEV LOG':    'pink',
+  'CHAIN':      'yellow',
+  'HELASYN':    '',
+  'ECONOMY':    'pink',
+  'SECURITY':   'pink',
+  'INFRA':      'yellow',
+  'NLP':        'blue',
+  'ANALYTICS':  'blue',
+  'COMMS':      'yellow',
+};
 
-export default function PostCard({ post, colorIndex = 0 }) {
-  const accent = ACCENT_CYCLE[colorIndex % ACCENT_CYCLE.length];
-  const tagColor = TAG_COLORS[(colorIndex + 1) % TAG_COLORS.length];
+function getTagColor(tag) {
+  return TAG_COLOR_MAP[tag?.toUpperCase()] || '';
+}
+
+export default function PostCard({ post }) {
+  const primaryTag = post.tags?.[0] || '';
+  const colorClass = getTagColor(primaryTag);
 
   return (
-    <a href={`/posts/${post.slug}`} className={`pixel-card ${accent}`} style={{ textDecoration: 'none' }}>
+    <a href={`/posts/${post.slug}`} className={`dispatch-card ${colorClass}`}>
       {/* Thumbnail */}
-      <div className="card-thumb">
+      <div className="dispatch-thumb">
         {post.image ? (
           <img src={post.image} alt={post.title} />
         ) : (
@@ -16,31 +31,28 @@ export default function PostCard({ post, colorIndex = 0 }) {
         )}
       </div>
 
-      {/* Tags */}
-      {post.tags.length > 0 && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-          {post.tags.slice(0, 2).map((tag, i) => (
-            <span key={tag} className={`post-tag ${i === 1 ? tagColor : ''}`}>{tag}</span>
-          ))}
-        </div>
+      {/* Tag */}
+      {primaryTag && (
+        <div className={`post-tag ${colorClass}`}>{primaryTag}</div>
       )}
 
       {/* Title */}
-      <div className="card-title">{post.title}</div>
+      <div className="dispatch-title">{post.title}</div>
 
       {/* Excerpt */}
       {post.summary && (
-        <div className="card-excerpt" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-          {post.summary}
-        </div>
+        <div className="dispatch-excerpt">{post.summary}</div>
       )}
 
       {/* Meta */}
-      <div className="card-meta">
+      <div className="dispatch-meta">
         <span>{post.author}</span>
-        <span style={{ color: 'var(--dim2)' }}>·</span>
+        <span className="dot">·</span>
         <time dateTime={post.dateRaw}>{post.date}</time>
       </div>
+
+      {/* Read link */}
+      <span className={`read-arrow ${colorClass}`}>READ →</span>
     </a>
   );
 }

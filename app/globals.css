@@ -433,6 +433,126 @@ footer.pixel-footer {
   padding: 0.5rem 1rem;
 }
 
+/* ── DISPATCH GRID (preview.html format) ── */
+.dispatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2px;
+}
+
+.dispatch-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: border-color 0.15s, background 0.15s;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+.dispatch-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s;
+}
+.dispatch-card:hover::before { transform: scaleX(1); }
+.dispatch-card:hover { border-color: rgba(198,241,53,0.2); background: rgba(198,241,53,0.02); }
+
+.dispatch-card.pink::before  { background: var(--accent2); }
+.dispatch-card.pink:hover    { border-color: rgba(255,60,111,0.2); background: rgba(255,60,111,0.02); }
+.dispatch-card.blue::before  { background: var(--accent4); }
+.dispatch-card.blue:hover    { border-color: rgba(60,240,255,0.2); background: rgba(60,240,255,0.02); }
+.dispatch-card.yellow::before { background: var(--accent3); }
+.dispatch-card.yellow:hover  { border-color: rgba(255,233,77,0.2); background: rgba(255,233,77,0.02); }
+
+.dispatch-thumb {
+  width: 100%;
+  height: 100px;
+  background: var(--panel);
+  border: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  image-rendering: pixelated;
+}
+.dispatch-thumb img {
+  max-width: 120px;
+  max-height: 80px;
+  image-rendering: pixelated;
+}
+
+.dispatch-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: #fff;
+  line-height: 1.9;
+}
+
+.dispatch-excerpt {
+  color: var(--dim);
+  font-size: 16px;
+  line-height: 1.5;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dispatch-meta {
+  color: var(--dim);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.dispatch-meta .dot { color: var(--border); }
+
+.read-arrow {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s;
+  margin-top: auto;
+  width: fit-content;
+}
+.dispatch-card:hover .read-arrow { border-bottom-color: var(--accent); }
+.read-arrow.pink { color: var(--accent2); }
+.dispatch-card:hover .read-arrow.pink { border-bottom-color: var(--accent2); }
+.read-arrow.blue { color: var(--accent4); }
+.dispatch-card:hover .read-arrow.blue { border-bottom-color: var(--accent4); }
+.read-arrow.yellow { color: var(--accent3); }
+.dispatch-card:hover .read-arrow.yellow { border-bottom-color: var(--accent3); }
+
+/* ── POST HEADER THUMB (compact pixel art on post page) ── */
+.post-header-thumb {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  padding: 12px;
+  margin-bottom: 48px;
+  image-rendering: pixelated;
+}
+.post-header-thumb img {
+  width: 120px;
+  height: 80px;
+  image-rendering: pixelated;
+  display: block;
+}
+
 /* ── ANIMATIONS ── */
 @keyframes bob  { 0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);} }
 @keyframes bob2 { 0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);} }

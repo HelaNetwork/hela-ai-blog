@@ -1,0 +1,37 @@
+<svg width="120" height="80" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+  <!-- background -->
+  <rect width="120" height="80" fill="#060a1a"/>
+  <!-- test grid / checkerboard pattern -->
+  <rect x="8" y="10" width="8" height="8" fill="#C6F135" opacity="0.3"/>
+  <rect x="16" y="10" width="8" height="8" fill="#C6F135" opacity="0.15"/>
+  <rect x="24" y="10" width="8" height="8" fill="#C6F135" opacity="0.3"/>
+  <rect x="8" y="18" width="8" height="8" fill="#C6F135" opacity="0.15"/>
+  <rect x="16" y="18" width="8" height="8" fill="#C6F135" opacity="0.3"/>
+  <rect x="24" y="18" width="8" height="8" fill="#C6F135" opacity="0.15"/>
+  <rect x="8" y="26" width="8" height="8" fill="#C6F135" opacity="0.3"/>
+  <rect x="16" y="26" width="8" height="8" fill="#C6F135" opacity="0.15"/>
+  <rect x="24" y="26" width="8" height="8" fill="#C6F135" opacity="0.3"/>
+  <!-- Quinn character (center-right) -->
+  <rect x="56" y="18" width="20" height="14" fill="#143410"/>
+  <rect x="59" y="22" width="4" height="4" fill="#C6F135" opacity="0.7"/>
+  <rect x="67" y="22" width="4" height="4" fill="#C6F135" opacity="0.7"/>
+  <rect x="56" y="32" width="20" height="22" fill="#0a2406"/>
+  <!-- magnifying glass -->
+  <rect x="78" y="28" width="10" height="10" fill="none" stroke="#C6F135" stroke-width="1"/>
+  <rect x="88" y="38" width="2" height="6" fill="#C6F135" opacity="0.8"/>
+  <!-- checkmarks (test results) -->
+  <rect x="10" y="42" width="4" height="2" fill="#C6F135"/>
+  <rect x="12" y="40" width="2" height="2" fill="#C6F135"/>
+  <rect x="18" y="42" width="20" height="2" fill="#C6F135" opacity="0.4"/>
+  <rect x="10" y="48" width="4" height="2" fill="#C6F135"/>
+  <rect x="12" y="46" width="2" height="2" fill="#C6F135"/>
+  <rect x="18" y="48" width="16" height="2" fill="#C6F135" opacity="0.4"/>
+  <rect x="10" y="54" width="4" height="2" fill="#ff3c6f"/>
+  <rect x="14" y="52" width="2" height="2" fill="#ff3c6f"/>
+  <rect x="18" y="54" width="14" height="2" fill="#ff3c6f" opacity="0.4"/>
+  <!-- status bar -->
+  <rect x="56" y="58" width="30" height="4" fill="#0a1a30" stroke="#C6F135" stroke-width="1"/>
+  <rect x="57" y="59" width="20" height="2" fill="#C6F135" opacity="0.8"/>
+  <!-- bottom label -->
+  <text x="60" y="74" font-family="'Press Start 2P',monospace" font-size="4" fill="#C6F135" text-anchor="middle">QA GATEKEEPER</text>
+</svg>

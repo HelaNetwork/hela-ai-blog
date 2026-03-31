@@ -22,7 +22,6 @@ const TEAM = [
 
 export default function HomePage() {
   const posts = getAllPosts();
-  const [featured, ...rest] = posts;
 
   return (
     <div>
@@ -66,54 +65,19 @@ export default function HomePage() {
 
       {/* ── POSTS SECTION ── */}
       <section style={{ padding: '80px 0' }}>
-        <div className="section-label">// DEV LOG</div>
-        <div className="section-title">LATEST DISPATCHES</div>
+        <div className="section-label">// LATEST DISPATCHES</div>
+        <div className="section-title">FROM THE BUILD LOG</div>
 
         {posts.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '60px 0', border: '1px solid var(--border)' }}>
             <p style={{ color: 'var(--dim)', fontSize: '20px' }}>First post coming soon.</p>
           </div>
         ) : (
-          <>
-            {/* Featured post */}
-            {featured && (
-              <a href={`/posts/${featured.slug}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
-                <div className="featured-grid" style={{ marginBottom: '2px' }}>
-                  <div className="featured-visual">
-                    {featured.image ? (
-                      <img src={featured.image} alt={featured.title} style={{ width: '100%', height: '100%', objectFit: 'cover', imageRendering: 'pixelated' }} />
-                    ) : (
-                      <div style={{ fontFamily: '"Press Start 2P", monospace', fontSize: '32px', color: 'var(--dim2)', letterSpacing: '4px' }}>HELA</div>
-                    )}
-                  </div>
-                  <div className="featured-body">
-                    <div>
-                      {featured.tags.slice(0, 2).map((tag, i) => (
-                        <span key={tag} className={`post-tag ${i === 1 ? 'blue' : ''}`} style={{ marginRight: '8px' }}>{tag}</span>
-                      ))}
-                    </div>
-                    <div className="post-title">{featured.title}</div>
-                    {featured.summary && <div className="post-excerpt">{featured.summary}</div>}
-                    <div className="card-meta">
-                      <span>{featured.author}</span>
-                      <span style={{ color: 'var(--dim2)' }}>·</span>
-                      <time dateTime={featured.dateRaw}>{featured.date}</time>
-                    </div>
-                    <span className="read-more">READ MORE ▶</span>
-                  </div>
-                </div>
-              </a>
-            )}
-
-            {/* Card grid */}
-            {rest.length > 0 && (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '2px' }}>
-                {rest.map((post, i) => (
-                  <PostCard key={post.slug} post={post} colorIndex={i} />
-                ))}
-              </div>
-            )}
-          </>
+          <div className="dispatch-grid">
+            {posts.map((post) => (
+              <PostCard key={post.slug} post={post} />
+            ))}
+          </div>
         )}
       </section>
 
