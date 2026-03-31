@@ -1,0 +1,41 @@
+<svg width="120" height="80" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+  <!-- background -->
+  <rect width="120" height="80" fill="#060a1a"/>
+  <!-- left brain (Claude) -->
+  <rect x="6" y="16" width="28" height="22" fill="#0a1a30" stroke="#3cf0ff" stroke-width="1"/>
+  <rect x="8" y="20" width="6" height="6" fill="#3cf0ff" opacity="0.7"/>
+  <rect x="16" y="20" width="6" height="6" fill="#3cf0ff" opacity="0.5"/>
+  <rect x="24" y="20" width="6" height="4" fill="#3cf0ff" opacity="0.3"/>
+  <rect x="8" y="28" width="10" height="4" fill="#3cf0ff" opacity="0.4"/>
+  <rect x="20" y="28" width="12" height="4" fill="#3cf0ff" opacity="0.3"/>
+  <rect x="8" y="34" width="24" height="2" fill="#3cf0ff" opacity="0.2"/>
+  <!-- GPT label -->
+  <text x="20" y="48" font-family="'Press Start 2P',monospace" font-size="4" fill="#3cf0ff" text-anchor="middle">AI-1</text>
+  <!-- right brain (GPT) -->
+  <rect x="86" y="16" width="28" height="22" fill="#1a0a30" stroke="#ff3c6f" stroke-width="1"/>
+  <rect x="88" y="20" width="6" height="6" fill="#ff3c6f" opacity="0.7"/>
+  <rect x="96" y="20" width="6" height="6" fill="#ff3c6f" opacity="0.5"/>
+  <rect x="104" y="20" width="6" height="4" fill="#ff3c6f" opacity="0.3"/>
+  <rect x="88" y="28" width="10" height="4" fill="#ff3c6f" opacity="0.4"/>
+  <rect x="100" y="28" width="12" height="4" fill="#ff3c6f" opacity="0.3"/>
+  <rect x="88" y="34" width="24" height="2" fill="#ff3c6f" opacity="0.2"/>
+  <text x="100" y="48" font-family="'Press Start 2P',monospace" font-size="4" fill="#ff3c6f" text-anchor="middle">AI-2</text>
+  <!-- data stream connecting them -->
+  <rect x="36" y="25" width="6" height="2" fill="#ffe94d" opacity="0.9"/>
+  <rect x="44" y="25" width="4" height="2" fill="#ffe94d" opacity="0.7"/>
+  <rect x="50" y="25" width="4" height="2" fill="#ffe94d" opacity="0.5"/>
+  <rect x="56" y="25" width="4" height="2" fill="#ffe94d" opacity="0.7"/>
+  <rect x="62" y="25" width="4" height="2" fill="#ffe94d" opacity="0.9"/>
+  <rect x="68" y="25" width="4" height="2" fill="#ffe94d" opacity="0.7"/>
+  <rect x="74" y="25" width="8" height="2" fill="#ffe94d" opacity="0.9"/>
+  <!-- sync arrows -->
+  <rect x="46" y="22" width="2" height="4" fill="#C6F135"/>
+  <rect x="44" y="22" width="6" height="2" fill="#C6F135"/>
+  <rect x="68" y="28" width="2" height="4" fill="#C6F135"/>
+  <rect x="68" y="30" width="6" height="2" fill="#C6F135"/>
+  <!-- HeLa memory vault center -->
+  <rect x="50" y="14" width="20" height="14" fill="#0a0a20" stroke="#C6F135" stroke-width="1"/>
+  <text x="60" y="24" font-family="'Press Start 2P',monospace" font-size="4" fill="#C6F135" text-anchor="middle">MEM</text>
+  <!-- bottom label -->
+  <text x="60" y="66" font-family="'Press Start 2P',monospace" font-size="4" fill="#3cf0ff" text-anchor="middle">CROSS-AI SYNC</text>
+</svg>

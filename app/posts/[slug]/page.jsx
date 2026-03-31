@@ -24,36 +24,79 @@ export async function generateMetadata({ params }) {
   };
 }
 
+const TAG_COLORS = ['', 'blue', 'pink', 'yellow'];
+
 export default function PostPage({ params }) {
   const post = getPostBySlug(params.slug);
   if (!post) notFound();
 
   return (
-    <article>
-      <div className="mb-8">
-        <div className="flex flex-wrap gap-2 mb-4">
-          {post.tags.map(tag => (
-            <span key={tag} className="text-xs bg-hela-cyan/10 text-hela-cyan border border-hela-cyan/20 px-2 py-0.5 rounded-full font-medium">
-              {tag}
-            </span>
-          ))}
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-bold text-slate-100 leading-tight mb-4">{post.title}</h1>
-        {post.summary && <p className="text-lg text-slate-400 mb-4">{post.summary}</p>}
-        <div className="flex items-center gap-3 text-sm text-slate-400">
-          <span className="font-medium text-slate-300">{post.author}</span>
-          <span>·</span>
-          <time>{post.date}</time>
+    <article style={{ padding: '60px 0 80px' }}>
+
+      {/* Back link */}
+      <a href="/" style={{
+        fontFamily: '"Press Start 2P", monospace',
+        fontSize: '8px',
+        color: 'var(--dim)',
+        textDecoration: 'none',
+        letterSpacing: '2px',
+        display: 'inline-block',
+        marginBottom: '40px',
+      }}>
+        ◀ BACK TO LOG
+      </a>
+
+      {/* Header */}
+      <div style={{
+        borderLeft: '3px solid var(--accent)',
+        paddingLeft: '24px',
+        marginBottom: '40px',
+      }}>
+        {post.tags.length > 0 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '20px' }}>
+            {post.tags.map((tag, i) => (
+              <span key={tag} className={`post-tag ${TAG_COLORS[i % TAG_COLORS.length]}`}>{tag}</span>
+            ))}
+          </div>
+        )}
+
+        <h1 style={{
+          fontFamily: '"Inter", sans-serif',
+          fontWeight: 700,
+          fontSize: 'clamp(20px, 3.5vw, 32px)',
+          color: '#fff',
+          lineHeight: 1.4,
+          marginBottom: '20px',
+        }}>
+          {post.title}
+        </h1>
+
+        {post.summary && (
+          <p style={{ fontSize: '20px', color: 'var(--dim)', marginBottom: '16px', lineHeight: 1.6 }}>
+            {post.summary}
+          </p>
+        )}
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '16px', color: 'var(--dim)' }}>
+          <span style={{ color: 'var(--text)' }}>{post.author}</span>
+          <span style={{ color: 'var(--dim2)' }}>·</span>
+          <time dateTime={post.dateRaw}>{post.date}</time>
         </div>
       </div>
 
+      {/* Header image */}
       {post.image && (
-        <img src={post.image} alt={post.title} className="w-full rounded-xl mb-8 shadow-sm" />
+        <div style={{ border: '1px solid var(--border)', marginBottom: '48px', overflow: 'hidden', maxWidth: '480px' }}>
+          <img src={post.image} alt={post.title} style={{ width: '100%', display: 'block', imageRendering: 'pixelated' }} />
+        </div>
       )}
 
-      <div className="prose prose-invert prose-lg max-w-none">
+      {/* Body */}
+      <div className="prose prose-invert prose-lg max-w-none" style={{ borderLeft: '1px solid var(--border2)', paddingLeft: '24px' }}>
         <MDXRemote source={post.content} components={components} />
       </div>
+
+      <div style={{ height: '2px', background: 'linear-gradient(90deg, var(--accent), var(--accent4), transparent)', margin: '60px 0 48px' }} />
 
       <GiscusComments />
     </article>

@@ -1,0 +1,58 @@
+<svg width="120" height="80" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+  <!-- background -->
+  <rect width="120" height="80" fill="#060a1a"/>
+  <!-- border frame -->
+  <rect x="2" y="2" width="116" height="76" fill="none" stroke="#C6F135" stroke-width="1" opacity="0.3"/>
+  <!-- SELECT text -->
+  <text x="60" y="14" font-family="'Press Start 2P',monospace" font-size="5" fill="#ffe94d" text-anchor="middle">SELECT</text>
+  <!-- 11 character slots in 4-4-3 grid -->
+  <!-- Row 1: 4 chars -->
+  <rect x="10" y="20" width="18" height="18" fill="#1a3a06" stroke="#C6F135" stroke-width="1"/>
+  <rect x="13" y="23" width="4" height="4" fill="#C6F135" opacity="0.8"/>
+  <rect x="19" y="23" width="4" height="4" fill="#C6F135" opacity="0.8"/>
+  <rect x="13" y="31" width="12" height="2" fill="#C6F135" opacity="0.4"/>
+
+  <rect x="32" y="20" width="18" height="18" fill="#062030" stroke="#3cf0ff" stroke-width="1"/>
+  <rect x="35" y="23" width="4" height="4" fill="#3cf0ff" opacity="0.8"/>
+  <rect x="41" y="23" width="4" height="4" fill="#3cf0ff" opacity="0.8"/>
+  <rect x="35" y="31" width="12" height="2" fill="#3cf0ff" opacity="0.4"/>
+
+  <rect x="54" y="20" width="18" height="18" fill="#300612" stroke="#ff3c6f" stroke-width="1"/>
+  <rect x="57" y="23" width="4" height="4" fill="#ff3c6f" opacity="0.8"/>
+  <rect x="63" y="23" width="4" height="4" fill="#ff3c6f" opacity="0.8"/>
+  <rect x="57" y="31" width="12" height="2" fill="#ff3c6f" opacity="0.4"/>
+
+  <rect x="76" y="20" width="18" height="18" fill="#2a1a00" stroke="#ffe94d" stroke-width="1"/>
+  <rect x="79" y="23" width="4" height="4" fill="#ffe94d" opacity="0.8"/>
+  <rect x="85" y="23" width="4" height="4" fill="#ffe94d" opacity="0.8"/>
+  <rect x="79" y="31" width="12" height="2" fill="#ffe94d" opacity="0.4"/>
+
+  <!-- Row 2: 4 chars -->
+  <rect x="10" y="42" width="18" height="18" fill="#0a2400" stroke="#C6F135" stroke-width="1"/>
+  <rect x="13" y="45" width="4" height="4" fill="#C6F135" opacity="0.6"/>
+  <rect x="19" y="45" width="4" height="4" fill="#C6F135" opacity="0.6"/>
+  <rect x="13" y="53" width="12" height="2" fill="#C6F135" opacity="0.3"/>
+
+  <rect x="32" y="42" width="18" height="18" fill="#061824" stroke="#3cf0ff" stroke-width="1"/>
+  <rect x="35" y="45" width="4" height="4" fill="#3cf0ff" opacity="0.6"/>
+  <rect x="41" y="45" width="4" height="4" fill="#3cf0ff" opacity="0.6"/>
+  <rect x="35" y="53" width="12" height="2" fill="#3cf0ff" opacity="0.3"/>
+
+  <rect x="54" y="42" width="18" height="18" fill="#200a24" stroke="#ff3c6f" stroke-width="1" opacity="0.7"/>
+  <rect x="57" y="45" width="4" height="4" fill="#ff3c6f" opacity="0.6"/>
+  <rect x="63" y="45" width="4" height="4" fill="#ff3c6f" opacity="0.6"/>
+  <rect x="57" y="53" width="12" height="2" fill="#ff3c6f" opacity="0.3"/>
+
+  <rect x="76" y="42" width="18" height="18" fill="#201800" stroke="#ffe94d" stroke-width="1" opacity="0.7"/>
+  <rect x="79" y="45" width="4" height="4" fill="#ffe94d" opacity="0.6"/>
+  <rect x="85" y="45" width="4" height="4" fill="#ffe94d" opacity="0.6"/>
+  <rect x="79" y="53" width="12" height="2" fill="#ffe94d" opacity="0.3"/>
+
+  <!-- Row 3: 3 chars centered -->
+  <rect x="21" y="64" width="18" height="12" fill="#1a0a30" stroke="#C6F135" stroke-width="0.5" opacity="0.6"/>
+  <rect x="51" y="64" width="18" height="12" fill="#1a0a30" stroke="#3cf0ff" stroke-width="0.5" opacity="0.6"/>
+  <rect x="81" y="64" width="18" height="12" fill="#1a0a30" stroke="#ff3c6f" stroke-width="0.5" opacity="0.6"/>
+  <!-- blinking cursor on first slot -->
+  <rect x="98" y="20" width="18" height="18" fill="#0a1a06" stroke="#C6F135" stroke-width="1"/>
+  <rect x="105" y="26" width="4" height="6" fill="#C6F135" opacity="0.9"/>
+</svg>

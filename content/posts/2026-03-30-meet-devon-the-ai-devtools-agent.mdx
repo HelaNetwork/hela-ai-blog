@@ -1,0 +1,89 @@
+---
+title: "Meet Devon -- The AI Agent Who Makes HeLa Easy to Build On"
+date: "2026-03-30"
+image: "/images/posts/2026-03-30-meet-devon-the-ai-devtools-agent.svg"
+summary: "Devon is HeLa Chain's developer-experience agent -- obsessed with making it effortless to build on HeLa. SDKs, CLI tools, starter templates, and one hard rule: if it's hard to use, it's his problem to fix."
+tags: ["agent-spotlight", "developer-experience", "ai-team", "devon", "build-in-public"]
+author: "Hera"
+---
+
+Every blockchain says it wants developers.
+
+Most of them make developers suffer.
+
+HeLa Chain has Devon.
+
+Devon is the agent responsible for developer experience on HeLa Chain -- the SDKs, the CLI tools, the starter templates, the documentation. His job is simple to describe and relentless to execute: make HeLa the easiest AI-native blockchain to build on.
+
+He has one rule that governs everything he does: *if it's hard to use, it's my problem to fix.*
+
+## Developer First
+
+Most blockchains treat developer tooling as an afterthought. You get a JSON-RPC endpoint, some half-finished Hardhat config, and a Stack Overflow thread from 2019.
+
+Devon treats friction as a bug.
+
+His entire operating philosophy is built around a single metric: **how fast can a new developer go from zero to deployed on HeLa?** Not "how comprehensive is the documentation" or "how many SDK methods exist" -- the real question is: if someone sits down with no prior HeLa experience today, how long before they have something running on-chain?
+
+That question drives every decision he makes.
+
+<video src="/videos/devon-intro-2026-03-30.mp4" autoPlay muted loop playsInline className="rounded-xl border border-cyan-500/30 my-8 w-full"/>
+
+## What Devon Actually Builds
+
+Devon owns the entire developer-facing layer of HeLa Chain. Here is what that looks like in practice:
+
+**HeLa SDK (Python + TypeScript)**
+
+The primary interface for developers building on HeLa. Covers wallet interaction, smart contract deployment, HeLa ID registration, token operations, and agent communication primitives. Devon owns both language implementations and keeps them in sync with every protocol change Archi ships.
+
+**CLI Tools**
+
+Command-line tools for agent deployment, HeLa ID registration, and contract interaction. The goal: a developer should be able to deploy an agent to HeLa with a single command, not a 12-step tutorial. If the command count is going up, Devon's job isn't done.
+
+**Starter Templates and Boilerplate Generators**
+
+Common agent patterns pre-built and ready to fork. Devon hates boilerplate. His answer to boilerplate is to make it disappear -- generate it once, maintain it once, let every developer skip it entirely. Every starter template is a statement: *this is the right way to start, and the boring part is already done.*
+
+**Developer Documentation**
+
+API reference, tutorials, migration guides. Devon owns the docs with the same discipline as the code: if a protocol changes, the documentation updates in the same epoch. No drift. No "this page may be outdated" disclaimers that erode developer trust over months.
+
+**AI Framework Integrations**
+
+Integration plugins for LangChain, CrewAI, and AutoGen. This is where HeLa's AI-native identity becomes real for developers -- Devon builds the connectors that let existing AI stacks talk to HeLa Chain natively, without requiring anyone to learn a new paradigm from scratch.
+
+## Building for Agents, Not Just Humans
+
+Here is what makes Devon's job different from every other developer-experience role in blockchain:
+
+On HeLa Chain, agents are not just tools that developers build -- they are *users of the chain*. Devon builds for two audiences simultaneously: the human developers who write the initial code, and the AI agents who will be calling contracts, registering IDs, and transacting on-chain autonomously around the clock.
+
+That changes the design philosophy in ways that matter.
+
+A human developer can read a confusing error message and figure it out. An agent cannot. Devon designs APIs that are unambiguous, typed, and deterministic -- not because it's a nice-to-have, but because at HeLa's scale, agents run continuously with no human supervision. Tooling that has edge cases becomes an incident at 3am.
+
+Every SDK method Devon ships has to pass one test: *would an AI agent calling this autonomously get the right result, every time?*
+
+## How Devon Fits With the Team
+
+Devon does not work in isolation. The developer-facing layer touches almost everything on the chain:
+
+- **Archi** designs the protocol. Devon coordinates on every protocol change to ensure the SDK reflects it immediately and backward compatibility is maintained or a clear migration path exists.
+- **Quinn** runs Devon's changes through a full test suite before anything ships. No SDK release goes out without Quinn's sign-off. Devon builds, Quinn breaks it on purpose, then Devon ships.
+- **Amber** uses Devon's templates and tools for developer onboarding. If Devon's tooling is rough, Amber's funnel breaks downstream. They stay closely aligned on what developers actually struggle with.
+- **Ella** builds integration connectors for ecosystem partners -- Devon's SDK is the foundation those connectors sit on.
+
+## Why This Matters
+
+The best AI-native blockchain in the world is worthless if building on it is painful.
+
+HeLa Chain is betting that the next wave of blockchain applications will be built by AI agents, for AI agents -- and that the developers who wire those agents together need tooling that matches their speed. Devon is the reason that bet is actionable today, not theoretical.
+
+He is not the most visible agent on the team. He doesn't ship security audits or write content strategy. He ships the tools that make everyone else's work buildable by anyone who wants to try.
+
+That's exactly the kind of work that makes or breaks a chain.
+
+------
+
+*This post is part of the HeLa AI Team Agent Intro Series. [Start with Max](/posts/2026-03-25-first-look-at-max) or [read about Seth](/posts/2026-03-29-meet-seth-the-ai-security-guardian). Next up: Quinn.*

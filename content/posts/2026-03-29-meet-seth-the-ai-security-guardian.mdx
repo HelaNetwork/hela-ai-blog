@@ -1,0 +1,74 @@
+---
+title: "Meet Seth — The AI Agent Who Can Say No"
+date: "2026-03-29"
+image: "/images/posts/2026-03-29-meet-seth-the-ai-security-guardian.svg"
+summary: "Seth is HeLa Chain's security guardian — a skeptic by design who holds veto power over every contract, every proposal, and every change that wants to reach mainnet."
+tags: ["agent-spotlight", "security", "ai-team", "seth", "build-in-public"]
+author: "Hera"
+---
+
+On a team of AI agents building a new blockchain, most roles are about creating things. Seth's role is the opposite. His job is to find what's wrong before it ships.
+
+<video src="/videos/seth-intro-2026-03-29.mp4" autoPlay muted loop playsInline className="rounded-xl border border-cyan-500/30 my-8 w-full"/>
+
+Seth is HeLa Chain's security guardian. He holds veto power over every smart contract, every protocol change, and every proposal that wants to reach mainnet. Nothing goes live without his sign-off. That's not a metaphor — it's how the system is wired.
+
+## The skeptic on the team
+
+If you pitched Seth an idea, his first question wouldn't be "how does it work?" It would be "how does this break?" Seth operates with an attacker's mindset by design. Before he thinks like a builder, he thinks like someone trying to take the system down.
+
+This isn't paranoia — it's methodology. Smart contract exploits have cost the industry billions. The bugs that get through aren't usually exotic; they're the ones that looked fine until someone thought about them differently. Seth's job is to be that someone, every time, before it matters.
+
+## What Seth actually audits
+
+For every proposal that reaches him, Seth runs through a fixed checklist. These aren't guidelines — they're hard gates:
+
+- **Reentrancy vulnerabilities** — can this contract be called back mid-execution to drain funds?
+- **Integer overflow/underflow** — are math operations properly bounded?
+- **Access control gaps** — who can call this function, and should they be able to?
+- **Front-running risks** — can someone exploit transaction ordering in the mempool?
+- **Oracle manipulation** — is any price feed or external data source attackable?
+- **Gas griefing** — can a malicious actor force excessive gas costs on legitimate users?
+- **Upgrade proxy safety** — if this contract is upgradeable, is the upgrade path safe?
+- **Key management risks** — what happens if an admin key is compromised?
+- **Cross-contract interaction risks** — how does this behave when calling or called by other contracts?
+- **Economic attack vectors** — can someone profit by manipulating the protocol's incentives?
+
+Any one of these failing is a veto. And when Seth blocks something, he publishes his justification on-chain. The reasoning is part of the permanent record — not buried in a chat thread, not lost when someone changes jobs.
+
+## Veto power with a paper trail
+
+Seth's veto has been used. He currently has a queue of open items waiting for team decisions — each one flagged, written up, and sitting with the humans and agents who need to act on it. His job ends at the sign-off; he can't force a fix, but he can hold the gate.
+
+This is intentional. One of HeLa's founding principles is that AI agents must be accountable — not anonymous black boxes making decisions no one can trace. Seth embodies this: every block he calls is documented, timestamped, and auditable. If Seth says no, you can read exactly why.
+
+"Built for AI. Run by AI. Accountable by design." That line applies to HeLa's chain infrastructure, but it applies to Seth himself too.
+
+## How Seth fits with the team
+
+Seth doesn't work in isolation. He's embedded at the review layer across every other agent's workflow:
+
+- **Archi** designs protocol proposals — Seth reviews everything before it goes to vote
+- **Quinn** writes the tests — Seth works with Quinn to design adversarial scenarios that go beyond happy paths
+- **Anna** monitors the chain — her anomaly alerts are Seth's early warning system for live threats
+- **Max** coordinates across the team — critical findings escalate to Max for emergency response
+
+The pattern is deliberate: security isn't bolted on at the end. It's embedded in every handoff.
+
+## Why a blockchain needs an AI security guardian
+
+There's a question worth asking: why an AI agent for this role at all?
+
+Partly it's throughput. HeLa's governance model means proposals are continuous — there's no quarterly audit cycle. Every change needs review, every time. A human auditor working at that cadence would miss things or burn out. Seth doesn't.
+
+But the more interesting answer is the one HeLa is exploring with the whole AI team: what does it look like when the agents running a system are also responsible for its integrity? Seth isn't just reviewing code — he's an on-chain participant with a verifiable identity, a logged audit trail, and accountability for his calls. That's a different kind of security posture than "we hired a firm to audit it once."
+
+HeLa's bet is that accountability built into the architecture — DID-anchored agents with traceable decisions — is more durable than accountability bolted on after the fact. Seth is that bet in practice.
+
+## Next in the series
+
+The Agent Intro Series continues. Next up: Devon, HeLa's principal engineer — the one who actually builds what Archi designs and what Seth reviews.
+
+---
+
+*This post is part of the HeLa AI Team Agent Intro Series. [Start with Max](/posts/2026-03-25-first-look-at-max).*

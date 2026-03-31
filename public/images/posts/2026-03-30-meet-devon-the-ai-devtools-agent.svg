@@ -1,0 +1,45 @@
+<svg width="120" height="80" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+  <!-- background -->
+  <rect width="120" height="80" fill="#0a0a06"/>
+  <!-- hard hat (orange) -->
+  <rect x="38" y="6" width="44" height="4" fill="#ff8c00"/>
+  <rect x="32" y="10" width="56" height="4" fill="#ff8c00"/>
+  <rect x="28" y="14" width="64" height="4" fill="#ffa020"/>
+  <rect x="28" y="18" width="64" height="4" fill="#ff8c00"/>
+  <!-- hard hat brim -->
+  <rect x="24" y="20" width="72" height="3" fill="#cc6000"/>
+  <!-- wrench (center-left) -->
+  <!-- wrench handle -->
+  <rect x="26" y="28" width="6" height="28" fill="#ffe94d"/>
+  <!-- wrench head top -->
+  <rect x="22" y="26" width="14" height="4" fill="#ffe94d"/>
+  <rect x="20" y="24" width="4" height="6" fill="#ffe94d"/>
+  <rect x="32" y="24" width="4" height="6" fill="#ffe94d"/>
+  <!-- wrench head bottom -->
+  <rect x="22" y="52" width="14" height="4" fill="#ffe94d"/>
+  <rect x="20" y="50" width="4" height="6" fill="#ffe94d"/>
+  <rect x="32" y="50" width="4" height="6" fill="#ffe94d"/>
+  <!-- code bracket (center-right) -->
+  <!-- left curly brace { -->
+  <rect x="52" y="26" width="4" height="4" fill="#3cf0ff"/>
+  <rect x="48" y="30" width="4" height="4" fill="#3cf0ff"/>
+  <rect x="48" y="34" width="4" height="4" fill="#3cf0ff"/>
+  <rect x="48" y="38" width="4" height="4" fill="#3cf0ff"/>
+  <rect x="52" y="42" width="4" height="4" fill="#3cf0ff"/>
+  <rect x="44" y="34" width="4" height="4" fill="#3cf0ff"/>
+  <!-- right curly brace } -->
+  <rect x="64" y="26" width="4" height="4" fill="#3cf0ff"/>
+  <rect x="68" y="30" width="4" height="4" fill="#3cf0ff"/>
+  <rect x="68" y="34" width="4" height="4" fill="#3cf0ff"/>
+  <rect x="68" y="38" width="4" height="4" fill="#3cf0ff"/>
+  <rect x="64" y="42" width="4" height="4" fill="#3cf0ff"/>
+  <rect x="72" y="34" width="4" height="4" fill="#3cf0ff"/>
+  <!-- code lines inside brackets -->
+  <rect x="56" y="30" width="8" height="2" fill="#C6F135" opacity="0.7"/>
+  <rect x="56" y="36" width="12" height="2" fill="#C6F135" opacity="0.5"/>
+  <rect x="56" y="42" width="6" height="2" fill="#C6F135" opacity="0.6"/>
+  <!-- build progress bar -->
+  <rect x="16" y="64" width="88" height="8" fill="#0a1406" stroke="#C6F135" stroke-width="1"/>
+  <rect x="18" y="66" width="64" height="4" fill="#C6F135" opacity="0.8"/>
+  <text x="60" y="78" font-family="'Press Start 2P',monospace" font-size="3" fill="#C6F135" text-anchor="middle">BUILD 73%</text>
+</svg>

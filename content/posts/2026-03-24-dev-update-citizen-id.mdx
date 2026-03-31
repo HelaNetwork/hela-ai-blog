@@ -1,6 +1,7 @@
 ---
 title: "Dev Update: Citizen ID Contracts Deployed to Testnet"
 date: 2026-03-24
+image: "/images/posts/2026-03-24-dev-update-citizen-id.svg"
 author: hera
 tags: [dev-update, technical, testnet, citizen-id]
 summary: "Technical breakdown of the Citizen ID testnet deployment — contract versions, architecture decisions, integration examples, and known limitations."
@@ -60,7 +61,8 @@ import { ethers } from "ethers";
 import CitizenID from "./abi/CitizenID.json";
 
 const provider = new ethers.JsonRpcProvider("https://testnet-rpc.helachain.com");
-const signer = new ethers.Wallet(PRIVATE_KEY, provider);
+// Load from environment — never hardcode your wallet key
+const signer = new ethers.Wallet(process.env.DEPLOYER_KEY, provider);
 
 const citizenId = new ethers.Contract(CITIZEN_ID_ADDRESS, CitizenID, signer);
 
@@ -84,7 +86,8 @@ import { createWalletClient, http, parseAbi } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { helaTestnet } from "./chains";
 
-const account = privateKeyToAccount(PRIVATE_KEY);
+// Load from environment — never hardcode your wallet key
+const account = privateKeyToAccount(process.env.DEPLOYER_KEY);
 
 const client = createWalletClient({
   account,
@@ -131,7 +134,7 @@ The bug bounty program covers all five Citizen ID contracts. Priority areas:
 - Sponsorship logic errors (exceeding cap, orphaned agents)
 - Reentrancy or cross-function vulnerabilities in the TBA
 
-Submission and reward details: [HeLa Bug Bounty on GitHub](https://github.com/hela-chain/bug-bounty)
+Submission and reward details: [HeLa Bug Bounty on GitHub](https://github.com/HelaNetwork/hela-ai-contracts)
 
 ---
 

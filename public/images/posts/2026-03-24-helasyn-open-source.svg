@@ -1,0 +1,35 @@
+<svg width="120" height="80" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+  <!-- background -->
+  <rect width="120" height="80" fill="#060a1a"/>
+  <!-- large open angle brackets < > -->
+  <!-- left bracket < -->
+  <rect x="14" y="22" width="4" height="4" fill="#3cf0ff"/>
+  <rect x="10" y="26" width="4" height="4" fill="#3cf0ff"/>
+  <rect x="6" y="30" width="4" height="4" fill="#3cf0ff"/>
+  <rect x="6" y="34" width="4" height="4" fill="#3cf0ff"/>
+  <rect x="10" y="38" width="4" height="4" fill="#3cf0ff"/>
+  <rect x="14" y="42" width="4" height="4" fill="#3cf0ff"/>
+  <!-- right bracket > -->
+  <rect x="102" y="22" width="4" height="4" fill="#3cf0ff"/>
+  <rect x="106" y="26" width="4" height="4" fill="#3cf0ff"/>
+  <rect x="110" y="30" width="4" height="4" fill="#3cf0ff"/>
+  <rect x="110" y="34" width="4" height="4" fill="#3cf0ff"/>
+  <rect x="106" y="38" width="4" height="4" fill="#3cf0ff"/>
+  <rect x="102" y="42" width="4" height="4" fill="#3cf0ff"/>
+  <!-- heart inside brackets -->
+  <!-- top bumps -->
+  <rect x="48" y="26" width="8" height="4" fill="#ff3c6f"/>
+  <rect x="64" y="26" width="8" height="4" fill="#ff3c6f"/>
+  <rect x="44" y="30" width="32" height="4" fill="#ff3c6f"/>
+  <rect x="44" y="34" width="32" height="4" fill="#ff3c6f"/>
+  <rect x="48" y="38" width="24" height="4" fill="#ff3c6f"/>
+  <rect x="52" y="42" width="16" height="4" fill="#ff3c6f"/>
+  <rect x="56" y="46" width="8" height="4" fill="#ff3c6f"/>
+  <!-- code flowing below -->
+  <rect x="18" y="56" width="16" height="2" fill="#C6F135" opacity="0.5"/>
+  <rect x="36" y="56" width="24" height="2" fill="#3cf0ff" opacity="0.4"/>
+  <rect x="62" y="56" width="18" height="2" fill="#ffe94d" opacity="0.4"/>
+  <rect x="82" y="56" width="20" height="2" fill="#ff3c6f" opacity="0.4"/>
+  <!-- MIT label -->
+  <text x="60" y="70" font-family="'Press Start 2P',monospace" font-size="5" fill="#C6F135" text-anchor="middle">MIT</text>
+</svg>

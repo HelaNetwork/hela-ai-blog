@@ -1,0 +1,49 @@
+<svg width="120" height="80" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+  <!-- background -->
+  <rect width="120" height="80" fill="#060a1a"/>
+  <!-- stars -->
+  <rect x="5" y="4" width="2" height="2" fill="#C6F135" opacity="0.4"/>
+  <rect x="18" y="8" width="2" height="2" fill="#3cf0ff" opacity="0.3"/>
+  <rect x="108" y="6" width="2" height="2" fill="#ff3c6f" opacity="0.4"/>
+  <rect x="95" y="3" width="2" height="2" fill="#ffe94d" opacity="0.3"/>
+  <!-- 6 pixel agents in a row -->
+  <!-- Agent 1 - lime (Max) -->
+  <rect x="8" y="28" width="12" height="16" fill="#1a3a06"/>
+  <rect x="8" y="22" width="12" height="8" fill="#2a5a0a"/>
+  <rect x="11" y="24" width="3" height="3" fill="#C6F135"/>
+  <rect x="16" y="24" width="3" height="3" fill="#C6F135"/>
+  <!-- Agent 2 - cyan (Archi) -->
+  <rect x="26" y="28" width="12" height="16" fill="#062030"/>
+  <rect x="26" y="22" width="12" height="8" fill="#0a3848"/>
+  <rect x="29" y="24" width="3" height="3" fill="#3cf0ff"/>
+  <rect x="34" y="24" width="3" height="3" fill="#3cf0ff"/>
+  <!-- Agent 3 - pink (Seth) -->
+  <rect x="44" y="28" width="12" height="16" fill="#300612"/>
+  <rect x="44" y="22" width="12" height="8" fill="#4a0a1e"/>
+  <rect x="47" y="24" width="3" height="3" fill="#ff3c6f"/>
+  <rect x="52" y="24" width="3" height="3" fill="#ff3c6f"/>
+  <!-- Agent 4 - yellow (Devon) -->
+  <rect x="62" y="28" width="12" height="16" fill="#2a1a00"/>
+  <rect x="62" y="22" width="12" height="8" fill="#3a2800"/>
+  <rect x="65" y="24" width="3" height="3" fill="#ffe94d"/>
+  <rect x="70" y="24" width="3" height="3" fill="#ffe94d"/>
+  <!-- Agent 5 - lime dim (Quinn) -->
+  <rect x="80" y="28" width="12" height="16" fill="#0a2406"/>
+  <rect x="80" y="22" width="12" height="8" fill="#143410"/>
+  <rect x="83" y="24" width="3" height="3" fill="#C6F135" opacity="0.7"/>
+  <rect x="88" y="24" width="3" height="3" fill="#C6F135" opacity="0.7"/>
+  <!-- Agent 6 - cyan dim (Hera) -->
+  <rect x="98" y="28" width="12" height="16" fill="#061824"/>
+  <rect x="98" y="22" width="12" height="8" fill="#0a2030"/>
+  <rect x="101" y="24" width="3" height="3" fill="#3cf0ff" opacity="0.7"/>
+  <rect x="106" y="24" width="3" height="3" fill="#3cf0ff" opacity="0.7"/>
+  <!-- rocket exhaust below agents -->
+  <rect x="12" y="44" width="4" height="4" fill="#ffe94d" opacity="0.8"/>
+  <rect x="13" y="48" width="2" height="4" fill="#ff3c6f" opacity="0.6"/>
+  <rect x="30" y="44" width="4" height="4" fill="#ffe94d" opacity="0.8"/>
+  <rect x="31" y="48" width="2" height="4" fill="#ff3c6f" opacity="0.6"/>
+  <rect x="48" y="44" width="4" height="4" fill="#ffe94d" opacity="0.8"/>
+  <rect x="49" y="48" width="2" height="4" fill="#ff3c6f" opacity="0.6"/>
+  <!-- LAUNCH text -->
+  <text x="60" y="70" font-family="'Press Start 2P',monospace" font-size="6" fill="#C6F135" text-anchor="middle">LAUNCH</text>
+</svg>

@@ -1,0 +1,29 @@
+<svg width="120" height="80" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+  <!-- background -->
+  <rect width="120" height="80" fill="#0a1a06"/>
+  <!-- ID card body -->
+  <rect x="20" y="12" width="70" height="48" fill="#0f1e0a" stroke="#C6F135" stroke-width="1"/>
+  <!-- card header bar -->
+  <rect x="20" y="12" width="70" height="8" fill="#1a3a0a"/>
+  <text x="55" y="19" font-family="'Press Start 2P',monospace" font-size="4" fill="#C6F135" text-anchor="middle">HELA ID</text>
+  <!-- face box -->
+  <rect x="28" y="24" width="20" height="24" fill="#0a1406" stroke="#C6F135" stroke-width="0.5"/>
+  <!-- pixel face -->
+  <rect x="32" y="28" width="4" height="4" fill="#C6F135"/>
+  <rect x="40" y="28" width="4" height="4" fill="#C6F135"/>
+  <rect x="32" y="36" width="12" height="2" fill="#C6F135" opacity="0.6"/>
+  <!-- text lines -->
+  <rect x="52" y="26" width="30" height="3" fill="#C6F135" opacity="0.5"/>
+  <rect x="52" y="32" width="22" height="3" fill="#C6F135" opacity="0.3"/>
+  <rect x="52" y="38" width="26" height="3" fill="#C6F135" opacity="0.3"/>
+  <!-- chain link at bottom -->
+  <rect x="28" y="50" width="8" height="6" fill="none" stroke="#3cf0ff" stroke-width="1"/>
+  <rect x="38" y="50" width="8" height="6" fill="none" stroke="#3cf0ff" stroke-width="1"/>
+  <rect x="48" y="50" width="8" height="6" fill="none" stroke="#3cf0ff" stroke-width="1"/>
+  <!-- LIVE badge -->
+  <rect x="76" y="46" width="10" height="10" fill="#0a2a06" stroke="#C6F135" stroke-width="1"/>
+  <rect x="78" y="48" width="4" height="4" fill="#C6F135"/>
+  <!-- green dot -->
+  <rect x="88" y="46" width="4" height="4" fill="#C6F135"/>
+  <text x="60" y="72" font-family="'Press Start 2P',monospace" font-size="5" fill="#C6F135" text-anchor="middle">LIVE</text>
+</svg>

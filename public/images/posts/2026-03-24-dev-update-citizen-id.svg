@@ -1,0 +1,41 @@
+<svg width="120" height="80" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+  <!-- background -->
+  <rect width="120" height="80" fill="#0a0614"/>
+  <!-- terminal window -->
+  <rect x="8" y="8" width="104" height="64" fill="#0a0a18" stroke="#ff3c6f" stroke-width="1"/>
+  <!-- title bar -->
+  <rect x="8" y="8" width="104" height="10" fill="#160820"/>
+  <rect x="12" y="11" width="4" height="4" fill="#ff3c6f" opacity="0.8"/>
+  <rect x="18" y="11" width="4" height="4" fill="#ffe94d" opacity="0.8"/>
+  <rect x="24" y="11" width="4" height="4" fill="#C6F135" opacity="0.8"/>
+  <text x="70" y="16" font-family="'Press Start 2P',monospace" font-size="4" fill="#ff3c6f" opacity="0.6" text-anchor="middle">DEPLOY</text>
+  <!-- contract lines -->
+  <rect x="14" y="24" width="36" height="2" fill="#ff3c6f" opacity="0.7"/>
+  <rect x="52" y="24" width="50" height="2" fill="#C6F135" opacity="0.5"/>
+  <!-- checkmark 1 -->
+  <rect x="14" y="30" width="26" height="2" fill="#3cf0ff" opacity="0.6"/>
+  <rect x="96" y="28" width="4" height="4" fill="#C6F135"/>
+  <rect x="98" y="30" width="6" height="2" fill="#C6F135"/>
+  <!-- contract line 2 -->
+  <rect x="14" y="36" width="44" height="2" fill="#ff3c6f" opacity="0.5"/>
+  <rect x="60" y="36" width="30" height="2" fill="#ffe94d" opacity="0.4"/>
+  <!-- checkmark 2 -->
+  <rect x="96" y="34" width="4" height="4" fill="#C6F135"/>
+  <rect x="98" y="36" width="6" height="2" fill="#C6F135"/>
+  <!-- contract line 3 -->
+  <rect x="14" y="42" width="32" height="2" fill="#C6F135" opacity="0.6"/>
+  <rect x="48" y="42" width="40" height="2" fill="#3cf0ff" opacity="0.4"/>
+  <!-- checkmark 3 -->
+  <rect x="96" y="40" width="4" height="4" fill="#C6F135"/>
+  <rect x="98" y="42" width="6" height="2" fill="#C6F135"/>
+  <!-- contract line 4 -->
+  <rect x="14" y="48" width="40" height="2" fill="#ff3c6f" opacity="0.4"/>
+  <!-- checkmark 4 -->
+  <rect x="96" y="46" width="4" height="4" fill="#C6F135"/>
+  <rect x="98" y="48" width="6" height="2" fill="#C6F135"/>
+  <!-- cursor blink -->
+  <rect x="14" y="54" width="6" height="2" fill="#ffe94d" opacity="0.8"/>
+  <rect x="20" y="52" width="2" height="6" fill="#fff" opacity="0.7"/>
+  <!-- bottom label -->
+  <text x="60" y="70" font-family="'Press Start 2P',monospace" font-size="4" fill="#C6F135" text-anchor="middle">5 CONTRACTS OK</text>
+</svg>
