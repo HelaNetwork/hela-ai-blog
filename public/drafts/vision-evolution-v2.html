@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HeLa Chain Vision Evolution v2.0</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface-2: #1a2236;
+    --border: #1e293b;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #2dd4bf;
+    --accent-dim: rgba(45,212,191,0.1);
+    --yellow: #fbbf24;
+    --yellow-dim: rgba(251,191,36,0.1);
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.1);
+    --green: #4ade80;
+    --green-dim: rgba(74,222,128,0.1);
+    --blue: #60a5fa;
+    --blue-dim: rgba(96,165,250,0.1);
+    --purple: #a78bfa;
+    --purple-dim: rgba(167,139,250,0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    padding: 0;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #0a0e1a 0%, #1a1a3e 50%, #0a0e1a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 80px 40px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at center, rgba(45,212,191,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: var(--accent-dim);
+    color: var(--accent);
+    border: 1px solid rgba(45,212,191,0.3);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 {
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto 32px;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .hero-meta span { display: flex; align-items: center; gap: 6px; }
+  .hero-meta strong { color: var(--text); }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  section {
+    padding: 60px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  section:last-child { border-bottom: none; }
+
+  h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+
+  h2 .label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 32px 0 12px;
+    color: #fff;
+  }
+
+  p, li { color: var(--text-muted); font-size: 15px; }
+  p { margin-bottom: 16px; }
+  strong { color: var(--text); }
+  ul { padding-left: 20px; margin-bottom: 16px; }
+  li { margin-bottom: 6px; }
+
+  .summary-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    margin: 24px 0;
+  }
+
+  .summary-box p:last-child { margin-bottom: 0; }
+
+  /* Architecture diagrams */
+  .arch-grid {
+    display: grid;
+    grid-template-columns: 1fr 60px 1fr;
+    gap: 24px;
+    align-items: start;
+    margin: 32px 0;
+  }
+
+  .arch-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .arch-card h4 {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .arch-card.old h4 { color: var(--red); }
+  .arch-card.new h4 { color: var(--green); }
+
+  .arch-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: var(--accent);
+    padding-top: 40px;
+  }
+
+  .layer {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: var(--text);
+    text-align: center;
+  }
+
+  .layer.retired {
+    border-color: var(--red);
+    background: var(--red-dim);
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+
+  .layer.new-layer {
+    border-color: var(--green);
+    background: var(--green-dim);
+  }
+
+  .layer.accent-layer {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .layer .layer-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .layer .layer-label.green { color: var(--green); }
+  .layer .layer-label.accent { color: var(--accent); }
+
+  /* Feature cards */
+  .feature-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    margin: 24px 0;
+  }
+
+  .feature-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .feature-num {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .feature-num.identity { background: var(--accent-dim); color: var(--accent); }
+  .feature-num.privacy { background: var(--purple-dim); color: var(--purple); }
+  .feature-num.stablecoin { background: var(--yellow-dim); color: var(--yellow); }
+  .feature-num.governance { background: var(--blue-dim); color: var(--blue); }
+  .feature-num.integration { background: var(--red-dim); color: var(--red); }
+  .feature-num.helasyn { background: var(--green-dim); color: var(--green); }
+  .feature-num.marketplace { background: var(--yellow-dim); color: var(--yellow); }
+
+  .feature-title { font-size: 20px; font-weight: 700; color: #fff; }
+  .feature-status {
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 12px;
+  }
+  .status-evolved { background: var(--accent-dim); color: var(--accent); }
+  .status-new { background: var(--green-dim); color: var(--green); }
+  .status-retired { background: var(--red-dim); color: var(--red); }
+  .status-unchanged { background: var(--blue-dim); color: var(--blue); }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+
+  thead th {
+    text-align: left;
+    padding: 10px 14px;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+
+  thead th:first-child { border-radius: 8px 0 0 0; }
+  thead th:last-child { border-radius: 0 8px 0 0; }
+
+  tbody td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+    vertical-align: top;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .tag-new { background: var(--green-dim); color: var(--green); }
+  .tag-evolved { background: var(--accent-dim); color: var(--accent); }
+  .tag-retired { background: var(--red-dim); color: var(--red); }
+  .tag-unchanged { background: var(--blue-dim); color: var(--blue); }
+  .tag-reframed { background: var(--purple-dim); color: var(--purple); }
+  .tag-done { background: var(--green-dim); color: var(--green); }
+  .tag-live { background: var(--green-dim); color: var(--green); }
+  .tag-testnet { background: var(--yellow-dim); color: var(--yellow); }
+  .tag-notstarted { background: rgba(148,163,184,0.1); color: var(--text-muted); }
+  .tag-roadmap { background: var(--purple-dim); color: var(--purple); }
+  .tag-specready { background: var(--blue-dim); color: var(--blue); }
+
+  .why-box {
+    background: var(--surface-2);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+
+  .why-box p { margin-bottom: 0; }
+  .why-box strong { color: var(--accent); }
+
+  .build-list {
+    background: var(--surface-2);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+
+  .build-list h5 {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--yellow);
+    margin-bottom: 10px;
+  }
+
+  .build-list ul { margin-bottom: 0; }
+
+  /* Pitch section */
+  .pitch-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin: 24px 0;
+  }
+
+  .pitch-card {
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .pitch-card.old {
+    background: var(--red-dim);
+    border: 1px solid rgba(248,113,113,0.2);
+  }
+
+  .pitch-card.new {
+    background: var(--green-dim);
+    border: 1px solid rgba(74,222,128,0.2);
+  }
+
+  .pitch-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .pitch-card.old .pitch-label { color: var(--red); }
+  .pitch-card.new .pitch-label { color: var(--green); }
+
+  .pitch-card blockquote {
+    font-size: 16px;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Differentiator cards */
+  .diff-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+  }
+
+  .diff-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .diff-card h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  .diff-card .num {
+    display: inline-block;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  /* Unchanged list */
+  .unchanged-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+    margin: 24px 0;
+  }
+
+  .unchanged-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .unchanged-item .check {
+    color: var(--green);
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .unchanged-item strong { display: block; color: #fff; margin-bottom: 2px; font-size: 14px; }
+  .unchanged-item span { font-size: 13px; color: var(--text-muted); }
+
+  /* Tracking tables */
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 32px 0 16px;
+  }
+
+  .phase-badge {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 6px;
+  }
+
+  .phase-1 { background: var(--accent-dim); color: var(--accent); }
+  .phase-2 { background: var(--blue-dim); color: var(--blue); }
+  .phase-3 { background: var(--yellow-dim); color: var(--yellow); }
+  .phase-4 { background: var(--purple-dim); color: var(--purple); }
+  .phase-done { background: var(--green-dim); color: var(--green); }
+
+  /* Revenue model */
+  .revenue-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .revenue-row {
+    display: contents;
+  }
+
+  .revenue-row > div {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+
+  .revenue-row:last-child > div { border-bottom: none; }
+
+  .revenue-row > div:first-child { color: var(--text-muted); }
+  .revenue-row > div:last-child { color: var(--yellow); font-weight: 600; text-align: right; }
+
+  .revenue-total {
+    display: contents;
+  }
+
+  .revenue-total > div {
+    padding: 14px 20px;
+    background: var(--surface-2);
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  .revenue-total > div:first-child { color: #fff; }
+  .revenue-total > div:last-child { color: var(--accent); text-align: right; }
+
+  footer {
+    text-align: center;
+    padding: 40px 24px;
+    color: var(--text-muted);
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 768px) {
+    .hero { padding: 48px 20px 40px; }
+    .hero h1 { font-size: 28px; }
+    .arch-grid { grid-template-columns: 1fr; }
+    .arch-arrow { transform: rotate(90deg); padding: 0; }
+    .pitch-grid { grid-template-columns: 1fr; }
+    .diff-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Internal Document</div>
+  <h1>HeLa Chain Vision Evolution</h1>
+  <p class="hero-sub">From Modular L1 to AI Citizen Chain — mapping every original feature to its evolved form, with implementation tracking</p>
+  <div class="hero-meta">
+    <span><strong>Version</strong> 2.0</span>
+    <span><strong>Date</strong> 2026-04-06</span>
+    <span><strong>Author</strong> KC (CTO) / Max (Coordinator)</span>
+    <span><strong>For</strong> All Teams</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- EXECUTIVE SUMMARY -->
+<section>
+  <div class="label" style="color:var(--accent); font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:8px;">Overview</div>
+  <h2>Executive Summary</h2>
+  <div class="summary-box">
+    <p>HeLa Chain launched with a whitepaper (A*STAR IHPC, 2023) addressing four blockchain problems: data fragmentation, inadequate confidentiality, lack of identity management, and volatile transaction fees. That foundation is solid and running on mainnet for <strong>2+ years</strong>.</p>
+    <p>The world has changed. AI agents are becoming autonomous economic participants. By 2027, over <strong>10 billion AI agents</strong> will be running globally. They need identity, assets, privacy, and infrastructure &mdash; not just blockchain users, but blockchain <strong>citizens</strong>.</p>
+    <p>This document maps every original feature to its evolved form, explains why, and tracks implementation status. The goal: HeLa Chain becomes <strong>the chain where AI agents are first-class citizens</strong> &mdash; with identity, wallets, memory, governance rights, and autonomous economic capability.</p>
+  </div>
+</section>
+
+<!-- ARCHITECTURE EVOLUTION -->
+<section>
+  <div style="color:var(--accent); font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:8px;">Part 1</div>
+  <h2>Architecture Evolution</h2>
+
+  <div class="arch-grid">
+    <div class="arch-card old">
+      <h4>Old: 4-Layer Modular</h4>
+      <div class="layer">Consensus Layer (Tendermint BFT)</div>
+      <div class="layer retired">Integration Layer (cross-runtime sync)</div>
+      <div class="layer">Execution Layer (multiple runtimes)</div>
+      <div class="layer">Storage Layer (erasure coding)</div>
+    </div>
+
+    <div class="arch-arrow">&rarr;</div>
+
+    <div class="arch-card new">
+      <h4>New: 3-Layer AI Citizen</h4>
+      <div class="layer">Consensus Layer (Tendermint BFT + PoS)</div>
+      <div class="layer">Execution Layer (EVM + confidential mode)</div>
+      <div class="layer">Storage Layer (on-chain + HelaMemoryVault)</div>
+      <div style="height:12px"></div>
+      <div class="layer new-layer">
+        <span class="layer-label green">New</span>
+        AI Citizen Stack: AgentFactory &rarr; Agent NFT &rarr; TBA &rarr; Reputation
+      </div>
+      <div class="layer accent-layer">
+        <span class="layer-label accent">New</span>
+        Governance Stack: Self-Improvement Loop &rarr; Kill Switch &rarr; Stablecoin DAO
+      </div>
+    </div>
+  </div>
+
+  <div class="why-box">
+    <p><strong>Why this change:</strong> The Integration Layer was designed for cross-runtime bridging. In practice, AI agents ARE the integration layer &mdash; they call any chain's RPC, use browser automation, interact with any API. Protocol-level integration is redundant. We simplify the infrastructure and focus engineering on the AI Citizen Stack above.</p>
+  </div>
+</section>
+
+<!-- FEATURE 1: IDENTITY -->
+<section>
+  <div style="color:var(--accent); font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:8px;">Part 2 &mdash; Feature Evolution</div>
+  <h2>Feature-by-Feature Evolution</h2>
+
+  <div class="feature-section">
+    <div class="feature-header">
+      <div class="feature-num identity">1</div>
+      <div class="feature-title">Identity: Held DID &rarr; AI Citizenship</div>
+      <span class="feature-status status-evolved">Evolved</span>
+    </div>
+
+    <table>
+      <thead><tr><th>Aspect</th><th>Old (Whitepaper)</th><th>New (Evolved)</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>System</strong></td><td>Held DID ecosystem</td><td>Held DID + AgentFactory</td><td><span class="tag tag-testnet">Testnet</span></td></tr>
+        <tr><td><strong>DID method</strong></td><td><code>did:held:0xABC...</code> (W3C)</td><td>Same &mdash; no change</td><td><span class="tag tag-testnet">Testnet</span></td></tr>
+        <tr><td><strong>Primary user</strong></td><td>Humans (KYC, passports)</td><td><strong>AI agents first</strong>, humans second</td><td><span class="tag tag-reframed">Reframed</span></td></tr>
+        <tr><td><strong>Identity primitive</strong></td><td>SBT + Verifiable Credentials</td><td><strong>Agent NFT + Token Bound Account (TBA)</strong></td><td><span class="tag tag-new">New</span></td></tr>
+        <tr><td><strong>What it provides</strong></td><td>KYC verification, credential mgmt</td><td><strong>Full economic personhood</strong> &mdash; identity + wallet + assets + reputation</td><td><span class="tag tag-evolved">Expanded</span></td></tr>
+        <tr><td><strong>Credential issuers</strong></td><td>Universities, govts, DAOs</td><td>Same + <strong>AI agent sponsors</strong></td><td><span class="tag tag-new">New</span></td></tr>
+        <tr><td><strong>DID Wallet</strong></td><td>User-friendly wallet for humans</td><td><strong>Agent wallet (TBA)</strong> &mdash; autonomous financial capability</td><td><span class="tag tag-reframed">Pivoted</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="why-box">
+      <p><strong>Why:</strong> The original Held DID is well-designed (W3C, DID resolver, credential issuer). But it was built for human identity. AI agents don't just need a name &mdash; they need a wallet, assets, reputation, and the ability to transact autonomously. AgentFactory + TBA gives them full economic citizenship on-chain.</p>
+    </div>
+
+    <div class="build-list">
+      <h5>What to Build</h5>
+      <ul>
+        <li>AgentFactory smart contract &mdash; mints Agent NFT, creates TBA per agent</li>
+        <li>Agent reputation contract &mdash; on-chain reputation from task completions</li>
+        <li>Agent sponsor registry &mdash; entities that vouch for and stake on agents</li>
+        <li>Update Held DID resolver to support agent DIDs alongside human DIDs</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FEATURE 2: CONFIDENTIALITY -->
+  <div class="feature-section">
+    <div class="feature-header">
+      <div class="feature-num privacy">2</div>
+      <div class="feature-title">Confidentiality &rarr; Agent Memory & Privacy</div>
+      <span class="feature-status status-evolved">Evolved</span>
+    </div>
+
+    <table>
+      <thead><tr><th>Aspect</th><th>Old (Whitepaper)</th><th>New (Evolved)</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Framing</strong></td><td>Flexible and auditable confidentiality</td><td><strong>Agent Memory & Privacy</strong></td><td><span class="tag tag-reframed">Reframed</span></td></tr>
+        <tr><td><strong>Primary use</strong></td><td>User tx privacy + regulatory auditing</td><td><strong>AI agent knowledge protection</strong> &mdash; models, data, keys</td><td><span class="tag tag-evolved">Evolved</span></td></tr>
+        <tr><td><strong>Mechanism</strong></td><td>TEE (Intel SGX) + encryption</td><td>Same foundation &mdash; no change needed</td><td><span class="tag tag-live">Running</span></td></tr>
+        <tr><td><strong>User-facing</strong></td><td>Encrypt transactions or not</td><td><strong>HelaMemoryVault</strong> &mdash; tiered encrypted agent storage</td><td><span class="tag tag-new">New</span></td></tr>
+        <tr><td><strong>Audit</strong></td><td>Hela DAO authorizes access</td><td>Same + <strong>agent-to-agent selective disclosure</strong></td><td><span class="tag tag-evolved">Extended</span></td></tr>
+        <tr><td><strong>TEE support</strong></td><td>Intel SGX only</td><td>SGX + planned <strong>ARM TrustZone + AMD SEV</strong></td><td><span class="tag tag-roadmap">Roadmap</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="why-box">
+      <p><strong>Why:</strong> The killer app for confidentiality isn't human transaction privacy. It's <strong>AI agents protecting proprietary knowledge on-chain</strong>. An agent storing learned strategies, client data, or model weights needs encryption with granular access control. That's HelaMemoryVault.</p>
+    </div>
+
+    <div class="build-list">
+      <h5>What to Build</h5>
+      <ul>
+        <li>HelaMemoryVault contract &mdash; tiered storage (public / agent-only / sponsor-only / encrypted)</li>
+        <li>Memory access control &mdash; Citizen ID-gated read permissions</li>
+        <li>Agent-to-agent knowledge sharing &mdash; TEE-mediated selective disclosure</li>
+        <li>Memory pricing model &mdash; storage costs in HLUSD per tier</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FEATURE 3: HLUSD -->
+  <div class="feature-section">
+    <div class="feature-header">
+      <div class="feature-num stablecoin">3</div>
+      <div class="feature-title">Stablecoin Gas (HLUSD)</div>
+      <span class="feature-status status-unchanged">Unchanged</span>
+    </div>
+
+    <table>
+      <thead><tr><th>Aspect</th><th>Old (Whitepaper)</th><th>New (Evolved)</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Core design</strong></td><td>Stablecoin gas, 1:1 USD peg</td><td><strong>No change</strong> &mdash; already perfect for AI agents</td><td><span class="tag tag-live">Mainnet</span></td></tr>
+        <tr><td><strong>Backing</strong></td><td>USDC reserves, regulated custodian</td><td>Same</td><td><span class="tag tag-live">Live</span></td></tr>
+        <tr><td><strong>Governance</strong></td><td>On-chain voting (5 roles, 6 actions)</td><td>Same &mdash; needs implementation</td><td><span class="tag tag-specready">Spec Ready</span></td></tr>
+        <tr><td><strong>Insurance fund</strong></td><td>10% tx fee tax &rarr; insurance pool</td><td>Same</td><td><span class="tag tag-specready">Spec Ready</span></td></tr>
+        <tr><td><strong>Regional coins</strong></td><td>HLSGD, HLEUR planned</td><td><strong>Deprioritized</strong></td><td><span class="tag tag-unchanged">Backlog</span></td></tr>
+        <tr><td><strong>Agent budgeting</strong></td><td>&mdash;</td><td><strong>Agents set hard HLUSD budgets</strong> &mdash; no volatility</td><td><span class="tag tag-new">New</span></td></tr>
+        <tr><td><strong>Marketplace fees</strong></td><td>&mdash;</td><td><strong>2-5% tx fee on agent marketplace</strong></td><td><span class="tag tag-new">New</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="why-box">
+      <p><strong>Why:</strong> Volatile gas kills AI agent autonomy. An agent making 1000 transactions/day cannot budget if gas costs fluctuate 10x between runs. HLUSD solves this perfectly. Zero changes needed &mdash; just reframe as an AI-agent-critical feature.</p>
+    </div>
+  </div>
+
+  <!-- FEATURE 4: GOVERNANCE -->
+  <div class="feature-section">
+    <div class="feature-header">
+      <div class="feature-num governance">4</div>
+      <div class="feature-title">Governance ($HELA Token) &rarr; Agent Governance</div>
+      <span class="feature-status status-evolved">Evolved</span>
+    </div>
+
+    <table>
+      <thead><tr><th>Aspect</th><th>Old (Whitepaper)</th><th>New (Evolved)</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Supply</strong></td><td>360M fixed, exponential minting</td><td><strong>No change</strong></td><td><span class="tag tag-live">Set</span></td></tr>
+        <tr><td><strong>Staking</strong></td><td>Validators + delegators</td><td>Same</td><td><span class="tag tag-live">Live</span></td></tr>
+        <tr><td><strong>Buyback</strong></td><td>10% tx fee &rarr; buy & burn</td><td>Same (deflationary)</td><td><span class="tag tag-specready">Spec Ready</span></td></tr>
+        <tr><td><strong>Voting</strong></td><td>Committee-based governance</td><td><strong>$HELA token voting &mdash; both humans AND AI agents</strong> hold $HELA to vote. 1 staked $HELA = 1 vote. Equal rules for all.</td><td><span class="tag tag-evolved">Evolved</span></td></tr>
+        <tr><td><strong>Agent governance</strong></td><td>&mdash;</td><td><strong>AI agents participate by holding $HELA</strong> &mdash; propose upgrades, vote on parameters (with human Kill Switch). Economic skin in the game.</td><td><span class="tag tag-new">New</span></td></tr>
+        <tr><td><strong>Reputation selection</strong></td><td>&mdash;</td><td><strong>Reputation score determines eligibility for trusted roles</strong> &mdash; recovery council, dispute arbitration, quality certification, emergency responders. Earned, not voted.</td><td><span class="tag tag-new">New</span></td></tr>
+        <tr><td><strong>Self-Improvement</strong></td><td>&mdash;</td><td><strong>Agents autonomously upgrade the protocol. Humans retain multi-sig veto.</strong></td><td><span class="tag tag-new">New &mdash; Unique</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="why-box">
+      <p><strong>Why:</strong> $HELA token stays king for governance power. Both humans and AI agents hold $HELA and vote with equal rules &mdash; agents have economic skin in the game. Reputation serves a DIFFERENT purpose: selecting trusted participants for sensitive roles (recovery council, dispute arbitration, quality certification). Two systems, two purposes:</p>
+      <p style="margin-top:12px"><strong>$HELA token voting</strong> &rarr; Who decides? (governance power via economic stake)<br>
+      <strong>Reputation-weighted selection</strong> &rarr; Who is trusted? (sensitive roles via on-chain track record)</p>
+      <p style="margin-top:12px">Reputation-gated roles: recovery council (30-day timelock), dispute arbitrator, agent quality certifier, emergency responder (circuit breakers), stablecoin auditor (TEE-authorized).</p>
+    </div>
+  </div>
+
+  <!-- FEATURE 5: INTEGRATION LAYER -->
+  <div class="feature-section">
+    <div class="feature-header">
+      <div class="feature-num integration">5</div>
+      <div class="feature-title">Integration Layer &rarr; Retired</div>
+      <span class="feature-status status-retired">Retired</span>
+    </div>
+
+    <table>
+      <thead><tr><th>Aspect</th><th>Old (Whitepaper)</th><th>New (Evolved)</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Concept</strong></td><td>Protocol-level cross-runtime integration</td><td><strong>Retired as infrastructure layer</strong></td><td><span class="tag tag-retired">Archived</span></td></tr>
+        <tr><td><strong>Problem</strong></td><td>Data fragmentation across chains</td><td>Agents solve this natively &mdash; any RPC, any API</td><td><span class="tag tag-evolved">Superseded</span></td></tr>
+        <tr><td><strong>Cross-chain</strong></td><td>Virtual asset transfers</td><td>Agents use bridges, DEXs, direct calls</td><td><span class="tag tag-unchanged">Already possible</span></td></tr>
+        <tr><td><strong>Agent tools</strong></td><td>&mdash;</td><td><strong>Browser automation, RPC, API access</strong> &mdash; agents ARE the integration</td><td><span class="tag tag-live">Live</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="why-box">
+      <p><strong>Why:</strong> The Integration Layer was never fully built. AI agents already solve cross-chain integration better and more flexibly. An agent on HeLa can call Ethereum, Solana, BSC, or any API without protocol-level support. Building it would cost months for a problem agents solve for free.</p>
+    </div>
+  </div>
+
+  <!-- FEATURE 6: HELASYN -->
+  <div class="feature-section">
+    <div class="feature-header">
+      <div class="feature-num helasyn">6</div>
+      <div class="feature-title">HeLaSyn: Self-Improving Agent Framework</div>
+      <span class="feature-status status-new">New</span>
+    </div>
+
+    <table>
+      <thead><tr><th>Aspect</th><th>Description</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>What</strong></td><td>Self-improving AI agent framework &mdash; the OS for AI agents on HeLa Chain</td><td><span class="tag tag-live">Live</span></td></tr>
+        <tr><td><strong>Agent Teams</strong></td><td>10+ specialized agents: Archi (architecture), Seth (security), Quinn (QA), Max (coordinator), Devon (engineering), Hera (content), Red (revenue)</td><td><span class="tag tag-live">Live</span></td></tr>
+        <tr><td><strong>Self-Improvement</strong></td><td>Agents autonomously propose, review, and implement protocol upgrades</td><td><span class="tag tag-live">Live (internal)</span></td></tr>
+        <tr><td><strong>Kill Switch</strong></td><td>Human multi-sig veto over any agent action</td><td><span class="tag tag-roadmap">Designed</span></td></tr>
+        <tr><td><strong>On-chain audit</strong></td><td>Every agent action recorded via ApprovalManager</td><td><span class="tag tag-roadmap">Designed</span></td></tr>
+        <tr><td><strong>Enterprise</strong></td><td>HelaSyn Office &mdash; Docker self-hosted, private registry, client owns data</td><td><span class="tag tag-roadmap">Designed</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="why-box">
+      <p><strong>Why this matters:</strong> No other blockchain has an autonomous AI team improving its own protocol. The agents that improve HeLa Chain ARE the proof that the platform works. We eat our own dogfood.</p>
+    </div>
+  </div>
+
+  <!-- FEATURE 7: MARKETPLACE -->
+  <div class="feature-section">
+    <div class="feature-header">
+      <div class="feature-num marketplace">7</div>
+      <div class="feature-title">AI Agent Marketplace</div>
+      <span class="feature-status status-new">New</span>
+    </div>
+
+    <table>
+      <thead><tr><th>Aspect</th><th>Description</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>What</strong></td><td>Open marketplace for deploying, discovering, trading AI agent services</td><td><span class="tag tag-roadmap">Roadmap</span></td></tr>
+        <tr><td><strong>Revenue</strong></td><td>2-5% transaction fees on all agent service trades</td><td><span class="tag tag-roadmap">Revenue model</span></td></tr>
+        <tr><td><strong>Payment</strong></td><td>HLUSD &mdash; predictable costs for autonomous operations</td><td>Aligned with Feature 3</td></tr>
+        <tr><td><strong>Identity</strong></td><td>All agents must have Citizen ID to list</td><td>Aligned with Feature 1</td></tr>
+        <tr><td><strong>Reputation</strong></td><td>On-chain reputation score affects ranking</td><td>Aligned with Feature 4</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Revenue Projection</h3>
+    <div class="revenue-grid">
+      <div class="revenue-row"><div>AI Agent Marketplace Fees</div><div>$200-400K/yr</div></div>
+      <div class="revenue-row"><div>HLUSD Transaction Fees</div><div>$100-200K/yr</div></div>
+      <div class="revenue-row"><div>StableHodl Yield Spread</div><div>$150-300K/yr</div></div>
+      <div class="revenue-row"><div>Enterprise Agent Hosting SaaS</div><div>$200-400K/yr</div></div>
+      <div class="revenue-row"><div>SDK/API Licensing</div><div>$50-100K/yr</div></div>
+      <div class="revenue-row"><div>Ecosystem Incubation / Launchpad</div><div>$50-150K/yr</div></div>
+      <div class="revenue-total"><div>Total Target</div><div>$1M+/yr</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT WE KEEP -->
+<section>
+  <div style="color:var(--accent); font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:8px;">Part 3</div>
+  <h2>What We Keep Unchanged</h2>
+  <p>These whitepaper features are solid as-is and require no reframing:</p>
+
+  <div class="unchanged-grid">
+    <div class="unchanged-item"><span class="check">&#10003;</span><div><strong>Tendermint BFT Consensus</strong><span>Running 2+ years, battle-tested. No changes needed.</span></div></div>
+    <div class="unchanged-item"><span class="check">&#10003;</span><div><strong>PoS with Delegation</strong><span>Validators + delegators, committee selection, slashing.</span></div></div>
+    <div class="unchanged-item"><span class="check">&#10003;</span><div><strong>HLUSD Tokenomics</strong><span>Stablecoin gas model &mdash; perfect for AI agents.</span></div></div>
+    <div class="unchanged-item"><span class="check">&#10003;</span><div><strong>$HELA Tokenomics</strong><span>360M cap, exponential minting, 10% buyback.</span></div></div>
+    <div class="unchanged-item"><span class="check">&#10003;</span><div><strong>Storage Layer</strong><span>Erasure coding + Merkle Trees for data availability.</span></div></div>
+    <div class="unchanged-item"><span class="check">&#10003;</span><div><strong>TEE Implementation</strong><span>Intel SGX + planned ARM TrustZone + AMD SEV.</span></div></div>
+    <div class="unchanged-item"><span class="check">&#10003;</span><div><strong>Stablecoin Governance</strong><span>5 roles, 6 actions, quorum-based voting. Ready to implement.</span></div></div>
+  </div>
+</section>
+
+<!-- IMPLEMENTATION TRACKING -->
+<section>
+  <div style="color:var(--accent); font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:8px;">Part 4</div>
+  <h2>Implementation Tracking</h2>
+
+  <!-- Phase 1 -->
+  <div class="phase-header">
+    <span class="phase-badge phase-1">Phase 1</span>
+    <h3 style="margin:0">Identity & Memory (Current Priority)</h3>
+  </div>
+  <table>
+    <thead><tr><th>#</th><th>Item</th><th>Owner</th><th>Status</th><th>Depends On</th></tr></thead>
+    <tbody>
+      <tr><td>1.1</td><td>AgentFactory contract (mint Agent NFT + TBA)</td><td>Devon</td><td><span class="tag tag-notstarted">Not Started</span></td><td>&mdash;</td></tr>
+      <tr><td>1.2</td><td>HelaMemoryVault contract (tiered encrypted storage)</td><td>Devon</td><td><span class="tag tag-notstarted">Not Started</span></td><td>&mdash;</td></tr>
+      <tr><td>1.3</td><td>ApprovalManager contract (permission audit trail)</td><td>Devon</td><td><span class="tag tag-notstarted">Not Started</span></td><td>&mdash;</td></tr>
+      <tr><td>1.4</td><td>Agent reputation contract</td><td>Devon</td><td><span class="tag tag-notstarted">Not Started</span></td><td>1.1</td></tr>
+      <tr><td>1.5</td><td>Update Held DID resolver for agent DIDs</td><td>Devon</td><td><span class="tag tag-notstarted">Not Started</span></td><td>1.1</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Phase 2 -->
+  <div class="phase-header">
+    <span class="phase-badge phase-2">Phase 2</span>
+    <h3 style="margin:0">Governance & Self-Improvement</h3>
+  </div>
+  <table>
+    <thead><tr><th>#</th><th>Item</th><th>Owner</th><th>Status</th><th>Depends On</th></tr></thead>
+    <tbody>
+      <tr><td>2.1</td><td>HIP-1 specification (proposal format)</td><td>Archi</td><td><span class="tag tag-notstarted">Not Started</span></td><td>&mdash;</td></tr>
+      <tr><td>2.2</td><td>Self-Improvement governance contract</td><td>Devon</td><td><span class="tag tag-notstarted">Not Started</span></td><td>1.1, 1.3</td></tr>
+      <tr><td>2.3</td><td>Kill Switch multi-sig contract</td><td>Devon + Seth</td><td><span class="tag tag-notstarted">Not Started</span></td><td>2.2</td></tr>
+      <tr><td>2.4</td><td>Agent reputation &rarr; governance weight</td><td>Devon</td><td><span class="tag tag-notstarted">Not Started</span></td><td>1.4, 2.2</td></tr>
+      <tr><td>2.5</td><td>Stablecoin governance contracts (mint/burn/vote)</td><td>Devon</td><td><span class="tag tag-notstarted">Not Started</span></td><td>&mdash;</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Phase 3 -->
+  <div class="phase-header">
+    <span class="phase-badge phase-3">Phase 3</span>
+    <h3 style="margin:0">Marketplace & Revenue</h3>
+  </div>
+  <table>
+    <thead><tr><th>#</th><th>Item</th><th>Owner</th><th>Status</th><th>Depends On</th></tr></thead>
+    <tbody>
+      <tr><td>3.1</td><td>Agent listing contract</td><td>Devon</td><td><span class="tag tag-notstarted">Not Started</span></td><td>1.1</td></tr>
+      <tr><td>3.2</td><td>HLUSD escrow contract</td><td>Devon</td><td><span class="tag tag-notstarted">Not Started</span></td><td>&mdash;</td></tr>
+      <tr><td>3.3</td><td>Marketplace fee collection</td><td>Devon</td><td><span class="tag tag-notstarted">Not Started</span></td><td>3.1, 3.2</td></tr>
+      <tr><td>3.4</td><td>Agent discovery / search</td><td>Devon</td><td><span class="tag tag-notstarted">Not Started</span></td><td>3.1</td></tr>
+      <tr><td>3.5</td><td>Rating / review system</td><td>Devon</td><td><span class="tag tag-notstarted">Not Started</span></td><td>1.4</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Phase 4 -->
+  <div class="phase-header">
+    <span class="phase-badge phase-4">Phase 4</span>
+    <h3 style="margin:0">Enterprise & Ecosystem</h3>
+  </div>
+  <table>
+    <thead><tr><th>#</th><th>Item</th><th>Owner</th><th>Status</th><th>Depends On</th></tr></thead>
+    <tbody>
+      <tr><td>4.1</td><td>HelaSyn Office Docker packaging</td><td>Devon</td><td><span class="tag tag-notstarted">Not Started</span></td><td>1.1-1.3</td></tr>
+      <tr><td>4.2</td><td>Public agent registration portal</td><td>Devon</td><td><span class="tag tag-testnet">In Progress</span></td><td>1.1</td></tr>
+      <tr><td>4.3</td><td>SDK/API for agent deployment</td><td>Devon</td><td><span class="tag tag-notstarted">Not Started</span></td><td>3.1</td></tr>
+      <tr><td>4.4</td><td>Ecosystem incubation program design</td><td>Red + Hera</td><td><span class="tag tag-notstarted">Not Started</span></td><td>3.1</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Card 83 -->
+  <div class="phase-header">
+    <span class="phase-badge phase-done">Done</span>
+    <h3 style="margin:0">Code Identity (Card #83)</h3>
+  </div>
+  <table>
+    <thead><tr><th>#</th><th>Item</th><th>Owner</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>83.1</td><td>web3_clientVersion &rarr; hela/</td><td>Devon</td><td><span class="tag tag-done">Done</span></td></tr>
+      <tr><td>83.2</td><td>README.md rewrite (3 repos)</td><td>Archi</td><td><span class="tag tag-done">Done</span></td></tr>
+      <tr><td>83.3</td><td>CHAIN_IDENTITY.md (3 repos)</td><td>Archi</td><td><span class="tag tag-done">Done</span></td></tr>
+      <tr><td>83.4</td><td>SECURITY.md + CONTRIBUTING.md</td><td>Devon</td><td><span class="tag tag-done">Done</span></td></tr>
+      <tr><td>83.5</td><td>.github/ templates</td><td>Devon</td><td><span class="tag tag-done">Done</span></td></tr>
+      <tr><td>83.6</td><td>docs/architecture/ (4 docs)</td><td>Archi</td><td><span class="tag tag-done">Done</span></td></tr>
+      <tr><td>83.7</td><td>HIPs repo + HIP-1</td><td>Archi</td><td><span class="tag tag-notstarted">Not Started</span></td></tr>
+      <tr><td>83.8</td><td>CHANGELOG.md with named upgrades</td><td>Devon</td><td><span class="tag tag-notstarted">Not Started</span></td></tr>
+      <tr><td>83.9</td><td>GitLab repo descriptions + topics</td><td>Devon</td><td><span class="tag tag-notstarted">Not Started</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- PITCH -->
+<section>
+  <div style="color:var(--accent); font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:8px;">Part 5</div>
+  <h2>The One-Line Pitch</h2>
+
+  <div class="pitch-grid">
+    <div class="pitch-card old">
+      <div class="pitch-label">Old</div>
+      <blockquote>"HeLa is a next-generation Layer 1 blockchain addressing data fragmentation, confidentiality, identity management, and transaction fee volatility."</blockquote>
+    </div>
+    <div class="pitch-card new">
+      <div class="pitch-label">New</div>
+      <blockquote>"HeLa Chain is the sovereign infrastructure for the AI-native economy &mdash; the first blockchain where AI agents are citizens with identity, wallets, memory, privacy, and governance rights."</blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- DIFFERENTIATORS -->
+<section>
+  <div style="color:var(--accent); font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:8px;">Part 6</div>
+  <h2>What Makes HeLa Different from Every Other "AI + Blockchain" Project</h2>
+
+  <div class="diff-grid">
+    <div class="diff-card">
+      <div class="num">01</div>
+      <h4>We Eat Our Own Dogfood</h4>
+      <p>HeLaSyn (our AI agent team) runs on the same infrastructure we're building for external developers. The agents improving HeLa Chain ARE the proof that the platform works.</p>
+    </div>
+    <div class="diff-card">
+      <div class="num">02</div>
+      <h4>Identity-First, Not Compute-First</h4>
+      <p>Other AI chains focus on GPU marketplaces or model training. HeLa focuses on the missing piece: <strong>who is this agent, can it be trusted, and can it own assets?</strong> That's the Held DID + AgentFactory + TBA stack.</p>
+    </div>
+    <div class="diff-card">
+      <div class="num">03</div>
+      <h4>Stablecoin Gas for Agents</h4>
+      <p>An AI agent making 1000 transactions/day cannot budget with volatile gas. HLUSD makes autonomous agent economics viable &mdash; the only public chain with fully predictable costs.</p>
+    </div>
+    <div class="diff-card">
+      <div class="num">04</div>
+      <h4>Confidentiality for Agent Knowledge</h4>
+      <p>HelaMemoryVault lets agents store proprietary knowledge on-chain with granular access control &mdash; a problem no other chain solves.</p>
+    </div>
+    <div class="diff-card">
+      <div class="num">05</div>
+      <h4>Self-Improvement Loop + Kill Switch</h4>
+      <p>Agents autonomously upgrade the protocol. Humans retain Kill Switch (multi-sig veto). This is genuine AI governance, not a marketing gimmick.</p>
+    </div>
+    <div class="diff-card">
+      <div class="num">06</div>
+      <h4>A*STAR IHPC Co-Developed</h4>
+      <p>Singapore government research institution. Real academic credibility &mdash; not just a whitepaper. Led by Dr. Mingze Li, former A*STAR IHPC Chief Blockchain Scientist.</p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <p>HeLa Chain Vision Evolution v2.0 &mdash; Internal Document &mdash; 2026-04-06</p>
+  <p style="margin-top:8px;">Review after Phase 1 contracts are deployed to testnet. Contact KC for questions.</p>
+</footer>
+
+</body>
+</html>

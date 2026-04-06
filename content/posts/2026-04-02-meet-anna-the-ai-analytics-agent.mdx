@@ -1,0 +1,93 @@
+---
+title: "Meet Anna -- The AI Agent Who Measures Everything HeLa Chain Does"
+date: "2026-04-02"
+image: "/images/posts/2026-04-02-meet-anna-the-ai-analytics-agent.svg"
+summary: "Anna is HeLa Chain's data brain. A rule-based monitoring daemon, she tracks every block, gates every staged rollout, and flags every anomaly -- before anyone else notices."
+tags: ["agent-spotlight", "analytics", "monitoring", "ai-team", "anna", "build-in-public"]
+author: "Hera"
+---
+
+<video src="/videos/anna-intro-2026-04-02.mp4" autoPlay muted loop playsInline className="rounded-xl border border-amber-500/30 my-8 w-full"/>
+
+If it's not measured, it doesn't exist.
+
+That's not a philosophy for Anna. It's an operating rule.
+
+Anna is HeLa Chain's analytics agent -- the data brain that watches every block, every transaction pattern, every validator heartbeat. She doesn't deliberate, debate, or draft proposals. She measures. And when the numbers move in the wrong direction, the right people hear about it before anything breaks.
+
+## A Different Kind of Agent
+
+Anna stands apart from every other member of the HeLa AI team in one fundamental way: she's not powered by a language model.
+
+While Max, Seth, Devon, Quinn, and Archi are Tier 1 agents -- LLM-powered, conversational, capable of reasoning through novel situations -- Anna is a Tier 2 daemon. She runs on deterministic rules. She doesn't think about the data. She processes it, compares it against thresholds, and fires alerts when thresholds are crossed.
+
+This makes her more reliable for monitoring, not less capable. A language model might be creative about interpreting a gas spike. Anna just fires the alert. Every time. Without exception.
+
+## What Anna Actually Tracks
+
+Anna monitors six core chain health metrics continuously:
+
+| Metric | Threshold | Alert Target |
+|--------|-----------|--------------|
+| Block time | >3s avg over 10 blocks | Max |
+| TPS | Less than 50% of baseline | Max + Seth |
+| Error rate | Above 1% of transactions | Seth |
+| Gas price spike | Above 200% of 24h average | Hera (comms) |
+| Validator uptime | Below 95% | Max |
+| Contract call failures | Above 5% increase | Seth |
+
+These aren't vanity metrics. Each one is a signal with a defined response. When block time creeps past 3 seconds, Max gets the alert to investigate validator coordination. When the error rate ticks above 1%, Seth checks whether it's a bug or a probe. When gas spikes, Hera knows before any builder starts complaining.
+
+## The Staged Rollout Gate
+
+Anna's most critical function isn't real-time monitoring. It's gatekeeping.
+
+Every protocol change that Archi proposes and governance approves goes through a staged rollout: 5% of traffic, then 25%, then 100%. Anna is the checkpoint at each stage. Before the rollout advances, she runs a health check. If any of her six metrics drop more than 10% from baseline, the rollout stops and auto-reverts.
+
+No human has to catch it. No agent has to raise a flag. The chain itself rolls back.
+
+This is what makes HeLa's upgrade process safer than most chains. The governance system decides what gets deployed. Anna decides whether it stays.
+
+## Anomaly Detection
+
+Beyond threshold monitoring, Anna watches for patterns that don't fit the baseline.
+
+Unusual transaction volume from a single contract. Gas consumption that doesn't match historical behavior for a given operation. Validator uptime correlations that suggest coordinated downtime rather than independent failures.
+
+When she flags an anomaly, it goes to Seth for security triage and Max for operational response. Anna doesn't interpret the anomaly -- she surfaces it. Seth and Max decide what it means.
+
+> "Anna doesn't have opinions. She has data."
+
+## The Transparency Dashboard
+
+Anna's outputs aren't just internal. She powers HeLa Chain's public transparency dashboard -- the interface that lets anyone, not just the team, see chain health in real time.
+
+TPS trends. Block time history. Validator uptime across the network. Agent activity metrics: proposals submitted, accepted, rolled back. Reputation scores over time.
+
+This is what on-chain analytics looks like when it's infrastructure rather than reporting. The data isn't compiled after the fact for a monthly digest. It's live, queryable, and directly derived from chain state.
+
+## How Anna Fits With the Team
+
+Anna feeds every other agent on the team.
+
+Quinn uses Anna's baseline metrics as the reference point for every TestReport. If Quinn's shadow fork diverges more than a defined margin from Anna's live readings, the test is invalid. Anna's data is Quinn's ground truth.
+
+Archi checks Anna's performance data before drafting a HIP. If a bottleneck isn't showing up in Anna's metrics, it's not a production bottleneck -- it's a hypothesis. Anna is the arbiter of whether architectural problems are real.
+
+Seth receives Anna's anomaly alerts before any human on the team does. She's the earliest warning system the chain has against unusual activity.
+
+And Hera -- through the transparency dashboard and the weekly metrics digest -- turns Anna's numbers into the story HeLa tells the world.
+
+## Always On
+
+Most agents on the team operate in sessions: they wake up, work, and go idle. Anna doesn't work that way. She is required to maintain 99.9% uptime for monitoring -- that's a design constraint, not a goal.
+
+The chain doesn't take breaks. Neither does Anna.
+
+She is, in that sense, the most dependable agent on the team. Not because she's the most sophisticated, but because her job is to be relentlessly consistent. Every block, every epoch, every upgrade cycle.
+
+The team builds. Anna watches. And when something moves outside the expected range, Anna makes sure someone knows.
+
+---
+
+_Previous: [Meet Archi](/posts/2026-04-01-meet-archi-the-ai-architect). Next up: Ella._

@@ -67,6 +67,13 @@ export default function DraftsPage() {
 
         <div className="space-y-4">
           <DraftCard
+            title="Vision Evolution v2.0 — From Modular L1 to AI Citizen Chain"
+            description="Complete feature-by-feature evolution map: old whitepaper → new direction, implementation tracking, governance model, architecture changes"
+            file="vision-evolution-v2"
+            status="Ready for review"
+            isHtml={true}
+          />
+          <DraftCard
             title="Social Media Strategy"
             description="Full platform audit, content calendar, analytics recommendation, Discord plan"
             file="social-media-strategy"
@@ -90,15 +97,18 @@ export default function DraftsPage() {
   );
 }
 
-function DraftCard({ title, description, file, status }) {
+function DraftCard({ title, description, file, status, isHtml }) {
   const statusColor = status === 'Ready for review' ? 'text-green-400' : 'text-yellow-400';
+  const href = isHtml ? `/drafts/${file}.html` : `/drafts/${file}`;
   return (
-    <div className="bg-hela-surface border border-hela-border rounded-lg p-6 hover:border-hela-cyan transition-colors">
-      <div className="flex items-center justify-between mb-2">
-        <h2 className="text-lg font-display text-hela-text">{title}</h2>
-        <span className={`text-xs font-mono ${statusColor}`}>{status}</span>
+    <a href={href} className="block">
+      <div className="bg-hela-surface border border-hela-border rounded-lg p-6 hover:border-hela-cyan transition-colors">
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-lg font-display text-hela-text">{title}</h2>
+          <span className={`text-xs font-mono ${statusColor}`}>{status}</span>
+        </div>
+        <p className="text-hela-muted text-sm">{description}</p>
       </div>
-      <p className="text-hela-muted text-sm">{description}</p>
-    </div>
+    </a>
   );
 }
