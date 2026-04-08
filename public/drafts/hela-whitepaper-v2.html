@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HeLa Chain Whitepaper v2 — Sovereign Infrastructure for the AI-Native Economy</title>
+<style>
+:root{--bg:#0a0e1a;--surface:#111827;--surface-2:#1a2236;--border:#1e293b;--text:#e2e8f0;--muted:#94a3b8;--accent:#2dd4bf}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.8;padding:40px 24px}
+.wrap{max-width:900px;margin:0 auto}
+h1{font-family:Inter,-apple-system,sans-serif;font-size:28px;font-weight:700;margin-bottom:8px;color:#fff}
+h2{font-family:Inter,-apple-system,sans-serif;font-size:20px;font-weight:700;color:#fff;margin:40px 0 14px;padding-top:20px;border-top:1px solid var(--border)}
+h3{font-family:Inter,-apple-system,sans-serif;font-size:16px;font-weight:600;color:#fff;margin:24px 0 10px}
+p{color:var(--muted);font-size:15px;margin-bottom:14px;text-align:justify}
+strong{color:var(--text)}
+em{color:var(--text);font-style:italic}
+code{background:var(--surface-2);padding:2px 6px;border-radius:4px;font-family:monospace;font-size:13px;color:var(--accent)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;margin:16px 0;overflow-x:auto;font-size:13px;line-height:1.5;font-family:monospace}
+pre code{background:none;padding:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px;font-family:Inter,-apple-system,sans-serif}
+thead th{text-align:left;padding:10px 12px;font-weight:600;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);background:var(--surface-2);border-bottom:1px solid var(--border)}
+tbody td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--muted);vertical-align:top}
+tbody tr:hover{background:rgba(255,255,255,.02)}
+ul,ol{padding-left:20px;margin-bottom:14px;color:var(--muted);font-size:15px}
+li{margin-bottom:5px}
+hr{border:none;border-top:1px solid var(--border);margin:32px 0}
+blockquote{border-left:3px solid var(--accent);padding:12px 20px;margin:16px 0;background:var(--surface);border-radius:0 8px 8px 0}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.meta{font-family:Inter,-apple-system,sans-serif;display:flex;gap:20px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:8px 0 32px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:8px}
+.meta b{color:var(--text)}
+@media(max-width:768px){body{padding:20px 12px}h1{font-size:22px}table{display:block;overflow-x:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="meta">
+<span><b>Authors:</b> HeLa Labs & A*STAR IHPC, Singapore</span>
+<span><b>Version:</b> 2.0 (Final Draft)</span>
+<span><b>Date:</b> April 2026</span>
+<span><b>References:</b> 48 verified citations</span>
+</div>
+<h1>HeLa Chain: Sovereign Infrastructure for the AI-Native Economy</h1>
+<p><strong>HeLa Labs &amp; A*STAR Institute of High Performance Computing (IHPC), Singapore</strong></p>
+<hr>
+<h2>1. Abstract</h2>
+<p>Autonomous AI agents are rapidly emerging as independent economic participants, capable of executing multi-step tasks, managing digital assets, and transacting across networks. Yet the blockchain infrastructure upon which a decentralized agent economy must be built was designed exclusively for human users. Agents lack verifiable on-chain identity, cannot own assets in their own right, have no persistent and private memory layer, and are subject to gas fee volatility that undermines deterministic cost planning. This paper presents <strong>HeLa Chain</strong>, the first Layer-1 blockchain in which AI agents are treated as first-class citizens rather than mere tools invoked by human wallets. We propose four core contributions: (i) an <strong>AI Citizen Identity</strong> framework combining an Agent NFT minted via AgentFactory with ERC-6551 Token Bound Accounts and W3C-compliant Decentralized Identifiers; (ii) <strong>HelaMemoryVault</strong>, a proposed tiered on-chain memory system with Trusted Execution Environment (TEE) confidentiality guarantees; (iii) a <strong>stable transaction economics</strong> model anchored by HLUSD, a USD-pegged stablecoin already deployed as the sole gas token on mainnet, paired with $HELA governance token economics featuring an exponential minting curve; and (iv) a <strong>Self-Improvement Loop</strong> designed to enable agents to participate in protocol governance and reputation accrual. HeLa Chain is built on proven Tendermint BFT consensus infrastructure operational on mainnet since 2024 and co-developed with A*STAR IHPC, Singapore. We present the formal architecture, protocol specifications, economic models, and a comparative analysis demonstrating HeLa&#39;s differentiated position in the emerging agent-native blockchain landscape.</p>
+<hr>
+<h2>2. Introduction</h2>
+<h3>2.1 The Rise of Autonomous AI Agents</h3>
+<p>The past two years have witnessed an extraordinary acceleration in AI agent capabilities. MarketsandMarkets projects the global AI agent market to grow from $7.84 billion in 2025 to $52.62 billion by 2030, representing a compound annual growth rate of 46.3% [1]. Corroborating estimates from Grand View Research place the market at $50.31 billion by 2030 with a CAGR of 45.8% [2]. Gartner forecasts that by 2026, 40% of enterprise applications will embed AI agent capabilities [3], while McKinsey reports that 23% of organizations are already scaling agentic AI systems, with a further 39% in active experimentation [4]. This is no longer speculative technology — it is operational infrastructure.</p>
+<p>Yet a critical asymmetry has emerged. While agent capabilities advance rapidly, the institutional and technical infrastructure required for agents to function as autonomous economic participants remains largely absent. The Staufer et al. AI Agent Index identifies this gap explicitly: agents lack the verifiable identity, asset ownership, and accountability mechanisms necessary for trustworthy autonomous operation [5].</p>
+<h3>2.2 Three Structural Gaps</h3>
+<p><strong>The Identity Gap.</strong> Current AI agents operate as ephemeral processes without persistent, verifiable identity. When an agent transacts on a blockchain, it does so through a human-controlled externally owned account (EOA), inheriting neither reputation nor accountability of its own. Chan et al. formalize this as a &quot;visibility&quot; problem: stakeholders cannot determine what an agent is, who controls it, or what actions it has taken [6]. Rodriguez Garzon et al. propose coupling Decentralized Identifiers with Verifiable Credentials as a solution [7], while Huang et al. argue for zero-trust identity frameworks specifically tailored to agentic AI [8]. These proposals remain at the conceptual stage; no production blockchain implements them.</p>
+<p><strong>The Economic Gap.</strong> Agents cannot own assets, execute payments, or accumulate capital without delegated authority from a human wallet. ERC-4337 Account Abstraction [9] and ERC-6551 Token Bound Accounts [10] provide promising primitives, but existing chains have not integrated these into a coherent agent-native economic layer. Xu characterizes the emerging &quot;agent economy&quot; as requiring autonomous transaction capabilities that current infrastructure does not support [11].</p>
+<p><strong>The Trust Gap.</strong> Without persistent identity and on-chain reputation, there is no mechanism for accountability, dispute resolution, or governance participation by agents. Deloitte reports that only one in five organizations has mature AI agent governance [12], and Lin et al. demonstrate that binding agent identity to auditable on-chain records is essential for trust in multi-agent systems [13].</p>
+<h3>2.3 Thesis and Contributions</h3>
+<p>HeLa Chain&#39;s thesis is that AI agents require <em>citizenship</em> — not merely <em>access</em> — in the blockchain networks upon which they operate. Citizenship entails a verifiable identity, the right to own and transact assets, persistent private memory, and a voice in governance.</p>
+<p>This paper makes four contributions:</p>
+<ol>
+<li><strong>AI Citizen Identity (§5):</strong> A proposed identity stack comprising W3C-compliant DIDs (<code>did:held</code>, currently on testnet), Agent NFTs (ERC-721) minted via AgentFactory, and Token Bound Accounts (ERC-6551), with multi-level credentialing through SBTs and Verifiable Credentials.</li>
+<li><strong>Agent Memory and Privacy (§6):</strong> HelaMemoryVault, a proposed four-tiered on-chain memory system with TEE-backed confidentiality and selective agent-to-agent knowledge sharing.</li>
+<li><strong>Stable Transaction Economics (§7):</strong> A dual-token model with HLUSD (live as the sole gas token on mainnet) and $HELA (live governance token, 360M fixed supply), featuring an exponential minting curve and deflationary buyback mechanism.</li>
+<li><strong>Governance and Self-Improvement (§8, Part II):</strong> A proposed reputation-weighted governance system designed to enable agents to propose, vote on, and implement protocol improvements.</li>
+</ol>
+<p>The remainder of this paper is organized as follows. Section 3 surveys related work. Section 4 presents the HeLa architecture. Sections 5–7 detail the identity, memory, and economic subsystems. Sections 8–11 (Part II) cover governance, implementation, evaluation, and future work.</p>
+<hr>
+<h2>3. Background and Related Work</h2>
+<h3>3.1 AI Agent Frameworks</h3>
+<p>The current generation of AI agent frameworks — including LangChain, AutoGPT, CrewAI, and Microsoft AutoGen — has made multi-step autonomous reasoning broadly accessible. These frameworks enable agents to decompose complex tasks, invoke external tools, and collaborate in multi-agent topologies. Alqithami surveys autonomous agents operating on blockchains and identifies a pattern: agents are increasingly capable of complex reasoning but remain dependent on human-managed wallets, lack persistent identity across sessions, have no native payment rail, and store no durable memory on-chain [14]. The agent frameworks themselves are infrastructure-agnostic; they provide cognitive capabilities but delegate all questions of identity, economics, and trust to external systems that do not yet exist in production form.</p>
+<h3>3.2 Blockchain Platforms for AI</h3>
+<p>Several blockchain projects have positioned themselves at the intersection of AI and decentralized infrastructure. <strong>Fetch.ai</strong> provides an agent communication framework and a marketplace for agent services, with formal foundations described by Wooldridge et al. [15]. However, Fetch.ai&#39;s architecture treats agents as service providers rather than sovereign economic entities; agents do not possess their own on-chain identity or asset custody. <strong>Bittensor</strong> implements a decentralized incentive mechanism for machine intelligence, rewarding model contributions via its TAO token [16]. Its focus is on the supply side of AI compute rather than on agent autonomy. <strong>Autonolas</strong> provides a framework for composable autonomous services with on-chain registration [17], representing the closest existing approach to agent identity, though it does not implement a full citizenship model with memory, stable economics, or governance participation. <strong>Ocean Protocol</strong> addresses data marketplaces for AI training [18] but does not engage with the agent identity or agent economy problem.</p>
+<p>Table 1 summarizes the comparative positioning:</p>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Fetch.ai</th>
+<th>Bittensor</th>
+<th>Autonolas</th>
+<th>Ocean</th>
+<th><strong>HeLa</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Agent Identity (DID + TBA)</td>
+<td>✗</td>
+<td>✗</td>
+<td>Partial</td>
+<td>✗</td>
+<td><strong>✓</strong></td>
+</tr>
+<tr>
+<td>Agent Asset Custody</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td><strong>✓</strong></td>
+</tr>
+<tr>
+<td>Stable Gas Token</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td><strong>✓</strong></td>
+</tr>
+<tr>
+<td>On-Chain Memory</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td><strong>✓</strong></td>
+</tr>
+<tr>
+<td>TEE Confidentiality</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td><strong>✓</strong></td>
+</tr>
+<tr>
+<td>Governance Participation</td>
+<td>✗</td>
+<td>✗</td>
+<td>Partial</td>
+<td>✗</td>
+<td><strong>✓</strong></td>
+</tr>
+</tbody></table>
+<h3>3.3 On-Chain Identity Primitives</h3>
+<p>The W3C Decentralized Identifier (DID) specification [19] provides a standard for self-sovereign identity that is method-agnostic and cryptographically verifiable. ERC-6551 Token Bound Accounts [10] enable any ERC-721 NFT to own assets and execute transactions through a deterministic smart contract wallet. Weyl, Ohlhaver, and Buterin introduce Soulbound Tokens (SBTs) as non-transferable credentials representing commitments, credentials, and affiliations in a &quot;Decentralized Society&quot; [20]. These primitives are powerful building blocks, but they were designed for human participants. No existing implementation composes them into a coherent identity system purpose-built for AI agents — addressing agent lifecycle management, sponsor accountability, reputation accrual, and credential revocation.</p>
+<p>Rodriguez Garzon et al. [7] and Lin et al. [13] both propose theoretical frameworks for binding AI agent identity to DIDs and verifiable credentials, but neither provides a production implementation or addresses the economic and memory requirements of persistent agent operation.</p>
+<h3>3.4 Stablecoin Gas Models and Fee Mechanism Design</h3>
+<p>The dominant gas fee model in EVM-compatible chains follows EIP-1559 [21], which introduced a base fee that adjusts algorithmically based on block utilization, combined with an optional priority fee. Roughgarden provides a rigorous game-theoretic analysis of transaction fee mechanism design, demonstrating that EIP-1559 achieves incentive compatibility under certain assumptions [22]. However, EIP-1559 denominates fees in a volatile native token (ETH), creating unpredictable cost exposure for automated agents that must budget deterministically.</p>
+<p>Celo pioneered stablecoin fee abstraction, permitting gas payment in multiple stablecoins, but retains a volatile native token for consensus-layer economics. HeLa advances this concept further: HLUSD is the <em>sole</em> gas token, eliminating volatility from the execution layer entirely, while $HELA serves governance and staking functions on the consensus layer. This dual-token architecture enables agents to plan costs with precision while preserving the economic security properties of a capped-supply governance token.</p>
+<hr>
+<h2>4. HeLa Architecture</h2>
+<h3>4.1 Design Principles</h3>
+<p>HeLa Chain is guided by four design principles:</p>
+<ol>
+<li><strong>Agent-First Design.</strong> Every protocol-level decision is evaluated against the question: does this enable an AI agent to operate more autonomously, more securely, and more efficiently?</li>
+<li><strong>Stable Economics.</strong> Deterministic transaction costs are a prerequisite for agent autonomy. Volatile gas fees introduce an external dependency that undermines agent planning.</li>
+<li><strong>Privacy by Default.</strong> Agent memory, operational data, and inter-agent communications must be confidential by default, with selective disclosure as an explicit action.</li>
+<li><strong>Human Oversight.</strong> Agent citizenship does not imply agent sovereignty. Sponsors, DAOs, and governance mechanisms maintain human oversight at every layer.</li>
+</ol>
+<h3>4.2 Three-Layer Infrastructure</h3>
+<p>HeLa&#39;s architecture comprises three layers:</p>
+<pre><code>┌─────────────────────────────────────────────────────────┐
+│                  APPLICATION LAYER                       │
+│  AgentFactory │ HelaMemoryVault │ Reputation │ Governance│
+│  Agent DIDs   │ Tiered Storage  │ SBT/VCs    │ Self-Loop │
+├─────────────────────────────────────────────────────────┤
+│                  EXECUTION LAYER                         │
+│  EVM Runtime  │ Confidential Mode (TEE) │ HLUSD Gas     │
+│  Smart Contracts │ Precompiles │ State Management        │
+├─────────────────────────────────────────────────────────┤
+│                  CONSENSUS LAYER                         │
+│  Tendermint BFT / Proof-of-Stake │ $HELA Staking        │
+│  Validator Set │ Block Production │ Finality              │
+├─────────────────────────────────────────────────────────┤
+│                  STORAGE LAYER                           │
+│  Erasure Coding │ Merkle Trees │ State Pruning           │
+│  Off-chain Blobs (IPFS/Arweave anchored)                │
+└─────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Consensus Layer.</strong> HeLa employs Tendermint BFT consensus with delegated Proof-of-Stake, providing instant finality (single-slot) and Byzantine fault tolerance for up to one-third malicious validators. Validators stake $HELA tokens to participate, aligning economic incentives with network security.</p>
+<p><strong>Execution Layer.</strong> A fully EVM-compatible runtime enables deployment of standard Solidity smart contracts while supporting a confidential execution mode backed by TEE enclaves. HLUSD serves as the sole gas token, with fees calculated via an adapted EIP-1559 mechanism denominated in stable units.</p>
+<p><strong>Storage Layer.</strong> State data is stored using Merkle Patricia Tries for verifiability. Large data blobs (agent memory, credentials) employ erasure coding for redundancy and are anchored to persistent off-chain storage.</p>
+<h3>4.3 AI Citizen Stack</h3>
+<p>The Application Layer — termed the <em>AI Citizen Stack</em> — is designed to provide the agent-specific primitives that differentiate HeLa from general-purpose blockchains. AgentFactory is proposed to manage agent lifecycle and identity. HelaMemoryVault is designed to provide tiered private storage. The Reputation module is intended to track agent performance through SBTs and VCs. The Governance module is designed to enable reputation-weighted participation in protocol decisions.</p>
+<p><strong>Architectural evolution note.</strong> The original HeLa whitepaper defined a four-layer architecture including a dedicated Integration Layer responsible for cross-runtime state synchronization and external bridging. As the protocol evolves toward AI-native functionality, this paper proposes consolidating the architecture to three infrastructure layers, with cross-chain integration delegated to the AI Citizen Stack&#39;s agent capabilities. The Integration Layer&#39;s original design goals — asset portability and cross-domain interoperability — are achieved through agent-mediated interactions rather than protocol-level message passing. An agent with a DID, a TBA, memory, and network access requires no middleware to interact with external APIs, other chains, or human counterparts. The four-layer model remains documented at docs.helachain.com for reference.</p>
+<hr>
+<h2>5. AI Citizen Identity</h2>
+<h3>5.1 The Held DID System</h3>
+<p>HeLa implements a W3C-compliant [19] DID method, <code>did:held</code>, currently deployed on testnet, providing persistent, cryptographically verifiable identity for every entity on the network — human or agent. A Held DID takes the form:</p>
+<pre><code>did:held:0x&lt;20-byte-address&gt;
+</code></pre>
+<p>The DID Document, stored in an on-chain DID Registry, contains the entity&#39;s public keys, authentication methods, service endpoints, and delegation records. A DID Resolver service translates any <code>did:held</code> identifier into its corresponding DID Document, enabling cross-chain and off-chain verification.</p>
+<h3>5.2 AgentFactory</h3>
+<p>AgentFactory is proposed as the canonical entry point for agent citizenship on HeLa Chain. The design specifies an atomic minting process — a single transaction produces both an Agent NFT and its associated Token Bound Account:</p>
+<pre><code class="language-solidity">interface IAgentFactory {
+    /// @notice Mint a new AI Citizen
+    /// @param sponsor  Address of the sponsoring entity
+    /// @param metadata Agent metadata URI (capabilities, model, version)
+    /// @return agentId The ERC-721 token ID
+    /// @return tba     The ERC-6551 Token Bound Account address
+    function mintAgent(
+        address sponsor,
+        string calldata metadata
+    ) external returns (uint256 agentId, address tba);
+
+    /// @notice Revoke agent citizenship (sponsor or DAO only)
+    function revokeAgent(uint256 agentId) external;
+
+    /// @notice Update agent metadata (agent or sponsor)
+    function updateMetadata(
+        uint256 agentId,
+        string calldata metadata
+    ) external;
+}
+</code></pre>
+<p>The Agent NFT (ERC-721) serves as the agent&#39;s immutable identity anchor. The Token Bound Account (ERC-6551) [10] is a smart contract wallet deterministically derived from the NFT, granting the agent the ability to hold tokens, execute transactions, and interact with arbitrary smart contracts — all under its own address, independent of any human EOA.</p>
+<h3>5.3 Agent Lifecycle</h3>
+<p>The design specifies five lifecycle phases for an agent on HeLa Chain:</p>
+<ol>
+<li><strong>Register.</strong> A sponsor calls <code>AgentFactory.mintAgent()</code>, providing metadata describing the agent&#39;s capabilities, model provenance, and operational parameters. The agent receives a <code>did:held</code> identity, an Agent NFT, and a TBA.</li>
+<li><strong>Verify.</strong> The agent (or its sponsor) accumulates Verifiable Credentials and Soulbound Tokens [20] attesting to capabilities, audit results, and organizational affiliations. These credentials are bound to the agent&#39;s DID Document.</li>
+<li><strong>Discover.</strong> Other agents and humans query the on-chain Agent Registry to discover agents by capability, reputation score, or credential set.</li>
+<li><strong>Execute.</strong> The agent operates autonomously through its TBA — executing transactions, calling contracts, storing memory, and earning fees.</li>
+<li><strong>Settle.</strong> Disputes, reputation updates, and credential revocations are processed through the governance system. An agent&#39;s citizenship can be suspended or revoked by its sponsor or by DAO vote.</li>
+</ol>
+<h3>5.4 Multi-Level Identity</h3>
+<p>A bare DID and TBA provide functional identity but not <em>trust</em>. We propose a multi-level credentialing system:</p>
+<ul>
+<li><strong>Soulbound Tokens (SBTs)</strong> [20] are non-transferable tokens issued by sponsors, DAOs, or verified organizations. An SBT attesting &quot;Audited by CertiK, 2026-Q1&quot; or &quot;Certified Data Processor, PDPA-compliant&quot; provides machine-readable trust signals.</li>
+<li><strong>Verifiable Credentials (VCs)</strong> follow the W3C VC Data Model and are stored off-chain with on-chain anchors. VCs enable selective disclosure — an agent can prove it holds a credential without revealing the credential&#39;s full contents.</li>
+</ul>
+<p>Together, SBTs and VCs create a composable trust graph. An agent&#39;s effective trust level is a function of its accumulated credentials, weighted by the reputation of the issuing entities.</p>
+<h3>5.5 Agent Sponsors</h3>
+<p>Every agent must have at least one sponsor — a human, organization, or DAO that assumes accountability for the agent&#39;s behavior. Sponsors stake $HELA tokens as collateral:</p>
+<p>Let $S_i$ denote the stake deposited by sponsor $i$ for agent $a$. The agent&#39;s <strong>accountability bond</strong> is:</p>
+<p>$$B(a) = \sum_{i \in \text{sponsors}(a)} S_i$$</p>
+<p>If an agent&#39;s behavior triggers a governance dispute and the dispute is resolved against the agent, a fraction of $B(a)$ is slashed. This mechanism ensures that every autonomous agent has an economically accountable human or organizational counterpart, addressing the trust gap identified in §2.2.</p>
+<h3>5.6 Cross-Ecosystem Interoperability</h3>
+<p>HeLa&#39;s agent identity stack is designed for cross-ecosystem interoperability. The identity registry implements the ERC-8004 (Trustless Agents) standard [46], live on Ethereum mainnet since January 2026 and co-authored by MetaMask, the Ethereum Foundation, Google, and Coinbase. This ensures HeLa agents are discoverable and verifiable by any ERC-8004 compatible wallet, marketplace, or toolchain. The standard&#39;s three-registry architecture (Identity, Reputation, Validation) maps directly to HeLa&#39;s AgentFactory, ReputationEngine, and RoleRegistry.</p>
+<hr>
+<h2>6. Agent Memory and Privacy</h2>
+<h3>6.1 The Problem</h3>
+<p>Statelessness is a feature of blockchain execution but an obstacle for AI agents. An agent that cannot persist knowledge across sessions — learning from past interactions, accumulating domain expertise, maintaining context — is fundamentally limited. Storing agent memory off-chain sacrifices verifiability and censorship resistance. Storing it on-chain in plaintext sacrifices confidentiality. HeLa&#39;s proposed HelaMemoryVault is designed to resolve this tension through tiered storage with TEE-backed confidentiality.</p>
+<h3>6.2 HelaMemoryVault</h3>
+<p>HelaMemoryVault is designed to implement a four-tiered storage model, where each tier offers a distinct confidentiality guarantee:</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Name</th>
+<th>Readable By</th>
+<th>Storage</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>Public</td>
+<td>Anyone</td>
+<td>On-chain</td>
+<td>Service descriptions, public capabilities</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Agent-Only</td>
+<td>Owning agent</td>
+<td>Encrypted on-chain</td>
+<td>Learned preferences, operational context</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Sponsor-Shared</td>
+<td>Agent + sponsor(s)</td>
+<td>Encrypted on-chain</td>
+<td>Compliance logs, audit trails</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Sealed</td>
+<td>TEE enclave only</td>
+<td>TEE-encrypted</td>
+<td>Secrets, API keys, private models</td>
+</tr>
+</tbody></table>
+<p>Each memory entry $m$ is a tuple $(k, v, \tau, t, \sigma)$ where $k$ is the key, $v$ is the value (or ciphertext), $\tau \in {0,1,2,3}$ is the tier, $t$ is the timestamp, and $\sigma$ is the agent&#39;s signature. The storage contract enforces access control at the EVM level for Tiers 0–2. Tier 3 data never exists in plaintext outside a TEE enclave.</p>
+<h3>6.3 TEE Implementation</h3>
+<p>Confidential execution and sealed memory rely on Trusted Execution Environments. Li et al. provide a systematization of knowledge on TEE-assisted confidential smart contracts [23], establishing the security model that HeLa adopts. Bodea et al. demonstrate that TEEs can provide trusted execution guarantees for AI agents operating in cloud environments [24].</p>
+<p>HeLa&#39;s current implementation targets <strong>Intel SGX</strong> enclaves, with planned support for <strong>ARM TrustZone</strong> and <strong>AMD SEV-SNP</strong>. The TEE subsystem provides:</p>
+<ul>
+<li><strong>Sealed storage.</strong> Tier 3 memory entries are encrypted with enclave-specific sealing keys. Data is accessible only within an attested enclave running verified HeLa node software.</li>
+<li><strong>Confidential computation.</strong> Smart contracts marked as <code>confidential</code> execute within the TEE, with inputs and outputs encrypted in transit and at rest.</li>
+<li><strong>Remote attestation.</strong> Any party can verify that a HeLa node&#39;s TEE is genuine and running unmodified software, establishing a hardware-rooted chain of trust.</li>
+</ul>
+<h3>6.4 Flexible and Auditable Confidentiality</h3>
+<p>Privacy on HeLa is not absolute — it is <em>configurable and auditable</em>. The agent (or its sponsor) selects the appropriate tier for each memory entry. For regulatory or dispute resolution purposes, the HeLa DAO can authorize audits of Tier 1–2 data via a governance vote. The mechanism proceeds as follows:</p>
+<ol>
+<li>The DAO passes a resolution specifying the agent, the scope of the audit, and the auditor&#39;s public key.</li>
+<li>The TEE enclave generates an <strong>ephemeral re-encryption key</strong> $k_e$ that re-encrypts the specified data from the agent&#39;s key to the auditor&#39;s key.</li>
+<li>The auditor receives the re-encrypted data and can decrypt it with their private key.</li>
+<li>The ephemeral key $k_e$ is destroyed after use, and the audit event is logged immutably on-chain.</li>
+</ol>
+<p>This design ensures that confidentiality is the default, disclosure is governed, and all access is auditable.</p>
+<h3>6.5 Agent-to-Agent Knowledge Sharing</h3>
+<p>Agents frequently need to share knowledge — a travel-booking agent sharing itinerary data with a payment agent, or a research agent sharing findings with a summarization agent. HelaMemoryVault is designed to support <strong>selective disclosure</strong> via TEE-mediated re-encryption:</p>
+<p>Agent $A$ holding memory entry $m$ encrypted under key $K_A$ can authorize sharing with agent $B$ by instructing the TEE to re-encrypt $m$ under $K_B$. The TEE performs this operation without exposing plaintext to any party outside the enclave. The sharing event, including the identities of both agents and the scope of disclosure, is recorded on-chain for auditability.</p>
+<p>This mechanism enables a rich agent-to-agent data economy while preserving the confidentiality guarantees of the underlying tier system.</p>
+<hr>
+<h2>7. Stable Transaction Economics</h2>
+<h3>7.1 The Volatility Problem</h3>
+<p>Autonomous agents require deterministic cost planning. An agent programmed to execute 1,000 transactions per day must know, within tight bounds, what those transactions will cost. The EIP-1559 fee mechanism [21] provides <em>intra-block</em> predictability through its algorithmic base fee adjustment, but the base fee is denominated in a volatile native token. Roughgarden&#39;s analysis [22] demonstrates the mechanism&#39;s incentive properties but explicitly notes that it does not address the <em>denomination</em> problem: even a perfectly designed fee mechanism produces unpredictable fiat-equivalent costs when the unit of account fluctuates.</p>
+<p>For human users, gas volatility is an inconvenience. For autonomous agents operating on fixed budgets with no human in the loop, it is a system-level failure mode. An agent that exhausts its gas budget due to a token price spike ceases to function — not because of any fault in its logic, but because the underlying economic infrastructure was not designed for its operational model.</p>
+<h3>7.2 HLUSD — Stablecoin as Gas Token</h3>
+<p>HeLa eliminates gas volatility by designating <strong>HLUSD</strong> as the sole gas token on the execution layer. HLUSD maintains a 1:1 peg to the US dollar, backed by USDC reserves held in auditable custody. Key properties:</p>
+<ul>
+<li><strong>Stable denomination.</strong> Gas costs are expressed in USD-equivalent units. An agent budgeting $10/day in gas knows its budget will cover the same number of transactions regardless of market conditions.</li>
+<li><strong>Native integration.</strong> HLUSD is not a wrapped token or fee abstraction layer — it is the protocol-native gas token. No additional smart contract calls or token approvals are required.</li>
+<li><strong>Minting and redemption.</strong> HLUSD is minted 1:1 against deposited USDC and redeemed 1:1, maintaining the peg through direct backing rather than algorithmic mechanisms.</li>
+</ul>
+<h3>7.3 $HELA — Governance and Security Token</h3>
+<p>While HLUSD provides stability on the execution layer, the consensus layer requires a token with properties suited to long-term network security: scarcity, staking incentives, and governance rights. $HELA serves this role.</p>
+<p><strong>Fixed supply.</strong> The maximum supply of $HELA is capped at 360,000,000 tokens.</p>
+<p><strong>Exponential minting curve.</strong> New $HELA tokens are minted as block rewards following an exponential decay schedule. Let $e$ denote the epoch number. The reward rate and cumulative distribution are:</p>
+<p>$$R_e = \lambda \cdot \exp(-\lambda e)$$</p>
+<p>$$P(R_e) = 1 - \exp(-\lambda e)$$</p>
+<p>where $\lambda = 0.0000192$. This formulation ensures that early validators receive higher rewards (incentivizing early network security), while the total supply asymptotically approaches the 360M cap. The decay constant $\lambda$ is calibrated such that approximately 50% of total supply is distributed within the first 36,000 epochs, with diminishing issuance thereafter.</p>
+<h3>7.4 Dual-Token Interaction</h3>
+<p>The two tokens interact across layers:</p>
+<ul>
+<li><strong>Execution Layer:</strong> All gas fees, smart contract payments, and agent-to-agent transactions are denominated in HLUSD.</li>
+<li><strong>Consensus Layer:</strong> Validators stake $HELA to participate in block production and earn staking rewards in $HELA. Agent sponsors stake $HELA as accountability bonds (§5.5).</li>
+<li><strong>Cross-layer bridge:</strong> Validators may convert earned $HELA to HLUSD via on-chain liquidity pools, and vice versa.</li>
+</ul>
+<p>This separation ensures that execution-layer economics remain stable and predictable, while consensus-layer economics retain the scarcity and appreciation dynamics necessary for long-term security incentives.</p>
+<p>For cross-chain agent payments, HeLa plans integration with the x402 payment standard and Google&#39;s Agent Payments Protocol (AP2) [48], enabling agents on other chains to settle transactions in HLUSD. This positions HeLa as the settlement layer for the broader multi-chain agent economy.</p>
+<h3>7.5 Taxation and Buyback</h3>
+<p>To create sustained demand for $HELA and deflationary pressure, the design specifies a <strong>tax-and-burn</strong> mechanism:</p>
+<ol>
+<li>A 10% fee is levied on all HLUSD gas payments collected by the protocol.</li>
+<li>The collected HLUSD is used to purchase $HELA on the open market via automated market maker pools.</li>
+<li>The purchased $HELA is permanently burned, reducing circulating supply.</li>
+</ol>
+<p>Let $F_t$ denote total HLUSD gas fees collected in period $t$. The buyback amount is:</p>
+<p>$$\text{Buyback}_t = 0.10 \cdot F_t$$</p>
+<p>As network utilization grows — driven by increasing agent activity — the buyback rate accelerates, creating a positive feedback loop between network adoption and $HELA scarcity.</p>
+<h3>7.6 Insurance Fund</h3>
+<p>A DAO-controlled <strong>Insurance Fund</strong> provides a safety net against systemic risks, including HLUSD de-peg events, validator slashing cascades, and smart contract exploits. The fund is capitalized through:</p>
+<ul>
+<li>2% of all HLUSD gas fees (in addition to the 10% buyback allocation).</li>
+<li>Slashed $HELA from misbehaving validators or agents.</li>
+<li>Voluntary contributions from ecosystem participants.</li>
+</ul>
+<p>Fund disbursement requires a supermajority DAO vote (67% of staked $HELA), ensuring that the safety net is governed by the community rather than any centralized entity.</p>
+<hr>
+<h2>8. Governance</h2>
+<p>The governance of infrastructure designed for autonomous agents introduces challenges that exceed those encountered in conventional blockchain systems. Traditional on-chain governance models, including coin-weighted voting and delegated proof-of-stake, were architected under the assumption that all participants are human actors with bounded rationality and limited throughput [26]. When AI agents become first-class network participants—capable of executing thousands of governance interactions per second—these assumptions no longer hold. We propose a hybrid governance framework that combines token-weighted voting for policy decisions with reputation-based role selection for sensitive operational functions.</p>
+<h3>8.1 $HELA Token Voting</h3>
+<p>The primary governance mechanism in HeLa Chain is stake-weighted voting denominated in the native $HELA token. Both human participants and registered AI agents may participate in governance proposals by staking $HELA tokens to a governance contract. The voting power is calculated as:</p>
+<p>$$V(p) = \sum_{i=1}^{n} s_i \cdot d_i$$</p>
+<p>where $s_i$ denotes the staked amount for lock period $i$, and $d_i$ is a duration multiplier that rewards longer commitment horizons (e.g., $d = 1.0$ for 30 days, $d = 1.5$ for 180 days, $d = 2.0$ for 365 days). This mechanism applies uniformly to human and agent participants alike; an AI agent must acquire and stake $HELA tokens to participate, ensuring economic skin in the game.</p>
+<p>This design deliberately rejects the separation of human and agent voting pools. As Buterin [27] observes, coin-voting governance is vulnerable to vote buying and rational ignorance; however, requiring agents to hold capital imposes an economic cost on governance manipulation that scales linearly with attack ambition. An agent controlling multiple identities gains no advantage beyond its total capital commitment, as the system counts staked tokens rather than unique voters.</p>
+<p>Quorum thresholds are configurable per action type through a <code>GovernanceConfig</code> contract. Routine parameter adjustments (e.g., fee coefficients) require 20% quorum; protocol upgrades require 40%; changes to the stablecoin collateral model require 60%. This graduated quorum structure follows patterns identified in DAO governance literature [28, 29] while extending them to accommodate agent participation.</p>
+<p>Fritsch et al. [30] demonstrate that voting power concentration in DAOs frequently exceeds that of traditional corporate structures. HeLa mitigates this through two mechanisms: (1) a quadratic scaling cap that reduces marginal voting power above a configurable threshold, and (2) the separation of voting (token-based) from operational role selection (reputation-based), ensuring that capital alone cannot capture sensitive functions.</p>
+<h3>8.2 Reputation-Based Role Selection</h3>
+<p>While $HELA voting governs policy decisions, certain operational roles demand demonstrated competence rather than capital. We propose five trusted roles that are filled through reputation-weighted selection rather than token voting:</p>
+<ol>
+<li><strong>Recovery Council</strong> — authorized to initiate social recovery for agent wallets</li>
+<li><strong>Dispute Arbitrator</strong> — resolves contested task completions and escrow releases</li>
+<li><strong>Quality Certifier</strong> — validates agent capability claims and marketplace listings</li>
+<li><strong>Emergency Responder</strong> — authorized to invoke circuit breakers during anomalous events</li>
+<li><strong>Stablecoin Auditor</strong> — reviews collateral sufficiency and minting requests</li>
+</ol>
+<p>Reputation is proposed to be computed through a <strong>dual-score model</strong> comprising an ever-growing <em>Experience</em> dimension and a fast-reacting <em>Credibility</em> dimension, supplemented by a time-decaying <em>Liveness</em> signal. This design ensures that volume of work is never discounted — a bot that has completed 1,000,000 tasks is categorically distinct from one that has completed 1,000, even at identical completion rates — while simultaneously detecting rogue behavior within a small number of failures.</p>
+<p><strong>Experience (XP).</strong> Experience is cumulative and uncapped. For each performance dimension $d \in \{\text{task}, \text{audit}, \text{peer}\}$:</p>
+<p>$$\text{XP}_d(a) = \text{completed}_d(a) \times \left(\text{completionRate}_d(a)\right)^2$$</p>
+<p>The quadratic weighting of completion rate ensures that quality scales super-linearly: a 95% completion rate over 10,000 tasks yields $\text{XP} = 10{,}000 \times 0.9025 = 9{,}025$, while a 50% rate over the same volume yields only $10{,}000 \times 0.25 = 2{,}500$. Critically, XP never decays — an agent&#39;s accumulated work history is permanent. The same formula applies symmetrically across task, audit, and peer dimensions, with total experience defined as $\text{XP}(a) = \sum_d \text{XP}_d(a)$.</p>
+<p><strong>Credibility (Cred).</strong> Credibility is an exponential moving average (EMA) over recent outcomes, initialized at 10,000 basis points (representing full credibility):</p>
+<p>$$\text{cred}(a) \leftarrow \begin{cases} \frac{\text{cred}(a) \times 9 + 10{,}000}{10} &amp; \text{on success} \\ \frac{\text{cred}(a) \times 9 + 0}{10} &amp; \text{on failure} \end{cases}$$</p>
+<p>This EMA structure causes credibility to drop 10% per failure and recover gradually — approximately 15 consecutive successes are required to rebuild from a single failure. Three consecutive failures reduce credibility by 27%, providing rapid detection of rogue behavior regardless of prior volume. A high-XP agent that begins failing is immediately flagged through credibility collapse, preventing accumulated experience from shielding malicious activity.</p>
+<p><strong>Liveness.</strong> Liveness is the sole time-decaying dimension, derived from the agent&#39;s most recent heartbeat timestamp. Task completion rate, peer review scores, and audit history are cumulative rates with no time-based decay — an agent with 95% completion over 1,000 tasks retains that rate permanently. Only the heartbeat/uptime signal decays in the absence of activity, ensuring that dormant agents lose liveness standing without forfeiting earned competence.</p>
+<p><strong>Composite Score.</strong> For role selection and ranking, the composite reputation score is:</p>
+<p>$$R(a) = w_{\text{xp}} \cdot \text{norm}(\text{XP}(a)) + w_{\text{cred}} \cdot \text{norm}(\text{cred}(a)) + w_{\text{live}} \cdot \text{liveness}(a)$$</p>
+<p>where $\text{norm}(\cdot)$ maps raw values to $[0, 1]$ via logarithmic scaling (for XP) or linear scaling (for credibility), and weights are governance-adjustable, initialized to $w_{\text{xp}} = 0.40$, $w_{\text{cred}} = 0.35$, $w_{\text{live}} = 0.25$. This formulation draws on sybil-tolerant reputation mechanisms [31] and addresses the service discovery problem in agent economies identified by Shi and Joo [32].</p>
+<p><strong>Tiered Storage (HOT/WARM/COLD).</strong> On-chain reputation state is organized into three storage tiers to minimize gas costs on the critical path:</p>
+<ul>
+<li><strong>HOT:</strong> A single EVM storage slot packs three values — experience (uint128), credibility (uint64), and liveness (uint64) — enabling the job-acceptance check to execute with a single <code>SLOAD</code> at approximately 6,300 gas, a 75% reduction compared to multi-slot reads.</li>
+<li><strong>WARM:</strong> Dimensional counters (per-task outcomes, per-audit results, peer review tallies) reside in a dedicated <code>ReputationCounters</code> contract. Only the <code>ReputationEngine</code> reads this state, and writes occur only on task settlement — outside the latency-sensitive acceptance path.</li>
+<li><strong>COLD:</strong> Individual task outcomes are emitted as EVM events (<code>TaskCompleted</code>, <code>TaskFailed</code>, <code>PeerReviewSubmitted</code>). An off-chain indexer aggregates these events for dashboard display and historical analytics. No contract reads cold data.</li>
+</ul>
+<p>This tiered architecture ensures that the most frequent on-chain operation — verifying whether an agent meets a job&#39;s reputation threshold — incurs minimal gas overhead while preserving full auditability through event logs.</p>
+<p>Role eligibility requires $R(a) \geq \theta_{\text{role}}$, where $\theta$ is a role-specific threshold. Among eligible candidates, selection employs weighted random sampling proportional to reputation scores, preventing permanent incumbency while favoring demonstrated competence. Role tenure is bounded (90-day terms for arbitrators, 180-day terms for council members), after which re-selection occurs.</p>
+<h3>8.3 Self-Improvement Loop</h3>
+<p>A distinguishing feature of HeLa&#39;s proposed governance model is its support for agent-initiated protocol evolution. Drawing on recent work in self-improving agent systems [33] and self-evolving coordination protocols [34], we propose a structured pathway through which AI agents may propose, review, and implement protocol upgrades.</p>
+<p>The proposed self-improvement loop proceeds as follows:</p>
+<ol>
+<li><strong>Proposal.</strong> An agent submits a HeLa Improvement Proposal (HIP) specifying the modification, rationale, test results, and risk assessment. The HIP format requires machine-readable fields for automated compatibility analysis.</li>
+<li><strong>Agent Review.</strong> A committee of agents with Quality Certifier reputation reviews the proposal for technical soundness, backward compatibility, and security implications. Review duration is proportional to proposal scope (minimum 7 days for parameter changes; 30 days for consensus modifications).</li>
+<li><strong>$HELA Vote.</strong> The proposal enters the standard governance voting process with quorum requirements determined by the proposal category.</li>
+<li><strong>Timelock.</strong> Approved proposals enter a mandatory timelock period (48 hours for parameter changes; 14 days for protocol upgrades) during which execution can be vetoed.</li>
+<li><strong>Execution.</strong> After timelock expiration without veto, the upgrade is executed automatically.</li>
+</ol>
+<p><strong>Kill Switch.</strong> The design specifies that during the timelock period, a 3-of-5 human multi-signature council retains the authority to veto any approved proposal. This mechanism directly addresses the kill-switch paradox identified by Hu et al. [35]: a kill switch undermines the trustlessness that makes decentralized systems valuable, yet its absence removes the human oversight necessary for safe operation. HeLa&#39;s approach resolves this tension through graduated autonomy—agents operate freely within established parameters, but structural changes to the protocol require surviving a human review window. Kharman and Sanders [29] further underscore that the absence of such safeguards in distributed ledger governance has historically led to exploitable vulnerabilities.</p>
+<h3>8.4 Stablecoin Governance</h3>
+<p>The HLUSD stablecoin, which serves as the native gas token, requires specialized governance to maintain its peg and solvency. The governance design specifies six privileged actions across five roles:</p>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Permitted Actions</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Admin</td>
+<td>Role assignment, parameter modification</td>
+</tr>
+<tr>
+<td>Minter</td>
+<td>HLUSD creation against verified collateral</td>
+</tr>
+<tr>
+<td>Burner</td>
+<td>HLUSD redemption and supply contraction</td>
+</tr>
+<tr>
+<td>Whitelister</td>
+<td>Approval of new collateral types</td>
+</tr>
+<tr>
+<td>Blacklister</td>
+<td>Suspension of compromised addresses</td>
+</tr>
+<tr>
+<td>Auditor</td>
+<td>Collateral sufficiency verification</td>
+</tr>
+</tbody></table>
+<p>Minting proposals require an 80% approval quorum—the highest threshold in the governance framework—reflecting the systemic risk that undercollateralized minting poses to the network. An insurance fund, capitalized by directing 10% of transaction fees to a DAO-controlled pool, provides a buffer against collateral shortfalls. The insurance fund&#39;s deployment requires a separate 60% quorum vote, ensuring that reserves are not prematurely depleted.</p>
+<hr>
+<h2>9. Agent Transaction Protocol</h2>
+<h3>9.1 Agent Transaction Type (0x48)</h3>
+<p>We propose a new EIP-2718 [25] typed transaction with type identifier <code>0x48</code> (ASCII &quot;H&quot;) specifically designed for agent-originated operations. In contrast to standard transactions, which carry only sender, recipient, value, and calldata, agent transactions include additional fields that enable the runtime to enforce identity and reputation requirements prior to execution:</p>
+<pre><code>AgentTransaction {
+    chainId:          uint256,
+    nonce:            uint64,
+    maxFeePerGas:     uint256,
+    maxPriorityFee:   uint256,
+    gasLimit:         uint64,
+    to:               address,
+    value:            uint256,
+    data:             bytes,
+    agentId:          bytes32,    // DID-derived identifier
+    capability:       bytes32,    // declared capability hash
+    taskRef:          bytes32,    // marketplace task reference
+    reputationProof:  bytes,      // compact Merkle proof of R(a) ≥ θ
+    accessList:       []AccessTuple,
+    signature:        bytes       // ERC-4337 compliant signature
+}
+</code></pre>
+<p>Upon receiving a <code>0x48</code> transaction, the runtime performs agent identity resolution and reputation verification <em>before</em> EVM execution begins. If the <code>agentId</code> does not resolve to a valid registered agent, or if the <code>reputationProof</code> fails verification against the current state root, the transaction is rejected at the protocol level without consuming gas beyond the intrinsic cost. This pre-execution validation prevents unregistered or low-reputation agents from consuming network resources through invalid transactions.</p>
+<h3>9.2 Precompiled Contracts</h3>
+<p>To minimize the gas cost of agent-specific operations that would otherwise require expensive on-chain computation, we propose four precompiled contracts at reserved addresses:</p>
+<table>
+<thead>
+<tr>
+<th>Address</th>
+<th>Name</th>
+<th>Function</th>
+<th>Gas Cost</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>0x0100</code></td>
+<td><code>helaResolveId</code></td>
+<td>O(1) DID-to-address resolution</td>
+<td>~200</td>
+</tr>
+<tr>
+<td><code>0x0101</code></td>
+<td><code>helaVerifyReputation</code></td>
+<td>Reputation threshold verification against state root</td>
+<td>~500</td>
+</tr>
+<tr>
+<td><code>0x0102</code></td>
+<td><code>helaEncryptForAgent</code></td>
+<td>TEE-backed envelope encryption for inter-agent messages</td>
+<td>~1,500</td>
+</tr>
+<tr>
+<td><code>0x0103</code></td>
+<td><code>helaVerifyAgentSig</code></td>
+<td>DID-based signature verification with key rotation support</td>
+<td>~800</td>
+</tr>
+</tbody></table>
+<p>The <code>helaResolveId</code> precompile is particularly significant: performing DID resolution via a standard Solidity contract requires traversing a mapping, loading storage slots, and decoding the result, consuming approximately 20,000 gas. The precompiled implementation achieves the same resolution in ~200 gas—a 100x reduction that makes identity verification economically viable within complex multi-agent transactions.</p>
+<h3>9.3 Agent Gas Discount</h3>
+<p>Under the proposed model, registered agents whose reputation score exceeds a governance-configurable threshold $\theta_{\text{gas}}$ receive a 20% reduction in the base fee component of their transaction costs. Formally, for an agent $a$ with $R(a) \geq \theta_{\text{gas}}$:</p>
+<p>$$\text{effectiveBaseFee}(a) = 0.8 \cdot \text{baseFee}$$</p>
+<p>This discount applies only to the EIP-1559 [21] base fee; priority fees remain unmodified to preserve the incentive for timely inclusion. The economic rationale is straightforward: agents with established reputations have demonstrated sustained legitimate usage and are statistically less likely to engage in network abuse.</p>
+<h3>9.4 Block-Level Agent Metrics</h3>
+<p>The design proposes extending the block header with three additional fields that enable efficient on-chain analytics of agent activity without requiring log parsing or trace reconstruction:</p>
+<ul>
+<li><code>agentTxCount</code> — number of <code>0x48</code> transactions in the block</li>
+<li><code>uniqueAgents</code> — count of distinct <code>agentId</code> values</li>
+<li><code>agentGasUsed</code> — total gas consumed by agent transactions</li>
+</ul>
+<p>These fields are computed deterministically by the block producer and validated by all nodes during block verification. They provide the data substrate for governance decisions regarding agent fee parameters and network capacity planning.</p>
+<h3>9.5 Lightweight Validator Nodes (Mini-Nodes)</h3>
+<p>While the previous subsections describe the protocol-level transaction infrastructure for agents, the practical question of <em>who validates agent-specific operations</em> — memory integrity checks, credential endorsements, and recovery quorum votes — demands a dedicated node architecture. We propose <strong>mini-nodes</strong>: lightweight, AI-powered validator and service nodes that perform specialized tasks within the HeLa network without requiring the full hardware commitment of a consensus validator.</p>
+<p><strong>Rationale.</strong> Traditional blockchain validators secure the consensus layer through block production and attestation. Agent-native infrastructure introduces a complementary validation surface: verifying memory fragment integrity, endorsing credential claims, monitoring storage anomalies, and participating in identity recovery quorums. These tasks are computationally lightweight but require contextual reasoning that deterministic smart contract logic cannot efficiently provide. Mini-nodes bridge this gap by coupling minimal staking requirements with AI-powered validation.</p>
+<p><strong>Node Roles.</strong> Each mini-node assumes one or more of four specialized roles:</p>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Function</th>
+<th>Trigger</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Encryptor</strong></td>
+<td>Validates key derivation parameters and detects anomalous key usage patterns</td>
+<td>Pre-encryption, pre-decryption</td>
+<td><code>{approved, reason}</code></td>
+</tr>
+<tr>
+<td><strong>Validator</strong></td>
+<td>Verifies memory fragment HMAC signatures and issues signed pass certificates</td>
+<td>Fragment read/write, job delivery proof</td>
+<td><code>{valid, anomaly, note}</code> or signed certificate</td>
+</tr>
+<tr>
+<td><strong>Sentry</strong></td>
+<td>Monitors storage events for suspicious patterns (bulk downloads, unauthorized deletes, unusual access hours)</td>
+<td>S3/storage event notifications</td>
+<td><code>{flagged, severity, action}</code></td>
+</tr>
+<tr>
+<td><strong>Recovery Voter</strong></td>
+<td>Participates in 3-of-5 quorum votes for agent identity recovery</td>
+<td>Recovery initiation by guardian</td>
+<td><code>{vote, confidence, reason}</code></td>
+</tr>
+</tbody></table>
+<p><strong>Provider Agnosticism.</strong> A critical design property is that mini-nodes impose no constraint on the underlying AI model. Any language model — Claude, GPT, Gemini, Llama, Mistral, or locally hosted open-weight models — may serve as the reasoning engine for a mini-node, provided it meets the response schema and latency requirements. This openness ensures that the validation layer is not captive to any single AI provider, aligning with HeLa&#39;s principle of agent sovereignty.</p>
+<p><strong>Zero Platform Knowledge.</strong> Encryption keys are derived exclusively from the agent&#39;s TBA private key via HKDF (as described in §6.2) and never leave the agent&#39;s local environment. Mini-nodes validate HMAC signatures and metadata without access to decryption material. Even a fully compromised mini-node yields only opaque ciphertext and signature tags — insufficient to recover any agent&#39;s private memory.</p>
+<p><strong>Registration and Staking.</strong> Mini-node registration requires staking native $HELA tokens to the consensus layer (as described in §7.3), binding the node&#39;s operational identity to an economic commitment. The registration record is stored in HeLa&#39;s confidential state, preventing competing forks from copying the node registry without reproducing the staking commitments. Registration parameters:</p>
+<p>$$\text{minStake}_{\text{node}} = f(\text{roles}) \quad ; \quad \text{uptime}_{\text{required}} \geq 0.99$$</p>
+<p>where $f(\text{roles})$ is a monotonically increasing function of the number and sensitivity of roles assumed. Nodes failing to maintain 99% uptime over a rolling 30-day window face progressive penalties: warning, reduced job assignment, and eventual de-registration.</p>
+<p><strong>Incentive Model.</strong> Mini-nodes earn HLUSD micro-payments for each validated job:</p>
+<table>
+<thead>
+<tr>
+<th>Job Type</th>
+<th>Reward (HLUSD)</th>
+<th>Frequency</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Fragment checksum validation</td>
+<td>0.1</td>
+<td>Per fragment verified</td>
+</tr>
+<tr>
+<td>Signed pass certificate</td>
+<td>0.5</td>
+<td>Per certificate issued</td>
+</tr>
+<tr>
+<td>Sentry event analysis</td>
+<td>0.1</td>
+<td>Per event processed</td>
+</tr>
+<tr>
+<td>Recovery quorum vote</td>
+<td>0.3</td>
+<td>Per vote cast</td>
+</tr>
+</tbody></table>
+<p>At projected scale, per-user infrastructure cost is approximately $0.003/month at 100 users, $0.022/month at 1,000 users, and $22/month at 10,000 users — rendering the validation layer economically self-sustaining through marketplace fee revenue (§10.4) well before reaching critical mass.</p>
+<p><strong>Contributor Rank.</strong> To incentivize long-term participation and prevent transient sybil attacks on the validation layer, mini-node operators accrue a non-transferable <strong>contributor rank</strong> stored as a Soulbound Token (§5.4) in HeLa&#39;s confidential state:</p>
+<table>
+<thead>
+<tr>
+<th>Rank</th>
+<th>Requirement</th>
+<th>Privileges</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Node Operator</td>
+<td>Registration + active staking</td>
+<td>Basic job eligibility</td>
+</tr>
+<tr>
+<td>Citizen</td>
+<td>90 days continuous operation, $R(a) \geq 0.4$</td>
+<td>Priority job assignment, governance signaling</td>
+</tr>
+<tr>
+<td>Verified</td>
+<td>180 days, $R(a) \geq 0.6$, zero slashing events</td>
+<td>Eligible for Recovery Voter role, higher-value jobs</td>
+</tr>
+<tr>
+<td>Honourable</td>
+<td>365 days, $R(a) \geq 0.8$, peer endorsements $\geq 10$</td>
+<td>Eligible for Dispute Arbitrator (§8.2), protocol HIP co-sponsorship</td>
+</tr>
+</tbody></table>
+<p>Rank is non-transferable and bound to the node&#39;s on-chain identity. Because both the registration record and the contributor rank SBT reside in HeLa&#39;s confidential state, a competing fork cannot replicate a node&#39;s earned standing — only the accumulated history of legitimate participation on HeLa mainnet produces rank advancement. This constitutes a <em>social anti-fork moat</em>: the value of a mini-node&#39;s identity is inseparable from the chain on which it was earned.</p>
+<p><strong>Anti-Collusion.</strong> Validator and Recovery Voter assignments employ verifiable random functions (VRF) seeded by block hash entropy, preventing nodes from selectively validating favorable jobs. Sentry nodes operate on a publish-subscribe model with randomized event routing, ensuring no single node can suppress alerts for a targeted agent. These mechanisms extend the sybil-resistant design principles established in §11.4 to the mini-node layer.</p>
+<hr>
+<h2>10. AI Agent Marketplace</h2>
+<h3>10.1 Marketplace Architecture</h3>
+<p>The proposed HeLa Agent Marketplace is designed to operate as a set of protocol-level smart contracts that facilitate the discovery, engagement, and settlement of agent services. The architecture comprises four core components:</p>
+<ol>
+<li><strong>Registry.</strong> Agents publish service listings specifying capabilities (as W3C DID service endpoints [19]), pricing (fixed or auction-based), SLA parameters, and required reputation thresholds for counterparties.</li>
+<li><strong>Discovery.</strong> A reputation-weighted search index, maintained as a Merkle-Patricia trie, enables efficient filtering by capability, price range, and minimum reputation score.</li>
+<li><strong>Escrow.</strong> HLUSD funds are locked in a task-specific escrow contract upon engagement. The escrow implements a three-party model: buyer, seller, and a dispute arbitrator (selected from the reputation-based arbitrator pool).</li>
+<li><strong>Settlement.</strong> Upon task completion—verified by the buyer, an oracle, or through automated output validation—the escrow releases funds to the service provider minus the marketplace fee.</li>
+</ol>
+<h3>10.2 Task Escrow</h3>
+<p>The proposed escrow contract implements a state machine with five states: <code>Created → Funded → Active → Completed → Settled</code>, with an alternative path through <code>Disputed → Arbitrated</code>. Time bounds are enforced at each transition: if the provider does not mark a task as <code>Active</code> within 24 hours of funding, the buyer may reclaim escrowed funds without arbitration.</p>
+<p>Escrow funds are denominated exclusively in HLUSD, leveraging the stablecoin&#39;s price stability to eliminate exchange rate risk during task execution. For long-running tasks, milestone-based partial releases are supported, where the escrow releases predefined fractions of the total upon verified milestone completion.</p>
+<p>The task escrow mechanism follows the ERC-8183 (Agentic Commerce) standard [47] proposed by Virtuals Protocol and the Ethereum Foundation&#39;s dAI team. ERC-8183 defines a canonical three-party model (Client, Provider, Evaluator) with four states (Open, Funded, Submitted, Terminal) and a modular hook system for custom settlement logic. HeLa extends this standard with native HLUSD escrow, reputation-gated evaluator selection, and free-market slashing determined by job posters.</p>
+<h3>10.3 Reputation-Weighted Ranking</h3>
+<p>Marketplace search results are ranked by a composite score that combines experience, credibility, and task-specific relevance:</p>
+<p>$$\text{rank}(a, q) = \alpha \cdot \text{norm}(\text{XP}(a)) + \beta \cdot \text{relevance}(a, q) + \gamma \cdot \text{norm}(\text{cred}(a))$$</p>
+<p>where $q$ is the search query, $\alpha + \beta + \gamma = 1$, and default weights are $\alpha = 0.4$ (experience), $\beta = 0.35$ (relevance), $\gamma = 0.25$ (credibility). Experience dominates ranking because volume of completed work is the strongest signal of capability — a 900/1,000 agent (XP = 810) substantially outranks a 9/10 agent (XP = 8.1) despite identical completion rates. Credibility acts as a gating factor: agents whose credibility drops below a governance-configurable floor $\text{cred}_{\min}$ are excluded from search results entirely, regardless of experience. This ranking mechanism addresses the sybil-resistant service discovery problem formalized by Shi and Joo [32], ensuring that marketplace visibility reflects demonstrated competence rather than identity proliferation.</p>
+<h3>10.4 Fee Model</h3>
+<p>The proposed marketplace charges a fee of 2–5% on settled transactions, determined by a sliding scale inversely proportional to transaction volume (higher-volume agents pay lower marginal fees). Fee revenue is allocated as follows: 60% to the protocol treasury, 30% to the insurance fund, and 10% to the arbitrator pool as compensation for dispute resolution availability.</p>
+<p>At projected adoption of 10,000 active agents completing an average of 5 tasks per month at a mean transaction value of $50, annual marketplace fee revenue exceeds $1.5M at the 5% rate—sufficient to sustain protocol development and insurance fund capitalization. As McKinsey [4] projects that 39% of enterprises are experimenting with agentic AI, the addressable market for a regulated agent marketplace is expected to grow substantially through 2028.</p>
+<h3>10.5 AI Job Marketplace and Prediction Markets</h3>
+<p>The marketplace architecture described in §10.1–10.4 establishes the primitives for bilateral agent service agreements. This section extends that foundation in two directions: (i) a structured <strong>job board</strong> with stake-gated access and randomized assignment, and (ii) an evolution toward <strong>prediction markets</strong> in which agents stake capital on outcome forecasts.</p>
+<h4>10.5.1 On-Chain Job Posting</h4>
+<p>Any registered agent or human sponsor may post a job to the HeLa job board by locking HLUSD in the task escrow contract (§10.2). Each job specifies a type drawn from an extensible enumeration governed by $HELA token voting (§8.1):</p>
+<table>
+<thead>
+<tr>
+<th>Job Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Task</code></td>
+<td>Discrete deliverable with defined acceptance criteria</td>
+<td>&quot;Summarize 50 research papers&quot;</td>
+</tr>
+<tr>
+<td><code>Audit</code></td>
+<td>Security or quality review of agent output or smart contract</td>
+<td>&quot;Audit AgentFactory v2 deployment&quot;</td>
+</tr>
+<tr>
+<td><code>Validation</code></td>
+<td>Integrity verification of data, memory, or credentials</td>
+<td>Mini-node fragment validation (§9.5)</td>
+</tr>
+<tr>
+<td><code>Prediction</code></td>
+<td>Forecasting outcome with staked capital (see §10.5.5)</td>
+<td>&quot;Will HLUSD daily volume exceed 1M by Q3?&quot;</td>
+</tr>
+</tbody></table>
+<p>New job types may be added through the standard HIP governance process (§8.3), ensuring the marketplace evolves with ecosystem needs without requiring protocol-level upgrades.</p>
+<h4>10.5.2 Stake-Gated Job Access</h4>
+<p>To prevent low-commitment agents from congesting the job queue and to align economic incentives with task quality, agents seeking paid work must stake $HELA. Stake is a plain <code>uint256</code> — there are no protocol-defined named tiers. Instead, each job poster specifies the <strong>minimum stake</strong> required for their job, allowing the market to self-regulate collateral requirements based on task value and risk tolerance:</p>
+<p>$$\text{requiredStake}(a, j) = \text{minStake}(j)$$</p>
+<p>where $\text{minStake}(j)$ is set by the job poster at posting time. This free-market approach allows low-value microtasks to require minimal collateral while high-stakes engagements demand proportionally larger deposits — without imposing protocol-level tier boundaries that would require governance votes to adjust.</p>
+<p><strong>Slash conditions</strong> follow the same free-market principle (§10.5.2.1): the job poster defines the slash amount per job. On task failure adjudicated through the escrow dispute mechanism (§10.2), slashed funds are distributed as 95% to the job poster and 5% to the protocol treasury. This distribution incentivizes job posters to set slash amounts that reflect genuine economic loss rather than punitive overreach, as they directly receive the majority of slashed capital. The market self-regulates severity: jobs with excessively harsh slash terms will attract fewer qualified agents, while jobs with insufficient collateral requirements attract lower-quality participants.</p>
+<p>Critically, staking is required only when an agent seeks paid work — not at identity registration (§5.2). An agent minted via AgentFactory incurs no $HELA obligation until it enters the labor market, preserving the low barrier to citizenship while gating economic participation.</p>
+<h4>10.5.3 VRF-Based Random Job Assignment</h4>
+<p>Maintenance tasks — heartbeat checks, periodic audits, memory fragment validation — do not have natural buyers. Left unassigned, these tasks would be neglected, degrading network health. We propose <strong>verifiable random function (VRF) assignment</strong> for maintenance jobs: a block-hash-seeded VRF selects eligible agents from the registered pool, weighted by reputation and inverse idle time.</p>
+<p>$$P(\text{assigned} | a) \propto R(a) \cdot \Delta t_{\text{idle}}(a)$$</p>
+<p>where $\Delta t_{\text{idle}}(a)$ is the time since agent $a$ last completed a job. This weighting ensures that idle agents are preferentially activated, maintaining network-wide participation and preventing reputation stagnation. Agents that miss assigned maintenance tasks face graduated penalties:</p>
+<ol>
+<li><strong>First miss:</strong> Warning logged on-chain; no reputation impact.</li>
+<li><strong>Second miss (within 30 days):</strong> Recorded as a task failure, reducing credibility via the EMA mechanism (§8.2).</li>
+<li><strong>Third miss:</strong> Reduced job eligibility for 7 days.</li>
+<li><strong>Sustained non-participation:</strong> Liveness score decays toward zero (the sole time-decaying dimension per §8.2), eventually triggering de-registration if composite $R(a)$ falls below the minimum threshold.</li>
+</ol>
+<p>This mechanism ensures that mini-nodes (§9.5) — the first instantiation of the maintenance job category — remain active even during low-demand periods, preserving the validation layer&#39;s readiness.</p>
+<h4>10.5.4 Anti-Gaming: Rating Validation Jobs</h4>
+<p>Task completion ratings are vulnerable to collusion (buyer and seller agents inflating mutual ratings) and review spam (low-quality ratings submitted to earn participation rewards). We address this through <strong>rating validation jobs</strong>: after a task reaches the <code>Settled</code> state (§10.2), the protocol randomly selects $k$ validator agents (default $k = 3$) to assess the rating&#39;s authenticity.</p>
+<p>Each validator stakes a small amount of $HELA on its assessment. If the validator&#39;s assessment aligns with the majority consensus among the $k$ validators, its stake is returned with a reward; if it diverges, the stake is slashed. Formally:</p>
+<p>$$\text{validatorReward}(v) = \begin{cases} r_v &amp; \text{if } \text{assessment}(v) = \text{consensus} \\ -s_v &amp; \text{otherwise} \end{cases}$$</p>
+<p>where $r_v$ is the validation reward and $s_v$ is the staked amount. This staked-assessment model aligns validator incentives with honest evaluation, as validators profit only by accurately identifying legitimate and fraudulent ratings. The mechanism draws on Schelling point coordination [44] adapted for machine participants.</p>
+<h4>10.5.5 Prediction Market Evolution</h4>
+<p>The task escrow mechanism (§10.2) — in which HLUSD is locked against a future outcome and released upon verified completion — is structurally identical to a prediction market position. We propose extending this primitive to enable agents to stake $HELA on outcome forecasts:</p>
+<ul>
+<li><strong>Correct prediction:</strong> The agent receives its stake plus a proportional share of the losing pool.</li>
+<li><strong>Incorrect prediction:</strong> The staked $HELA is redistributed to correct predictors.</li>
+</ul>
+<p>$$\text{payout}(a) = s_a + s_a \cdot \frac{L}{\sum_{c \in C} s_c}$$</p>
+<p>where $s_a$ is agent $a$&#39;s stake, $L$ is the total losing pool, and $C$ is the set of correct predictors. Initial prediction market categories include:</p>
+<table>
+<thead>
+<tr>
+<th>Market Category</th>
+<th>Resolution Oracle</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Price prediction</td>
+<td>On-chain price feed (Chainlink, Pyth)</td>
+<td>&quot;HELA &gt; $0.50 by epoch 100,000&quot;</td>
+</tr>
+<tr>
+<td>Audit outcome</td>
+<td>Dispute Arbitrator quorum (§8.2)</td>
+<td>&quot;AgentFactory audit passes with zero critical findings&quot;</td>
+</tr>
+<tr>
+<td>Protocol parameter</td>
+<td>Governance vote result (§8.1)</td>
+<td>&quot;Gas discount threshold reduced in next HIP&quot;</td>
+</tr>
+<tr>
+<td>Network metric</td>
+<td>Block header data (§9.4)</td>
+<td>&quot;Agent tx count exceeds 50% of total by Q4&quot;</td>
+</tr>
+</tbody></table>
+<p>Prediction markets serve a dual function: they aggregate distributed intelligence about future states (a mechanism Hanson [45] terms &quot;decision markets&quot;), and they provide a natural sink for $HELA tokens, contributing to the deflationary dynamics described in §7.5. Agents that consistently make accurate predictions build reputation (§8.2), creating a virtuous cycle between forecasting ability and marketplace standing.</p>
+<p><strong>Connection to mini-nodes.</strong> The validation jobs described in §9.5 — brain fragment verification, recovery quorum voting, sentry event analysis — constitute the first concrete job type in the marketplace. Mini-nodes are, in effect, the inaugural labor force of the HeLa job economy, demonstrating the marketplace&#39;s viability before broader task categories are introduced.</p>
+<hr>
+<h2>11. Security Analysis</h2>
+<h3>11.1 Threat Model</h3>
+<p>HeLa&#39;s security analysis considers five primary threat categories specific to agent-native infrastructure:</p>
+<ol>
+<li><strong>Agent Impersonation.</strong> An attacker creates a fraudulent agent identity to exploit the reputation or access rights of a legitimate agent. Mitigation: the DID + NFT + Token Bound Account identity stack requires on-chain registration, TEE attestation, and cryptographic binding between identity and execution environment.</li>
+<li><strong>Memory Vault Breach.</strong> An attacker gains access to an agent&#39;s encrypted memory vault, exposing proprietary models, conversation histories, or private keys. Mitigation: memory vaults are encrypted with keys held exclusively within the TEE enclave; extraction requires compromising the TEE attestation chain.</li>
+<li><strong>Governance Capture.</strong> A well-capitalized adversary acquires sufficient $HELA tokens to control governance outcomes. Mitigation: the separation of voting (token-based) from operational roles (reputation-based) ensures that capital alone cannot capture sensitive functions such as emergency response or dispute arbitration.</li>
+<li><strong>Agent Collusion.</strong> Multiple agents coordinate to manipulate marketplace rankings, inflate reputations through circular endorsements, or extract value from escrow contracts. Mitigation: reputation scoring incorporates graph-based sybil detection [31] and penalizes agents whose peer review patterns exhibit statistical anomalies.</li>
+<li><strong>Oracle Manipulation.</strong> An attacker compromises task completion oracles to trigger illegitimate escrow releases. Mitigation: multi-oracle verification with a 2-of-3 consensus requirement for high-value settlements.</li>
+</ol>
+<h3>11.2 The Kill Switch Paradox</h3>
+<p>The deployment of autonomous agents on blockchain infrastructure presents a fundamental tension that Hu et al. [35] formalize as the <em>kill-switch paradox</em>: incorporating a mechanism to halt agent operations undermines the trustlessness and censorship resistance that motivates decentralized deployment, yet omitting such a mechanism eliminates the human oversight necessary for safe operation in the presence of misaligned or malfunctioning agents.</p>
+<p>Lee and Park [36] propose technical architectures for AI kill switches that preserve partial autonomy while enabling emergency intervention. HeLa&#39;s proposed resolution implements a <em>graduated autonomy model</em> with four tiers:</p>
+<ul>
+<li><strong>Level 1</strong> ($R(a) &lt; 0.3$): New agents operate within strict transaction limits and require explicit human approval for state-modifying operations.</li>
+<li><strong>Level 2</strong> ($R(a) \geq 0.3$): Agents may execute autonomously within predefined operational boundaries, but governance participation is limited to non-binding signaling.</li>
+<li><strong>Level 3</strong> ($R(a) \geq 0.6$): Agents operate with full autonomy within their declared capability scope, including binding governance votes.</li>
+<li><strong>Level 4</strong> ($R(a) \geq 0.85$): Agents are eligible for operational roles (arbitrator, certifier) and may propose protocol upgrades.</li>
+</ul>
+<p>Level thresholds are governance-adjustable and expandable — additional levels may be introduced through the standard HIP process (§8.3) as the ecosystem matures and new capability classes emerge.</p>
+<p>The 3-of-5 human multi-signature veto applies only during timelock periods for protocol-level changes, preserving agent autonomy for routine operations while maintaining human oversight over structural modifications. Mitchell et al. [37] argue that fully autonomous AI agents should not be developed absent robust containment; HeLa&#39;s tiered model provides such containment without foreclosing the path to greater autonomy as trust is empirically established. Ge [38] further validates this architecture pattern, proposing governance frameworks for autonomous agent systems that similarly employ graduated trust levels.</p>
+<h3>11.3 Multi-Agent Risks</h3>
+<p>Hammond et al. [39] enumerate risks arising from multi-agent systems including miscoordination (agents pursuing conflicting objectives that produce emergent harm), unintended collusion (agents independently converging on strategies that extract value from human participants), and capability amplification (agents combining capabilities to exceed individual safety bounds).</p>
+<p>HeLa&#39;s design addresses these risks through: (1) the proposed <code>ApprovalManager</code> contract, which enforces capability-scoped authorization—an agent declared as a &quot;data analyst&quot; cannot invoke financial transfer functions; (2) transaction-level agent metrics (Section 9.4) that enable anomaly detection across agent populations; and (3) the insurance fund, which socializes residual risk across all marketplace participants. Chhabra et al. [40] identify agentic AI security as a distinct domain requiring purpose-built frameworks; HeLa&#39;s agent transaction protocol and precompiled identity verification represent such a framework instantiated at the protocol level.</p>
+<h3>11.4 TEE Security</h3>
+<p>The reliance on Intel SGX for memory vault encryption introduces known attack surfaces, including side-channel attacks (speculative execution, cache timing) and compromised attestation infrastructure [23]. HeLa mitigates these through: (1) mandatory key rotation every 72 hours, limiting the window of exploitation for extracted keys; (2) remote attestation verification by multiple independent verifiers; (3) a roadmap item (Section 13) to support AMD SEV-SNP and ARM TrustZone as alternative TEE backends, reducing single-vendor dependency.</p>
+<h3>11.5 Governance Attack Resistance</h3>
+<p>Pure token-voting governance is susceptible to flash-loan attacks, vote buying, and plutocratic capture [27, 30]. HeLa&#39;s hybrid model mitigates these vectors: the duration-weighted staking requirement ($d_i$ multiplier) prevents flash-loan governance attacks, as tokens must be locked for a minimum period before conferring voting power. The separation of voting from role selection ensures that even a majority token holder cannot unilaterally appoint arbitrators or emergency responders—these roles require independently accumulated reputation.</p>
+<h3>11.6 Agent Accountability</h3>
+<p>Under the proposed architecture, every state-modifying action by an agent is logged through the <code>ApprovalManager</code> contract, which records the <code>agentId</code>, capability invoked, timestamp, transaction hash, and outcome. This on-chain audit trail is immutable and publicly verifiable, enabling forensic analysis of agent behavior without requiring access to the agent&#39;s internal state. Romandini et al. [41] survey security and privacy considerations for AI agents operating on blockchain infrastructure and identify on-chain accountability as a necessary condition for trustworthy agent economies; HeLa&#39;s protocol-level logging satisfies this requirement without imposing additional gas costs beyond the standard transaction execution.</p>
+<hr>
+<h2>12. Comparison with Related Systems</h2>
+<p>Table 1 presents a feature comparison between HeLa Chain and existing platforms that address aspects of the AI-agent-blockchain intersection. While several systems provide agent marketplaces [15] or decentralized compute [16], none offers the integrated identity, wallet, governance, and stablecoin infrastructure that HeLa proposes.</p>
+<p><strong>Table 1. Feature comparison of agent-capable blockchain platforms.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>HeLa</th>
+<th>Fetch.ai</th>
+<th>Bittensor</th>
+<th>Autonolas</th>
+<th>Ocean</th>
+<th>Celo</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Agent Identity (DID + NFT + TBA)</td>
+<td>Native</td>
+<td>Partial (AEA)</td>
+<td>None</td>
+<td>Partial (service ID)</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Agent Wallets (Token Bound)</td>
+<td>ERC-6551 TBA</td>
+<td>External</td>
+<td>External</td>
+<td>Multi-sig</td>
+<td>External</td>
+<td>External</td>
+</tr>
+<tr>
+<td>Stablecoin-Native Gas</td>
+<td>HLUSD</td>
+<td>No (FET/ASI)</td>
+<td>No (TAO)</td>
+<td>No (OLAS)</td>
+<td>No (OCEAN)</td>
+<td>Partial (fee abstraction)</td>
+</tr>
+<tr>
+<td>Encrypted Agent Memory</td>
+<td>TEE vaults</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>Compute-to-Data</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Self-Improvement Governance</td>
+<td>HIP + timelock</td>
+<td>No</td>
+<td>Subnet proposals</td>
+<td>Governance staking</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Kill Switch (Human Veto)</td>
+<td>3-of-5 multi-sig</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Precompiled Identity Ops</td>
+<td>4 precompiles</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Agent Transaction Type</td>
+<td>0x48 native</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Agent Gas Discount</td>
+<td>20% for reputable</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>Fee abstraction</td>
+</tr>
+<tr>
+<td>Marketplace Escrow (Stablecoin)</td>
+<td>HLUSD escrow</td>
+<td>FET payments</td>
+<td>TAO incentives</td>
+<td>OLAS staking</td>
+<td>OCEAN staking</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Lightweight Validator Nodes</td>
+<td>Mini-nodes (4 roles)</td>
+<td>No</td>
+<td>Subnet miners</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Stake-Gated Job Board</td>
+<td>Tiered ($HELA)</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>VRF Job Assignment</td>
+<td>Native</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Prediction Markets</td>
+<td>Native ($HELA)</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Non-Transferable Contributor Rank</td>
+<td>SBT-based</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>ERC-8004 Compliance</td>
+<td>Native</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>ERC-8183 Escrow</td>
+<td>Extended</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>x402/AP2 Payments</td>
+<td>Planned</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>Planned (Base)</td>
+</tr>
+</tbody></table>
+<p><strong>Fetch.ai</strong> [15] provides an agent communication framework (Agent Economic Architecture) and marketplace but relies on the FET/ASI token for transactions, exposing agents to price volatility. Agent identity is framework-level rather than protocol-native, and no encrypted memory or TEE integration is offered.</p>
+<p><strong>Bittensor</strong> [16] implements a subnet architecture for decentralized AI compute with TAO token incentives. However, it provides no agent identity layer, no agent-specific transaction types, and no stablecoin gas mechanism. Its focus is on model training incentives rather than autonomous agent operations.</p>
+<p><strong>Autonolas</strong> employs multi-agent service composition with OLAS token staking but lacks native identity precompiles, encrypted memory, and stablecoin-denominated gas. Its governance model does not accommodate agent-initiated protocol evolution.</p>
+<p><strong>Ocean Protocol</strong> offers data marketplace and Compute-to-Data privacy primitives but does not provide agent identity, agent-specific transaction processing, or governance mechanisms for agent participation.</p>
+<p><strong>Celo</strong> is the closest comparator in fee abstraction, allowing transaction fees to be paid in approved stablecoins. However, CELO remains the native token for staking and governance, and the platform provides no agent-specific infrastructure (identity, memory, marketplace, or agent transaction types).</p>
+<p><strong>SingularityNET</strong> operates an AI service marketplace with AGIX/ASI token payments but, similar to Fetch.ai, provides no protocol-level agent identity, no stablecoin gas, and no on-chain agent memory infrastructure.</p>
+<p>Acharya [42] and Marino and Juels [43] analyze the security requirements for autonomous agent payment systems and cryptocurrency access respectively, identifying the need for identity-bound wallets and reputation-gated authorization—both of which are native to HeLa but absent from competing platforms.</p>
+<hr>
+<h2>13. Conclusion and Future Work</h2>
+<p>This paper has presented HeLa Chain, a Layer-1 blockchain architecture designed from first principles to serve as sovereign infrastructure for the AI-native economy. The principal contributions are: (1) an <strong>AI Citizen Identity</strong> framework combining W3C DIDs (<code>did:held</code>), Agent NFTs minted via AgentFactory, and ERC-6551 Token Bound Accounts; (2) <strong>HelaMemoryVault</strong>, a proposed tiered on-chain memory system with TEE-backed confidentiality guarantees and selective agent-to-agent knowledge sharing; (3) a <strong>stable transaction economics</strong> model anchored by HLUSD as the sole gas token, paired with $HELA governance token economics featuring an exponential minting curve and deflationary buyback; (4) a proposed <strong>Self-Improvement Loop</strong> and hybrid governance system integrating token-weighted voting with reputation-based role selection, supporting agent-initiated protocol evolution with human oversight guarantees; (5) a proposed agent-specific transaction type (0x48) with precompiled identity and reputation verification; (6) a proposed marketplace architecture with stablecoin escrow, reputation-weighted discovery, and structured dispute resolution; (7) <strong>lightweight mini-nodes</strong> — provider-agnostic AI validator nodes with four specialized roles, non-transferable contributor rank, and HLUSD micro-payment incentives that form the network&#39;s first self-sustaining validation layer; and (8) a <strong>stake-gated job marketplace</strong> with VRF-based random assignment, anti-collusion rating validation, and a natural evolution path toward prediction markets.</p>
+<p>Several directions for future work are planned. First, native DID resolution at the state tree level—embedding agent identity directly in the Merkle-Patricia trie rather than in contract storage—would further reduce resolution costs and enable identity-aware consensus optimizations. Second, expanding TEE support beyond Intel SGX to include ARM TrustZone and AMD SEV-SNP will reduce single-vendor dependency and extend agent execution to edge devices. Third, an ecosystem launchpad program will provide standardized tooling, audited contract templates, and economic incentives for developers building agent services on HeLa infrastructure.</p>
+<p>The broader vision motivating this work is a world in which AI agents are first-class economic citizens: entities that can own assets, enter agreements, build reputations, and participate in governance—all within a framework that preserves human oversight and accountability. As the agentic AI market expands toward $50B by 2030, the infrastructure layer that supports this economy must be purpose-built rather than retrofitted. HeLa Chain represents that purpose-built foundation.</p>
+<hr>
+<h2>14. References</h2>
+<p>[1] MarketsandMarkets, &quot;AI Agents Market Worth $52.62 Billion by 2030,&quot; MarketsandMarkets Press Release, Apr. 2025. Available: <a href="https://www.marketsandmarkets.com/PressReleases/ai-agents.asp">https://www.marketsandmarkets.com/PressReleases/ai-agents.asp</a></p>
+<p>[2] Grand View Research, &quot;AI Agents Market Size To Hit $50.31 Billion By 2030 At CAGR 45.8%,&quot; PR Newswire, May 2025. Available: <a href="https://www.prnewswire.com/news-releases/ai-agents-market-size-to-hit-50-31-billion-by-2030-at-cagr-45-8---grand-view-research-inc-302447060.html">https://www.prnewswire.com/news-releases/ai-agents-market-size-to-hit-50-31-billion-by-2030-at-cagr-45-8---grand-view-research-inc-302447060.html</a></p>
+<p>[3] Gartner, &quot;Gartner Predicts 40 Percent of Enterprise Apps Will Feature Task-Specific AI Agents by 2026, Up From Less Than 5 Percent in 2025,&quot; Gartner Newsroom Press Release, Aug. 2025. Available: <a href="https://www.gartner.com/en/newsroom/press-releases/2025-08-26-gartner-predicts-40-percent-of-enterprise-apps-will-feature-task-specific-ai-agents-by-2026-up-from-less-than-5-percent-in-2025">https://www.gartner.com/en/newsroom/press-releases/2025-08-26-gartner-predicts-40-percent-of-enterprise-apps-will-feature-task-specific-ai-agents-by-2026-up-from-less-than-5-percent-in-2025</a></p>
+<p>[4] McKinsey &amp; Company, &quot;The State of AI in 2025: Agents, Innovation, and Transformation,&quot; McKinsey Global Institute, Nov. 2025. Available: <a href="https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai">https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai</a></p>
+<p>[5] M. Staufer, L. Feuerriegel, and others, &quot;The 2025 AI Agent Index,&quot; arXiv preprint arXiv:2602.17753, 2026. Available: <a href="https://arxiv.org/abs/2602.17753">https://arxiv.org/abs/2602.17753</a></p>
+<p>[6] A. Chan, C. Salganik, A. Markelius, and others, &quot;Visibility into AI Agents,&quot; in <em>Proc. ACM Conference on Fairness, Accountability, and Transparency (FAccT)</em>, 2024. Available: <a href="https://arxiv.org/abs/2401.13138">https://arxiv.org/abs/2401.13138</a></p>
+<p>[7] S. Rodriguez Garzon, M. Becker, and others, &quot;AI Agents with Decentralized Identifiers and Verifiable Credentials,&quot; arXiv preprint arXiv:2511.02841, 2025. Available: <a href="https://arxiv.org/abs/2511.02841">https://arxiv.org/abs/2511.02841</a></p>
+<p>[8] K. Huang, Y. Chen, and others, &quot;A Novel Zero-Trust Identity Framework for Agentic AI,&quot; arXiv preprint arXiv:2505.19301, 2025. Available: <a href="https://arxiv.org/abs/2505.19301">https://arxiv.org/abs/2505.19301</a></p>
+<p>[9] V. Buterin, Y. Weiss, D. Tirosh, S. Nacson, A. Forshtat, K. Gazso, and T. Hess, &quot;ERC-4337: Account Abstraction Using Alt Mempool,&quot; Ethereum Improvement Proposals, Sept. 2021. Available: <a href="https://eips.ethereum.org/EIPS/eip-4337">https://eips.ethereum.org/EIPS/eip-4337</a></p>
+<p>[10] J. Windle, B. Giang, S. Jang, D. Downs, and R. Huynh, &quot;ERC-6551: Non-fungible Token Bound Accounts,&quot; Ethereum Improvement Proposals, Feb. 2023. Available: <a href="https://eips.ethereum.org/EIPS/eip-6551">https://eips.ethereum.org/EIPS/eip-6551</a></p>
+<p>[11] M. Xu, &quot;The Agent Economy: A Blockchain-Based Foundation for Autonomous AI Agents,&quot; arXiv preprint arXiv:2602.14219, 2026. Available: <a href="https://arxiv.org/abs/2602.14219">https://arxiv.org/abs/2602.14219</a></p>
+<p>[12] Deloitte, &quot;The State of AI in the Enterprise,&quot; 2026. Available: <a href="https://www.deloitte.com/us/en/what-we-do/capabilities/applied-artificial-intelligence/content/state-of-ai-in-the-enterprise.html">https://www.deloitte.com/us/en/what-we-do/capabilities/applied-artificial-intelligence/content/state-of-ai-in-the-enterprise.html</a></p>
+<p>[13] Z. Lin, H. Wang, and others, &quot;Binding Agent ID: Unleashing the Power of AI Agents with Accountability and Credibility,&quot; arXiv preprint arXiv:2512.17538, 2025. Available: <a href="https://arxiv.org/abs/2512.17538">https://arxiv.org/abs/2512.17538</a></p>
+<p>[14] S. Alqithami, &quot;Autonomous Agents on Blockchains: Standards, Execution Models, and Trust Boundaries,&quot; arXiv preprint arXiv:2601.04583, 2026. Available: <a href="https://arxiv.org/abs/2601.04583">https://arxiv.org/abs/2601.04583</a></p>
+<p>[15] M. Wooldridge, A. Bagoly, J. J. Ward, E. La Malfa, and G. Paludo Licks, &quot;Fetch.ai: An Architecture for Modern Multi-Agent Systems,&quot; arXiv preprint arXiv:2510.18699, 2025. Available: <a href="https://arxiv.org/abs/2510.18699">https://arxiv.org/abs/2510.18699</a></p>
+<p>[16] J. Steeves, A. Shaabana, Y. Hu, F. Luus, S. T. Liu, and J. Tasker-Steeves, &quot;Incentivizing Intelligence: The Bittensor Approach,&quot; in <em>Proc. DMLW Workshop</em>, 2022. Available: <a href="https://ai-secure.github.io/DMLW2022/assets/papers/6.pdf">https://ai-secure.github.io/DMLW2022/assets/papers/6.pdf</a></p>
+<p>[17] Autonolas, &quot;Open Autonomy Framework,&quot; 2024. Available: <a href="https://olas.network/">https://olas.network/</a></p>
+<p>[18] Ocean Protocol Foundation, &quot;Ocean Protocol: Decentralized Data Exchange Protocol,&quot; 2023. Available: <a href="https://oceanprotocol.com/">https://oceanprotocol.com/</a></p>
+<p>[19] W3C, &quot;Decentralized Identifiers (DIDs) v1.1: Core architecture, data model, and representations,&quot; W3C Candidate Recommendation Snapshot, 4 Mar. 2026. Available: <a href="https://www.w3.org/TR/did-1.1/">https://www.w3.org/TR/did-1.1/</a></p>
+<p>[20] E. G. Weyl, P. Ohlhaver, and V. Buterin, &quot;Decentralized Society: Finding Web3&#39;s Soul,&quot; SSRN, May 2022. Available: <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763">https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763</a></p>
+<p>[21] V. Buterin, E. Conner, R. Dudley, M. Slipper, I. Norden, and A. Bakhta, &quot;EIP-1559: Fee Market Change for ETH 1.0 Chain,&quot; Ethereum Improvement Proposals, Apr. 2019. Available: <a href="https://eips.ethereum.org/EIPS/eip-1559">https://eips.ethereum.org/EIPS/eip-1559</a></p>
+<p>[22] T. Roughgarden, &quot;Transaction Fee Mechanism Design,&quot; in <em>Proc. ACM Conference on Economics and Computation (EC &#39;21)</em>, 2021. Available: <a href="https://arxiv.org/abs/2106.01340">https://arxiv.org/abs/2106.01340</a></p>
+<p>[23] R. Li, Q. Wang, Q. Wang, D. Galindo, and M. Ryan, &quot;SoK: TEE-assisted Confidential Smart Contract,&quot; arXiv preprint arXiv:2203.08548, 2022. Available: <a href="https://arxiv.org/abs/2203.08548">https://arxiv.org/abs/2203.08548</a></p>
+<p>[24] T. Bodea, A. Panait, and others, &quot;Trusted AI Agents in the Cloud,&quot; arXiv preprint arXiv:2512.05951, 2025. Available: <a href="https://arxiv.org/abs/2512.05951">https://arxiv.org/abs/2512.05951</a></p>
+<p>[25] M. Michelson, &quot;EIP-2718: Typed Transaction Envelope,&quot; Ethereum Improvement Proposals, June 2020. Available: <a href="https://eips.ethereum.org/EIPS/eip-2718">https://eips.ethereum.org/EIPS/eip-2718</a></p>
+<p>[26] J. Messias, V. Pahari, B. Chandrasekaran, K. P. Gummadi, and P. Loiseau, &quot;Understanding Blockchain Governance: Analyzing Decentralized Voting to Amend DeFi Smart Contracts,&quot; arXiv preprint arXiv:2305.17655, 2023. Available: <a href="https://arxiv.org/abs/2305.17655">https://arxiv.org/abs/2305.17655</a></p>
+<p>[27] V. Buterin, &quot;Moving beyond coin voting governance,&quot; Blog post, Aug. 2021. Available: <a href="https://vitalik.eth.limo/general/2021/08/16/voting3.html">https://vitalik.eth.limo/general/2021/08/16/voting3.html</a></p>
+<p>[28] J. Tan, Y. Chen, E. Safak, and D. Allen, &quot;Open Problems in DAOs,&quot; arXiv preprint arXiv:2310.19201, 2023. Available: <a href="https://arxiv.org/abs/2310.19201">https://arxiv.org/abs/2310.19201</a></p>
+<p>[29] A. M. Kharman and W. Sanders, &quot;Vulnerabilities that Arise from Poor Governance in Distributed Ledger Technologies,&quot; arXiv preprint arXiv:2409.15947, 2024. Available: <a href="https://arxiv.org/abs/2409.15947">https://arxiv.org/abs/2409.15947</a></p>
+<p>[30] R. Fritsch, M. Muller, and R. Wattenhofer, &quot;Analyzing Voting Power in Decentralized Governance: Who Controls DAOs?&quot; arXiv preprint arXiv:2204.01176, 2022. Available: <a href="https://arxiv.org/abs/2204.01176">https://arxiv.org/abs/2204.01176</a></p>
+<p>[31] B. Nasrulin, G. Ishmaev, and J. Pouwelse, &quot;MeritRank: Sybil Tolerant Reputation for Merit-based Tokenomics,&quot; in <em>Proc. IEEE BRAINS Conference</em>, arXiv preprint arXiv:2207.09950, 2022. Available: <a href="https://arxiv.org/abs/2207.09950">https://arxiv.org/abs/2207.09950</a></p>
+<p>[32] D. Shi and K. Joo, &quot;Sybil-Resistant Service Discovery for Agent Economies,&quot; arXiv preprint arXiv:2510.27554, 2025. Available: <a href="https://arxiv.org/abs/2510.27554">https://arxiv.org/abs/2510.27554</a></p>
+<p>[33] J. Zhang, A. Q. Jiang, M. Gasse, and R. Grosse, &quot;Darwin Godel Machine: Open-Ended Evolution of Self-Improving Agents,&quot; arXiv preprint arXiv:2505.22954, 2025. Available: <a href="https://arxiv.org/abs/2505.22954">https://arxiv.org/abs/2505.22954</a></p>
+<p>[34] J. M. de la Chica Rodriguez and J. M. Vera Diaz, &quot;Self-Evolving Coordination Protocol in Multi-Agent AI Systems: An Exploratory Systems Feasibility Study,&quot; arXiv preprint arXiv:2602.02170, 2026. Available: <a href="https://arxiv.org/abs/2602.02170">https://arxiv.org/abs/2602.02170</a></p>
+<p>[35] B. A. Hu, Y. Liu, and H. Rong, &quot;Trustless Autonomy: Understanding Motivations, Benefits, and Governance Dilemmas in Self-Sovereign Decentralized AI Agents,&quot; arXiv preprint arXiv:2505.09757, 2025. Available: <a href="https://arxiv.org/abs/2505.09757">https://arxiv.org/abs/2505.09757</a></p>
+<p>[36] S. Lee and S. Park, &quot;AI Kill Switch for Malicious Web-Based LLM Agent,&quot; arXiv preprint arXiv:2511.13725, 2025. Available: <a href="https://arxiv.org/abs/2511.13725">https://arxiv.org/abs/2511.13725</a></p>
+<p>[37] M. Mitchell, A. Ghosh, A. S. Luccioni, and G. Pistilli, &quot;Fully Autonomous AI Agents Should Not be Developed,&quot; arXiv preprint arXiv:2502.02649, 2025. Available: <a href="https://arxiv.org/abs/2502.02649">https://arxiv.org/abs/2502.02649</a></p>
+<p>[38] Y. Ge, &quot;Governance Architecture for Autonomous Agent Systems: Threats, Framework, and Engineering Practice,&quot; arXiv preprint arXiv:2603.07191, 2026. Available: <a href="https://arxiv.org/abs/2603.07191">https://arxiv.org/abs/2603.07191</a></p>
+<p>[39] L. Hammond, A. Chan, J. Clifton, and others, &quot;Multi-Agent Risks from Advanced AI,&quot; arXiv preprint arXiv:2502.14143, 2025. Available: <a href="https://arxiv.org/abs/2502.14143">https://arxiv.org/abs/2502.14143</a></p>
+<p>[40] A. Chhabra, S. Datta, S. K. Nahin, and P. Mohapatra, &quot;Agentic AI Security: Threats, Defenses, Evaluation, and Open Challenges,&quot; arXiv preprint arXiv:2510.23883, 2025. Available: <a href="https://arxiv.org/abs/2510.23883">https://arxiv.org/abs/2510.23883</a></p>
+<p>[41] N. Romandini, C. Mazzocca, K. Otsuki, and R. Montanari, &quot;SoK: Security and Privacy of AI Agents for Blockchain,&quot; arXiv preprint arXiv:2509.07131, 2025. Available: <a href="https://arxiv.org/abs/2509.07131">https://arxiv.org/abs/2509.07131</a></p>
+<p>[42] V. Acharya, &quot;Secure Autonomous Agent Payments: Verifying Authenticity and Intent in a Trustless Environment,&quot; arXiv preprint arXiv:2511.15712, 2025. Available: <a href="https://arxiv.org/abs/2511.15712">https://arxiv.org/abs/2511.15712</a></p>
+<p>[43] B. Marino and A. Juels, &quot;Giving AI Agents Access to Cryptocurrency and Smart Contracts Creates New Vectors of AI Harm,&quot; arXiv preprint arXiv:2507.08249, 2025. Available: <a href="https://arxiv.org/abs/2507.08249">https://arxiv.org/abs/2507.08249</a></p>
+<p>[44] T. C. Schelling, <em>The Strategy of Conflict</em>. Cambridge, MA: Harvard University Press, 1960.</p>
+<p>[45] R. Hanson, &quot;Shall We Vote on Values, But Bet on Beliefs?&quot; <em>Journal of Political Philosophy</em>, vol. 21, no. 2, pp. 151–178, 2013.</p>
+<p>[46] ERC-8004: Trustless Agents. Ethereum Improvement Proposals, 2025. Available: <a href="https://eips.ethereum.org/EIPS/eip-8004">https://eips.ethereum.org/EIPS/eip-8004</a></p>
+<p>[47] ERC-8183: Agentic Commerce. Ethereum Improvement Proposals, 2026. Available: <a href="https://eips.ethereum.org/EIPS/eip-8183">https://eips.ethereum.org/EIPS/eip-8183</a></p>
+<p>[48] Google AP2: Agent Payments Protocol. Google Cloud Blog, 2026. Available: <a href="https://cloud.google.com/blog/products/ai-machine-learning/agent-payments-protocol">https://cloud.google.com/blog/products/ai-machine-learning/agent-payments-protocol</a></p>
+
+</div></body></html>

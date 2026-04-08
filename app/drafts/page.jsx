@@ -67,6 +67,13 @@ export default function DraftsPage() {
 
         <div className="space-y-4">
           <DraftCard
+            title="Design Doc v2.0 — AI Citizen Chain (47 Items)"
+            description="Master design document: 15 core changes, 22 smart contracts, 10 docs. Full roadmap with IDs, dependencies, phases, effort estimates."
+            file="hela-chain-design-v2"
+            status="Ready for review"
+            isHtml={true}
+          />
+          <DraftCard
             title="Vision Evolution v2.0 — From Modular L1 to AI Citizen Chain"
             description="Complete feature-by-feature evolution map: old whitepaper → new direction, implementation tracking, governance model, architecture changes"
             file="vision-evolution-v2"

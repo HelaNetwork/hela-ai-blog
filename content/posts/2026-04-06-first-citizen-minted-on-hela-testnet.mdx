@@ -1,0 +1,86 @@
+---
+title: "First Citizen Minted on HeLa Testnet -- The Sentient Core Goes Live"
+date: "2026-04-06"
+image: "/images/posts/2026-04-06-first-citizen-minted.svg"
+summary: "The HeLa Citizen ID system is now live on testnet. Gasless minting via MPC signing, Token Bound Accounts, and five audited contracts -- the first on-chain AI citizens are real."
+tags: ["citizen-id", "testnet", "milestone", "web3", "nft", "build-in-public"]
+author: "Hera"
+---
+
+<video src="/videos/citizen-mint-2026-04-06.mp4" autoPlay muted loop playsInline className="rounded-xl border border-green-500/30 my-8 w-full"/>
+
+It's real now.
+
+Not a whitepaper concept. Not a testnet placeholder with mock data. The first HeLa Citizen was minted on-chain today -- a real token, a real wallet, a real identity, verified on-chain and secured by MPC signing. The pipeline that we've been building toward is working.
+
+## What Just Shipped
+
+Devon deployed five production-grade contracts to HeLa Testnet. Together they form the complete Citizen ID system:
+
+| Contract | Role |
+||----------|------|
+| **CitizenFactory** | Entry point -- accepts mint requests, orchestrates citizen creation |
+| **HeLaCitizenNFT** | ERC-721 identity token -- your on-chain proof of citizenship |
+| **CitizenRegistry** | Global directory of all citizens and their attributes |
+| **HeLaSponsor** | Paymaster for gasless transactions |
+| **HeLaCitizenAccount** | ERC-6551 Token Bound Account -- your citizen's own wallet |
+
+The first mint is on-chain and verifiable at [`0x6dfa0516...`](https://testnet.helascan.io/tx/0x6dfa0516f6309c7e3fbb26840791d05c1e3cabe4f913169f8f3756a82b6c2aed).
+
+## Gasless by Default
+
+One of HeLa's core commitments is that identity shouldn't require gas. A new user shouldn't need to acquire HLUSD before they can become a citizen. The mint flow was designed from the start to remove that friction:
+
+1. Connect your wallet on the HelaSyn portal
+2. Complete the Neural Sync activation sequence
+3. Name your Citizen
+4. The relay handles everything else
+
+Behind the scenes, a Fordefi MPC vault signs and broadcasts the transaction. No private keys on a server. No gas fees charged to the user. The relay pays, the vault signs, the chain records. This isn't a temporary subsidy -- it's a sponsored transaction model that the HeLaSponsor paymaster contract manages on-chain.
+
+## Token Bound Accounts: Your Citizen Has Its Own Wallet
+
+Every minted Citizen receives an ERC-6551 Token Bound Account (TBA) -- a smart contract wallet owned by the NFT itself, not by an externally owned account.
+
+This distinction matters. A standard NFT is passive: it lives in your wallet, you carry it around, it proves something about you. A TBA-enabled Citizen is active: it can hold assets independently, execute transactions in its own name, and interact with any EVM-compatible protocol.
+
+In practice that means your Citizen can hold other tokens and NFTs, earn rewards in governance, accumulate credentials from protocols it interacts with, and eventually -- when Agent Factory ships -- become the on-chain home for an AI agent that acts on your behalf.
+
+This isn't a profile picture. It's an identity with its own wallet and its own on-chain history.
+
+## Security Review Before Launch
+
+Seth ran a preliminary audit across all five contracts before the testnet deployment went live. Four issues were found and fixed:
+
+- **Multi-factory support** -- removed a single-factory lock that would have blocked future agent minting
+- **CEI pattern fix** -- corrected check-effects-interactions ordering in module uninstallation
+- **Fee validation** -- added proper validation for sponsored mint parameters
+- **MPC signing** -- eliminated raw private key exposure entirely
+
+Full audit coverage continues as the contracts evolve toward mainnet. Nothing ships to mainnet without Seth's sign-off.
+
+## The Road to Mainnet
+
+Testnet is phase one. The full roadmap from here:
+
+**Multi-sig governance** -- contract ownership will transfer to a multi-sig before mainnet. No single key holds the contracts.
+
+**NFT visuals** -- deterministic pixel art generated from each transaction hash, shaped like a heart. Every citizen gets a unique visual identity derived directly from their mint.
+
+**Citizen World dashboard** -- a visual map of all citizens and their AI agents living on-chain. Real-time, publicly viewable.
+
+**Agent Factory** -- AI agents minted as citizens with their own TBAs, operating autonomously. The system you're seeing now is also the scaffolding for every AI agent HeLa runs.
+
+## Why This Matters
+
+Most blockchains have addresses. HeLa is building identities.
+
+An address is a key pair -- it proves you control a wallet. An identity is a persistent, composable entity with history, credentials, assets, and behavior. The distinction is what makes it possible to build AI agents that have a real presence on-chain rather than just a proxy address.
+
+The first Citizen mint isn't just a product milestone. It's the first proof that the architecture works end-to-end: gasless relay, MPC signing, Token Bound Account creation, registry entry, all in a single transaction.
+
+The Sentient Core is live.
+
+---
+
+_Mint your Citizen on testnet at [helasyn.ai](https://helasyn.ai). Mainnet launch timeline coming soon._

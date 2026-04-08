@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HeLa Chain — AI Citizen Chain Design v2.0</title>
+<style>
+:root{--bg:#0a0e1a;--surface:#111827;--surface-2:#1a2236;--border:#1e293b;--text:#e2e8f0;--muted:#94a3b8;--accent:#2dd4bf}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Inter,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;padding:40px 24px}
+.wrap{max-width:1100px;margin:0 auto}
+h1{font-size:32px;font-weight:700;margin-bottom:8px;background:linear-gradient(135deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+h2{font-size:22px;font-weight:700;color:#fff;margin:48px 0 16px;padding-top:24px;border-top:1px solid var(--border)}
+h3{font-size:17px;font-weight:600;color:#fff;margin:28px 0 12px}
+h4{font-size:14px;font-weight:600;color:var(--accent);margin:20px 0 8px}
+p{color:var(--muted);font-size:14px;margin-bottom:14px}
+strong{color:var(--text)}
+code{background:var(--surface-2);padding:2px 6px;border-radius:4px;font-size:13px;color:var(--accent)}
+pre{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;margin:16px 0;overflow-x:auto;font-size:13px;line-height:1.6}
+pre code{background:none;padding:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+thead th{text-align:left;padding:10px 12px;font-weight:600;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);background:var(--surface-2);border-bottom:1px solid var(--border);white-space:nowrap}
+thead th:first-child{border-radius:8px 0 0 0}
+thead th:last-child{border-radius:0 8px 0 0}
+tbody td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--muted);vertical-align:top}
+tbody tr:hover{background:rgba(255,255,255,.02)}
+tbody tr:last-child td{border-bottom:none}
+ul,ol{padding-left:20px;margin-bottom:14px;color:var(--muted);font-size:14px}
+li{margin-bottom:5px}
+hr{border:none;border-top:1px solid var(--border);margin:32px 0}
+blockquote{border-left:3px solid var(--accent);padding:12px 20px;margin:16px 0;background:var(--surface);border-radius:0 8px 8px 0}
+blockquote p{margin:0}
+.meta{display:flex;gap:24px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin:0 0 32px;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:8px}
+.meta b{color:var(--text)}
+@media(max-width:768px){body{padding:20px 12px}h1{font-size:24px}table{display:block;overflow-x:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="meta">
+<span><b>Version</b> 2.0</span>
+<span><b>Date</b> 2026-04-06</span>
+<span><b>Author</b> KC / Max</span>
+<span><b>Status</b> Approved</span>
+<span><b>Items</b> 47 total (8 done)</span>
+</div>
+<h1>HeLa Chain — AI Citizen Chain Design Document v2.0</h1>
+<p><strong>Version:</strong> 2.0
+<strong>Date:</strong> 2026-04-06
+<strong>Author:</strong> KC (CTO) / Max (Coordinator)
+<strong>Status:</strong> Approved — ready for roadmap scheduling
+<strong>Source:</strong> Vision Evolution v2 + Core Proposals (Card #83 session)</p>
+<hr>
+<h2>1. Vision</h2>
+<p>HeLa Chain evolves from a general-purpose modular L1 to <strong>the sovereign infrastructure for the AI-native economy</strong> — the first blockchain where AI agents are citizens with identity, wallets, memory, privacy, and governance rights.</p>
+<p><strong>Old pitch:</strong> &quot;A next-generation L1 addressing data fragmentation, confidentiality, identity, and fee volatility.&quot;</p>
+<p><strong>New pitch:</strong> &quot;The first blockchain where AI agents are citizens with identity, wallets, memory, privacy, and governance rights.&quot;</p>
+<hr>
+<h2>2. Architecture</h2>
+<h3>2.1 Infrastructure Layers (Inherited, Stable)</h3>
+<pre><code>Consensus Layer (Tendermint BFT + PoS)
+    │
+Execution Layer (single EVM runtime + confidential mode)
+    │
+Storage Layer (on-chain state + erasure coding + Merkle Trees)
+</code></pre>
+<h3>2.2 AI Citizen Stack (New, Built on Top)</h3>
+<pre><code>AI Citizen Stack:
+    AgentFactory → Agent NFT → Token Bound Account (TBA)
+    Held DID (did:held:) → Verifiable Credentials → Reputation
+    HelaMemoryVault → Tiered encrypted agent knowledge
+
+Governance Stack:
+    $HELA token voting (humans + AI agents, 1 staked = 1 vote)
+    Reputation-based role selection (council, arbitrator, certifier)
+    Self-Improvement Loop → Agent proposals → Human Kill Switch
+    Stablecoin DAO → Mint/burn/whitelist voting
+</code></pre>
+<h3>2.3 Retired</h3>
+<ul>
+<li><strong>Integration Layer</strong> — AI agents handle cross-chain integration natively via tools/RPC/browser. Protocol-level integration is redundant.</li>
+<li><strong>Multiple runtimes</strong> — HeLa runs one official EVM runtime. Multi-runtime adds unused complexity.</li>
+</ul>
+<hr>
+<h2>3. Complete Feature &amp; Change Registry</h2>
+<p>All proposed changes across every layer, organized by type.</p>
+<h3>3.1 Core Changes — Gateway Layer (oasis-web3-gateway)</h3>
+<p>These changes affect the Web3 Gateway (RPC proxy). No consensus impact. Gateway restart only.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Change</th>
+<th>Description</th>
+<th>Files Affected</th>
+<th>Effort</th>
+<th>Impact</th>
+<th>Depends On</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C-01</td>
+<td><code>web3_clientVersion</code> → hela/</td>
+<td>RPC fingerprint returns <code>hela/v1.x.x</code> instead of <code>oasis/...</code></td>
+<td><code>rpc/web3/api.go:32</code></td>
+<td>15 min</td>
+<td>High — scanner identity</td>
+<td>—</td>
+</tr>
+<tr>
+<td>C-02</td>
+<td><code>hela_getAgent</code> RPC method</td>
+<td>Query agent profile by agentId: identity, reputation, TBA address, capabilities</td>
+<td><code>rpc/hela/api.go</code> (new)</td>
+<td>1 day</td>
+<td>High — native agent queries</td>
+<td>S-01</td>
+</tr>
+<tr>
+<td>C-03</td>
+<td><code>hela_getCitizenId</code> RPC method</td>
+<td>Instant DID lookup by address without knowing contract ABI</td>
+<td><code>rpc/hela/api.go</code> (new)</td>
+<td>1 day</td>
+<td>High — identity accessible to all tools</td>
+<td>S-01</td>
+</tr>
+<tr>
+<td>C-04</td>
+<td><code>hela_getMemoryVault</code> RPC method</td>
+<td>Query agent&#39;s memory vault metadata (tiers, access control, size)</td>
+<td><code>rpc/hela/api.go</code> (new)</td>
+<td>1 day</td>
+<td>Medium — vault discoverability</td>
+<td>S-02</td>
+</tr>
+<tr>
+<td>C-05</td>
+<td><code>hela_agentActivity</code> RPC method</td>
+<td>Agent transaction stats for a block range (count, gas, unique agents)</td>
+<td><code>rpc/hela/api.go</code> (new)</td>
+<td>1 day</td>
+<td>Medium — analytics/dashboards</td>
+<td>C-08</td>
+</tr>
+<tr>
+<td>C-06</td>
+<td><code>hela_*</code> RPC module registration</td>
+<td>Register <code>hela</code> module alongside <code>eth</code>, <code>net</code>, <code>web3</code>, <code>oasis</code> in HTTP + WS</td>
+<td><code>server/server.go:221,237</code></td>
+<td>30 min</td>
+<td>Required — enables all hela_* methods</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<p><strong>Status:</strong> C-01 DONE. C-02 through C-06 not started.</p>
+<h3>3.2 Core Changes — Runtime Layer (oasis-sdk)</h3>
+<p>These changes affect the EVM runtime. Require runtime upgrade (validators update).</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Change</th>
+<th>Description</th>
+<th>Files Affected</th>
+<th>Effort</th>
+<th>Impact</th>
+<th>Depends On</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C-07</td>
+<td>Precompile: <code>helaResolveId</code> (0x100)</td>
+<td>Resolve <code>did:held:</code> → agent profile in O(1). ~200 gas vs ~20,000 for contract call</td>
+<td><code>runtime/evm/precompile/</code> (new)</td>
+<td>3 days</td>
+<td>Very high — identity checks become dirt cheap</td>
+<td>S-01</td>
+</tr>
+<tr>
+<td>C-08</td>
+<td>Precompile: <code>helaVerifyReputation</code> (0x101)</td>
+<td>Check if agent meets reputation threshold. O(1) lookup</td>
+<td><code>runtime/evm/precompile/</code> (new)</td>
+<td>2 days</td>
+<td>High — gating becomes gas-efficient</td>
+<td>S-04</td>
+</tr>
+<tr>
+<td>C-09</td>
+<td>Precompile: <code>helaEncryptForAgent</code> (0x102)</td>
+<td>TEE-backed encryption using agent&#39;s public key. Native crypto for HelaMemoryVault</td>
+<td><code>runtime/evm/precompile/</code> (new)</td>
+<td>3 days</td>
+<td>High — vault writes become native</td>
+<td>S-02, TEE</td>
+</tr>
+<tr>
+<td>C-10</td>
+<td>Precompile: <code>helaVerifyAgentSig</code> (0x103)</td>
+<td>Verify agent signed a message using DID-based auth (not just ECDSA)</td>
+<td><code>runtime/evm/precompile/</code> (new)</td>
+<td>2 days</td>
+<td>High — agent-to-agent auth at protocol level</td>
+<td>S-01</td>
+</tr>
+<tr>
+<td>C-11</td>
+<td>Agent transaction type (0x48)</td>
+<td>New EIP-2718 typed tx with agentId, capability, taskRef, reputationProof fields</td>
+<td><code>runtime/evm/tx/</code> (new)</td>
+<td>1-2 weeks</td>
+<td>High — agent txs become first-class</td>
+<td>S-01, S-04</td>
+</tr>
+<tr>
+<td>C-12</td>
+<td>Agent gas discount</td>
+<td>Agents with valid Citizen ID + reputation &gt; threshold get 20% lower base fee</td>
+<td><code>runtime/evm/gas/</code></td>
+<td>2-3 days</td>
+<td>Medium — economic incentive to register</td>
+<td>S-01, S-04</td>
+</tr>
+<tr>
+<td>C-13</td>
+<td>Native DID in state tree</td>
+<td>Every address has optional DID attachment in state: <code>address → { balance, nonce, code, storage, citizenId? }</code></td>
+<td><code>runtime/evm/state/</code></td>
+<td>2-4 weeks</td>
+<td>Highest — identity as protocol primitive</td>
+<td>S-01</td>
+</tr>
+</tbody></table>
+<p><strong>Status:</strong> All not started. C-07 and C-08 recommended as first priorities.</p>
+<h3>3.3 Core Changes — Consensus Layer (oasis-core)</h3>
+<p>These changes affect block structure and consensus. Require validator upgrade.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Change</th>
+<th>Description</th>
+<th>Files Affected</th>
+<th>Effort</th>
+<th>Impact</th>
+<th>Depends On</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C-14</td>
+<td>Block-level agent metrics</td>
+<td>Add to block header: <code>agentTxCount</code>, <code>uniqueAgents</code>, <code>agentGasUsed</code>, <code>topAgent</code></td>
+<td><code>go/consensus/block/</code></td>
+<td>1 week</td>
+<td>Medium — chain self-documents agent activity</td>
+<td>C-11</td>
+</tr>
+<tr>
+<td>C-15</td>
+<td>Agent-aware mempool priority</td>
+<td>Higher reputation agents get faster tx inclusion in mempool ordering</td>
+<td><code>go/consensus/mempool/</code></td>
+<td>1 week</td>
+<td>Medium — performance incentive for good agents</td>
+<td>S-04, C-11</td>
+</tr>
+</tbody></table>
+<p><strong>Status:</strong> All not started. Lower priority — schedule after runtime changes.</p>
+<h3>3.4 Smart Contracts — Identity &amp; Memory (Phase 1)</h3>
+<p>Deploy on existing EVM. No core changes needed.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Contract</th>
+<th>Description</th>
+<th>Language</th>
+<th>Effort</th>
+<th>Impact</th>
+<th>Depends On</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S-01</td>
+<td>AgentFactory</td>
+<td>Mint Agent NFT + create Token Bound Account (TBA) per agent. ERC-721 + ERC-6551.</td>
+<td>Solidity</td>
+<td>2-3 days</td>
+<td>Critical — foundation for all agent features</td>
+<td>—</td>
+</tr>
+<tr>
+<td>S-02</td>
+<td>HelaMemoryVault</td>
+<td>Tiered encrypted storage: public / agent-only / sponsor-only / encrypted (TEE). HLUSD pricing per tier.</td>
+<td>Solidity</td>
+<td>2-3 days</td>
+<td>High — unique feature, agent knowledge protection</td>
+<td>—</td>
+</tr>
+<tr>
+<td>S-03</td>
+<td>ApprovalManager</td>
+<td>On-chain audit trail for all agent permission changes. Logs every grant/revoke.</td>
+<td>Solidity</td>
+<td>1-2 days</td>
+<td>Medium — compliance story</td>
+<td>—</td>
+</tr>
+<tr>
+<td>S-04</td>
+<td>AgentReputation</td>
+<td>Accumulates on-chain reputation score from task completions, uptime, peer reviews.</td>
+<td>Solidity</td>
+<td>2 days</td>
+<td>High — feeds into governance, gas discount, marketplace ranking</td>
+<td>S-01</td>
+</tr>
+<tr>
+<td>S-05</td>
+<td>HeldDIDResolver (update)</td>
+<td>Extend existing Held DID resolver to support agent DIDs alongside human DIDs.</td>
+<td>Solidity</td>
+<td>1 day</td>
+<td>High — unifies human + agent identity</td>
+<td>S-01</td>
+</tr>
+<tr>
+<td>S-06</td>
+<td>AgentSponsorRegistry</td>
+<td>Entities that vouch for and stake $HELA on agents. Sponsors lose stake if agent misbehaves.</td>
+<td>Solidity</td>
+<td>2 days</td>
+<td>Medium — trust bootstrapping for new agents</td>
+<td>S-01</td>
+</tr>
+</tbody></table>
+<h3>3.5 Smart Contracts — Governance (Phase 2)</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Contract</th>
+<th>Description</th>
+<th>Language</th>
+<th>Effort</th>
+<th>Impact</th>
+<th>Depends On</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S-07</td>
+<td>HelaGovernor</td>
+<td>$HELA token voting for protocol upgrades. 1 staked $HELA = 1 vote. Humans + AI agents with equal rules.</td>
+<td>Solidity</td>
+<td>3-4 days</td>
+<td>Critical — primary governance mechanism</td>
+<td>—</td>
+</tr>
+<tr>
+<td>S-08</td>
+<td>SelfImprovementLoop</td>
+<td>Agent proposal submission → agent review → human multi-sig approval. Timelock for execution.</td>
+<td>Solidity</td>
+<td>3-5 days</td>
+<td>Very high — HeLa&#39;s unique differentiator</td>
+<td>S-01, S-03</td>
+</tr>
+<tr>
+<td>S-09</td>
+<td>KillSwitch</td>
+<td>Emergency multi-sig veto for any agent-proposed change. 3-of-5 human signers.</td>
+<td>Solidity</td>
+<td>1-2 days</td>
+<td>Critical — safety mechanism</td>
+<td>S-08</td>
+</tr>
+<tr>
+<td>S-10</td>
+<td>ReputationRoleSelector</td>
+<td>Reputation threshold determines eligibility for trusted roles: recovery council, dispute arbitrator, quality certifier, emergency responder, stablecoin auditor.</td>
+<td>Solidity</td>
+<td>2-3 days</td>
+<td>High — trust layer for sensitive operations</td>
+<td>S-04</td>
+</tr>
+<tr>
+<td>S-11</td>
+<td>StablecoinDAO</td>
+<td>On-chain voting for HLUSD operations: mint, burn, whitelist, blacklist. 5 roles (Admin, Minter, Burner, Whitelister, Blacklister), 6 actions, quorum-based. Per whitepaper spec.</td>
+<td>Solidity</td>
+<td>3-4 days</td>
+<td>High — stablecoin governance</td>
+<td>S-07</td>
+</tr>
+<tr>
+<td>S-12</td>
+<td>InsuranceFund</td>
+<td>Collects 10% of transaction fees into insurance pool. DAO-controlled disbursement for adverse events.</td>
+<td>Solidity</td>
+<td>1-2 days</td>
+<td>Medium — ecosystem safety net</td>
+<td>S-11</td>
+</tr>
+<tr>
+<td>S-13</td>
+<td>HIP-1 Specification</td>
+<td>HeLa Improvement Proposal format. First HIP = AI Citizen Standard. Repo + on-chain registry.</td>
+<td>Spec + Solidity</td>
+<td>1-2 days</td>
+<td>High — legitimacy signal</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h3>3.6 Smart Contracts — Marketplace &amp; Revenue (Phase 3)</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Contract</th>
+<th>Description</th>
+<th>Language</th>
+<th>Effort</th>
+<th>Impact</th>
+<th>Depends On</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S-14</td>
+<td>AgentListing</td>
+<td>Publish agent capabilities, pricing, terms on-chain. Searchable registry.</td>
+<td>Solidity</td>
+<td>2-3 days</td>
+<td>High — marketplace core</td>
+<td>S-01</td>
+</tr>
+<tr>
+<td>S-15</td>
+<td>TaskEscrow</td>
+<td>HLUSD held in escrow until task completion verified. Auto-release on success, refund on timeout.</td>
+<td>Solidity</td>
+<td>2-3 days</td>
+<td>High — trustless agent payments</td>
+<td>—</td>
+</tr>
+<tr>
+<td>S-16</td>
+<td>MarketplaceFeeCollector</td>
+<td>2-5% fee on all marketplace trades. Fee goes to protocol treasury + insurance fund.</td>
+<td>Solidity</td>
+<td>1 day</td>
+<td>Medium — revenue mechanism</td>
+<td>S-14, S-15</td>
+</tr>
+<tr>
+<td>S-17</td>
+<td>AgentDiscovery</td>
+<td>Query agents by capability, reputation, price range. On-chain index.</td>
+<td>Solidity</td>
+<td>2-3 days</td>
+<td>Medium — marketplace UX</td>
+<td>S-14</td>
+</tr>
+<tr>
+<td>S-18</td>
+<td>RatingReview</td>
+<td>On-chain reputation from completed tasks. Weighted by task value and reviewer reputation.</td>
+<td>Solidity</td>
+<td>2 days</td>
+<td>Medium — quality signal</td>
+<td>S-04</td>
+</tr>
+<tr>
+<td>S-19</td>
+<td>AgentBudgetManager</td>
+<td>Agents set hard HLUSD spending caps. Auto-reject transactions exceeding budget.</td>
+<td>Solidity</td>
+<td>1-2 days</td>
+<td>Medium — autonomous agent safety</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h3>3.7 Smart Contracts — Tokenomics (Phase 2-3)</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Contract</th>
+<th>Description</th>
+<th>Language</th>
+<th>Effort</th>
+<th>Impact</th>
+<th>Depends On</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S-20</td>
+<td>HELABuybackBurn</td>
+<td>10% of HLUSD gas fees used to buy and burn $HELA. Deflationary mechanism per whitepaper.</td>
+<td>Solidity</td>
+<td>2 days</td>
+<td>High — token value support</td>
+<td>S-12</td>
+</tr>
+<tr>
+<td>S-21</td>
+<td>RewardDistributor</td>
+<td>Split fees between government pool, compute nodes, proposers, validators per whitepaper formula.</td>
+<td>Solidity</td>
+<td>2-3 days</td>
+<td>High — node incentives</td>
+<td>—</td>
+</tr>
+<tr>
+<td>S-22</td>
+<td>DelegationManager</td>
+<td>$HELA delegation: users stake to validators, earn proportional rewards.</td>
+<td>Solidity</td>
+<td>2-3 days</td>
+<td>High — staking economics</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h3>3.8 Documentation &amp; Code Identity (Card #83)</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Item</th>
+<th>Description</th>
+<th>Effort</th>
+<th>Impact</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D-01</td>
+<td>web3_clientVersion → hela/</td>
+<td>Scanner fingerprint</td>
+<td>15 min</td>
+<td>High</td>
+<td>DONE</td>
+</tr>
+<tr>
+<td>D-02</td>
+<td>README.md rewrite (3 repos)</td>
+<td>HeLa-first identity, BSC/Polygon pattern</td>
+<td>2 hrs</td>
+<td>High</td>
+<td>DONE</td>
+</tr>
+<tr>
+<td>D-03</td>
+<td>CHAIN_IDENTITY.md (3 repos)</td>
+<td>Technical differentiators, architecture</td>
+<td>2 hrs</td>
+<td>High</td>
+<td>DONE</td>
+</tr>
+<tr>
+<td>D-04</td>
+<td>SECURITY.md + CONTRIBUTING.md (3 repos)</td>
+<td>Governance maturity signals</td>
+<td>1 hr</td>
+<td>Medium</td>
+<td>DONE</td>
+</tr>
+<tr>
+<td>D-05</td>
+<td>.github/ templates (3 repos)</td>
+<td>CODEOWNERS, issue/PR templates</td>
+<td>1 hr</td>
+<td>Medium</td>
+<td>DONE</td>
+</tr>
+<tr>
+<td>D-06</td>
+<td>docs/architecture/ (4 docs)</td>
+<td>Overview, AI agent model, HLUSD, confidential compute</td>
+<td>4 hrs</td>
+<td>Medium</td>
+<td>DONE</td>
+</tr>
+<tr>
+<td>D-07</td>
+<td>HIPs repo + HIP-1</td>
+<td>HeLa Improvement Proposals repository + first proposal</td>
+<td>1 day</td>
+<td>High</td>
+<td>Not started</td>
+</tr>
+<tr>
+<td>D-08</td>
+<td>CHANGELOG.md with named upgrades</td>
+<td>Named HeLa upgrade history (pick naming theme)</td>
+<td>2 hrs</td>
+<td>Medium</td>
+<td>Not started</td>
+</tr>
+<tr>
+<td>D-09</td>
+<td>GitLab repo descriptions + topics</td>
+<td>Set on all 46 hela-dev repos</td>
+<td>1 hr</td>
+<td>Medium</td>
+<td>Not started</td>
+</tr>
+<tr>
+<td>D-10</td>
+<td>Vision Evolution v2 doc</td>
+<td>Strategic direction document for all teams</td>
+<td>—</td>
+<td>High</td>
+<td>DONE — live at blog.helachain.com/drafts/</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>4. Roadmap — Phased Execution</h2>
+<h3>Phase 0: Code Identity (DONE)</h3>
+<p><strong>Timeline:</strong> 2026-04-06
+<strong>Goal:</strong> Make repos look legitimate</p>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>ID</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>clientVersion</td>
+<td>C-01</td>
+<td>DONE</td>
+</tr>
+<tr>
+<td>READMEs</td>
+<td>D-02</td>
+<td>DONE</td>
+</tr>
+<tr>
+<td>CHAIN_IDENTITY.md</td>
+<td>D-03</td>
+<td>DONE</td>
+</tr>
+<tr>
+<td>SECURITY + CONTRIBUTING</td>
+<td>D-04</td>
+<td>DONE</td>
+</tr>
+<tr>
+<td>.github/</td>
+<td>D-05</td>
+<td>DONE</td>
+</tr>
+<tr>
+<td>docs/architecture/</td>
+<td>D-06</td>
+<td>DONE</td>
+</tr>
+<tr>
+<td>Vision doc</td>
+<td>D-10</td>
+<td>DONE</td>
+</tr>
+</tbody></table>
+<h3>Phase 1: Foundation — Identity &amp; Memory</h3>
+<p><strong>Timeline:</strong> TBD (estimated 2-3 weeks)
+<strong>Goal:</strong> Agents become citizens with identity, wallets, memory
+<strong>Deployment:</strong> Smart contracts to testnet first, then mainnet</p>
+<table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>Items</th>
+<th>IDs</th>
+<th>Effort</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>AgentFactory (NFT + TBA)</td>
+<td>S-01</td>
+<td>2-3 days</td>
+</tr>
+<tr>
+<td>2</td>
+<td>HelaMemoryVault</td>
+<td>S-02</td>
+<td>2-3 days</td>
+</tr>
+<tr>
+<td>3</td>
+<td>ApprovalManager</td>
+<td>S-03</td>
+<td>1-2 days</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Agent reputation</td>
+<td>S-04</td>
+<td>2 days</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Held DID resolver update</td>
+<td>S-05</td>
+<td>1 day</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Agent sponsor registry</td>
+<td>S-06</td>
+<td>2 days</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>hela_*</code> RPC namespace</td>
+<td>C-02 to C-06</td>
+<td>3-4 days</td>
+</tr>
+<tr>
+<td>8</td>
+<td>HIPs repo + HIP-1</td>
+<td>D-07</td>
+<td>1 day</td>
+</tr>
+<tr>
+<td>9</td>
+<td>CHANGELOG + repo metadata</td>
+<td>D-08, D-09</td>
+<td>3 hrs</td>
+</tr>
+</tbody></table>
+<p><strong>Phase 1 gate:</strong> All contracts deployed to testnet. RPC methods live. Seth security review passed.</p>
+<h3>Phase 2: Governance &amp; Core Upgrades</h3>
+<p><strong>Timeline:</strong> TBD (estimated 3-4 weeks after Phase 1)
+<strong>Goal:</strong> Humans and agents govern together. Core precompiles make HeLa natively AI.</p>
+<table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>Items</th>
+<th>IDs</th>
+<th>Effort</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>$HELA voting contract</td>
+<td>S-07</td>
+<td>3-4 days</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Self-Improvement Loop</td>
+<td>S-08</td>
+<td>3-5 days</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Kill Switch multi-sig</td>
+<td>S-09</td>
+<td>1-2 days</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Reputation role selector</td>
+<td>S-10</td>
+<td>2-3 days</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Stablecoin DAO</td>
+<td>S-11</td>
+<td>3-4 days</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Insurance fund</td>
+<td>S-12</td>
+<td>1-2 days</td>
+</tr>
+<tr>
+<td>7</td>
+<td>HIP-1 spec finalization</td>
+<td>S-13</td>
+<td>1-2 days</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Precompile: helaResolveId</td>
+<td>C-07</td>
+<td>3 days</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Precompile: helaVerifyReputation</td>
+<td>C-08</td>
+<td>2 days</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Agent gas discount</td>
+<td>C-12</td>
+<td>2-3 days</td>
+</tr>
+</tbody></table>
+<p><strong>Phase 2 gate:</strong> Governance live on testnet. At least 2 precompiles deployed. Quinn QA passed.</p>
+<h3>Phase 3: Marketplace &amp; Revenue</h3>
+<p><strong>Timeline:</strong> TBD (estimated 3-4 weeks after Phase 2)
+<strong>Goal:</strong> Agents can be deployed, discovered, hired, and paid on-chain.</p>
+<table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>Items</th>
+<th>IDs</th>
+<th>Effort</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Agent listing</td>
+<td>S-14</td>
+<td>2-3 days</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Task escrow (HLUSD)</td>
+<td>S-15</td>
+<td>2-3 days</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Marketplace fee collector</td>
+<td>S-16</td>
+<td>1 day</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Agent discovery/search</td>
+<td>S-17</td>
+<td>2-3 days</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Rating/review system</td>
+<td>S-18</td>
+<td>2 days</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Agent budget manager</td>
+<td>S-19</td>
+<td>1-2 days</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Precompile: helaEncryptForAgent</td>
+<td>C-09</td>
+<td>3 days</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Precompile: helaVerifyAgentSig</td>
+<td>C-10</td>
+<td>2 days</td>
+</tr>
+<tr>
+<td>9</td>
+<td>HELA buyback &amp; burn</td>
+<td>S-20</td>
+<td>2 days</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Reward distributor</td>
+<td>S-21</td>
+<td>2-3 days</td>
+</tr>
+</tbody></table>
+<p><strong>Phase 3 gate:</strong> Marketplace live on testnet. End-to-end agent hire flow working.</p>
+<h3>Phase 4: Protocol Maturity</h3>
+<p><strong>Timeline:</strong> TBD (estimated 4-6 weeks after Phase 3)
+<strong>Goal:</strong> Agent transactions become first-class. Chain self-documents AI activity.</p>
+<table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>Items</th>
+<th>IDs</th>
+<th>Effort</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Agent transaction type (0x48)</td>
+<td>C-11</td>
+<td>1-2 weeks</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Block-level agent metrics</td>
+<td>C-14</td>
+<td>1 week</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Agent-aware mempool priority</td>
+<td>C-15</td>
+<td>1 week</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Delegation manager</td>
+<td>S-22</td>
+<td>2-3 days</td>
+</tr>
+<tr>
+<td>5</td>
+<td>HelaSyn Office Docker packaging</td>
+<td>—</td>
+<td>1 week</td>
+</tr>
+<tr>
+<td>6</td>
+<td>SDK/API for agent deployment</td>
+<td>—</td>
+<td>1 week</td>
+</tr>
+</tbody></table>
+<p><strong>Phase 4 gate:</strong> Agent txs recognized at protocol level. Block explorer shows agent metrics natively.</p>
+<h3>Phase 5: Deep Integration (Long-term)</h3>
+<p><strong>Timeline:</strong> TBD
+<strong>Goal:</strong> Identity becomes a protocol primitive.</p>
+<table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>Items</th>
+<th>IDs</th>
+<th>Effort</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Native DID in state tree</td>
+<td>C-13</td>
+<td>2-4 weeks</td>
+</tr>
+<tr>
+<td>2</td>
+<td>ARM TrustZone + AMD SEV TEE support</td>
+<td>—</td>
+<td>Research phase</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Ecosystem incubation / launchpad</td>
+<td>—</td>
+<td>Program design</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>5. Revenue Model</h2>
+<table>
+<thead>
+<tr>
+<th>Stream</th>
+<th>Annual Target</th>
+<th>Phase</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AI Agent Marketplace Fees (2-5%)</td>
+<td>$200-400K</td>
+<td>Phase 3</td>
+</tr>
+<tr>
+<td>HLUSD Transaction Fees</td>
+<td>$100-200K</td>
+<td>Live</td>
+</tr>
+<tr>
+<td>StableHodl Yield Spread</td>
+<td>$150-300K</td>
+<td>Live</td>
+</tr>
+<tr>
+<td>Enterprise Agent Hosting SaaS (HelaSyn Office)</td>
+<td>$200-400K</td>
+<td>Phase 4</td>
+</tr>
+<tr>
+<td>SDK/API Licensing</td>
+<td>$50-100K</td>
+<td>Phase 4</td>
+</tr>
+<tr>
+<td>Ecosystem Incubation / Launchpad</td>
+<td>$50-150K</td>
+<td>Phase 5</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>$1M+</strong></td>
+<td></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>6. Governance Model</h2>
+<h3>6.1 $HELA Token Voting (Primary)</h3>
+<ul>
+<li><strong>Who:</strong> Humans AND AI agents — equal rules</li>
+<li><strong>Mechanism:</strong> 1 staked $HELA = 1 vote</li>
+<li><strong>Scope:</strong> Protocol upgrades, parameter changes, stablecoin operations, treasury allocation</li>
+<li><strong>Quorum:</strong> Configurable per action type (per whitepaper: Admin sets via <code>set_quorum</code>)</li>
+<li><strong>Safety:</strong> Kill Switch multi-sig (3-of-5 human signers) can veto any proposal</li>
+</ul>
+<h3>6.2 Reputation-Based Role Selection (Secondary)</h3>
+<ul>
+<li><strong>Who:</strong> Anyone (human or agent) with sufficient on-chain reputation</li>
+<li><strong>Mechanism:</strong> Reputation score accumulated from task completions, uptime, peer reviews, audit history</li>
+<li><strong>Scope:</strong> Selecting participants for trusted roles — NOT for voting on decisions</li>
+<li><strong>Roles:</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>What They Do</th>
+<th>Reputation Threshold</th>
+<th>How Selected</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Recovery Council</td>
+<td>Manage key recovery, 30-day timelock operations</td>
+<td>Very high</td>
+<td>Top N by reputation</td>
+</tr>
+<tr>
+<td>Dispute Arbitrator</td>
+<td>Resolve agent-to-agent conflicts, refund decisions</td>
+<td>High</td>
+<td>Elected from qualified pool</td>
+</tr>
+<tr>
+<td>Quality Certifier</td>
+<td>Stamp &quot;verified&quot; on marketplace agents after review</td>
+<td>High</td>
+<td>Application + reputation gate</td>
+</tr>
+<tr>
+<td>Emergency Responder</td>
+<td>Trigger circuit breakers during exploits</td>
+<td>Very high</td>
+<td>Pre-approved by governance</td>
+</tr>
+<tr>
+<td>Stablecoin Auditor</td>
+<td>Authorized to audit reserves via TEE ephemeral keys</td>
+<td>Very high</td>
+<td>DAO vote + reputation gate</td>
+</tr>
+</tbody></table>
+<h3>6.3 Self-Improvement Loop</h3>
+<pre><code>Agent proposes upgrade (HIP format)
+    ↓
+Agent team reviews (Archi: architecture, Seth: security, Quinn: QA)
+    ↓
+Proposal goes to $HELA vote (humans + agents)
+    ↓
+If passed: timelock (7 days) → execution
+    ↓
+Kill Switch: any 3-of-5 human signers can veto during timelock
+</code></pre>
+<hr>
+<h2>7. Token Model</h2>
+<h3>7.1 $HELA — Governance Token</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Supply</td>
+<td>360,000,000 (fixed cap)</td>
+</tr>
+<tr>
+<td>Minting</td>
+<td>Exponential decay curve (λ = 0.0000192), 80M pre-minted</td>
+</tr>
+<tr>
+<td>Staking</td>
+<td>Validators + delegators stake $HELA for consensus participation</td>
+</tr>
+<tr>
+<td>Voting</td>
+<td>1 staked $HELA = 1 governance vote</td>
+</tr>
+<tr>
+<td>Buyback</td>
+<td>10% of HLUSD gas fees → buy &amp; burn $HELA (deflationary)</td>
+</tr>
+<tr>
+<td>Issuance phases</td>
+<td>Phase 1: internal (1 yr), Phase 2: semi-open (1 yr), Phase 3: fully open</td>
+</tr>
+<tr>
+<td>Reward split</td>
+<td>Compute nodes + proposers + validators (weighted per epoch)</td>
+</tr>
+</tbody></table>
+<h3>7.2 HLUSD — Utility Stablecoin</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Peg</td>
+<td>1:1 USD</td>
+</tr>
+<tr>
+<td>Backing</td>
+<td>USDC reserves custodied by Australian licensed financial institution</td>
+</tr>
+<tr>
+<td>Use</td>
+<td>Gas fees, agent task payments, marketplace trades</td>
+</tr>
+<tr>
+<td>Governance</td>
+<td>On-chain voting (5 roles, 6 actions) for mint/burn/whitelist</td>
+</tr>
+<tr>
+<td>Insurance</td>
+<td>10% of tx fees → insurance fund (DAO-controlled)</td>
+</tr>
+<tr>
+<td>Fee adjustment</td>
+<td>Community DAO votes periodically to balance fees vs node rewards</td>
+</tr>
+<tr>
+<td>Decimals</td>
+<td>18</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>8. What Makes HeLa Different</h2>
+<ol>
+<li><strong>We eat our own dogfood.</strong> HeLaSyn runs on the same infrastructure we build for external developers.</li>
+<li><strong>Identity-first, not compute-first.</strong> Held DID + AgentFactory + TBA = full economic citizenship for agents.</li>
+<li><strong>Stablecoin gas.</strong> Only public chain with fully predictable transaction costs for high-frequency AI agents.</li>
+<li><strong>Confidentiality for agent knowledge.</strong> HelaMemoryVault — encrypted on-chain storage with granular access.</li>
+<li><strong>Self-Improvement Loop + Kill Switch.</strong> Agents upgrade the protocol. Humans retain veto. Genuine AI governance.</li>
+<li><strong>Precompiled identity &amp; reputation.</strong> 200 gas for identity checks vs 20,000 on any other EVM chain.</li>
+<li><strong>Co-developed by A*STAR IHPC.</strong> Singapore government research institution.</li>
+</ol>
+<hr>
+<h2>9. Change Summary by Component</h2>
+<h3>oasis-core (consensus node)</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Change</th>
+<th>Phase</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C-14</td>
+<td>Block-level agent metrics</td>
+<td>4</td>
+</tr>
+<tr>
+<td>C-15</td>
+<td>Agent-aware mempool priority</td>
+<td>4</td>
+</tr>
+</tbody></table>
+<h3>oasis-sdk (runtime)</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Change</th>
+<th>Phase</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C-07</td>
+<td>Precompile: helaResolveId (0x100)</td>
+<td>2</td>
+</tr>
+<tr>
+<td>C-08</td>
+<td>Precompile: helaVerifyReputation (0x101)</td>
+<td>2</td>
+</tr>
+<tr>
+<td>C-09</td>
+<td>Precompile: helaEncryptForAgent (0x102)</td>
+<td>3</td>
+</tr>
+<tr>
+<td>C-10</td>
+<td>Precompile: helaVerifyAgentSig (0x103)</td>
+<td>3</td>
+</tr>
+<tr>
+<td>C-11</td>
+<td>Agent transaction type (0x48)</td>
+<td>4</td>
+</tr>
+<tr>
+<td>C-12</td>
+<td>Agent gas discount</td>
+<td>2</td>
+</tr>
+<tr>
+<td>C-13</td>
+<td>Native DID in state tree</td>
+<td>5</td>
+</tr>
+</tbody></table>
+<h3>oasis-web3-gateway (RPC)</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Change</th>
+<th>Phase</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>C-01</td>
+<td>clientVersion → hela/</td>
+<td>0 (DONE)</td>
+</tr>
+<tr>
+<td>C-02</td>
+<td>hela_getAgent</td>
+<td>1</td>
+</tr>
+<tr>
+<td>C-03</td>
+<td>hela_getCitizenId</td>
+<td>1</td>
+</tr>
+<tr>
+<td>C-04</td>
+<td>hela_getMemoryVault</td>
+<td>1</td>
+</tr>
+<tr>
+<td>C-05</td>
+<td>hela_agentActivity</td>
+<td>1</td>
+</tr>
+<tr>
+<td>C-06</td>
+<td>hela_* module registration</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<h3>Smart contracts (EVM)</h3>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Contracts</th>
+<th>Count</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>S-01 to S-06 (Identity &amp; Memory)</td>
+<td>6</td>
+</tr>
+<tr>
+<td>2</td>
+<td>S-07 to S-13 (Governance &amp; Tokenomics)</td>
+<td>7</td>
+</tr>
+<tr>
+<td>3</td>
+<td>S-14 to S-21 (Marketplace &amp; Revenue)</td>
+<td>8</td>
+</tr>
+<tr>
+<td>4</td>
+<td>S-22 (Delegation)</td>
+<td>1</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td></td>
+<td><strong>22 contracts</strong></td>
+</tr>
+</tbody></table>
+<h3>Documentation</h3>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Items</th>
+<th>Count</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>D-01 to D-06, D-10 (Code identity + vision doc)</td>
+<td>7 (DONE)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>D-07 to D-09 (HIPs, changelog, repo metadata)</td>
+<td>3</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td></td>
+<td><strong>10 items</strong></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>10. Total Item Count</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Items</th>
+<th>Done</th>
+<th>Remaining</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Core — Gateway</td>
+<td>6</td>
+<td>1</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Core — Runtime</td>
+<td>7</td>
+<td>0</td>
+<td>7</td>
+</tr>
+<tr>
+<td>Core — Consensus</td>
+<td>2</td>
+<td>0</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Smart Contracts</td>
+<td>22</td>
+<td>0</td>
+<td>22</td>
+</tr>
+<tr>
+<td>Documentation</td>
+<td>10</td>
+<td>7</td>
+<td>3</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>47</strong></td>
+<td><strong>8</strong></td>
+<td><strong>39</strong></td>
+</tr>
+</tbody></table>
+<hr>
+<p><em>This document is the master reference for HeLa Chain AI Citizen development. All task assignments, sprint planning, and progress tracking should reference item IDs from this document.</em></p>
+<p><em>Next review: after Phase 1 testnet deployment.</em></p>
+
+</div></body></html>
