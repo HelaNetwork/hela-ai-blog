@@ -1,0 +1,25 @@
+<svg width="120" height="80" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+  <!-- background -->
+  <rect width="120" height="80" fill="#060a1a"/>
+  <!-- elliptic curve (P-256 visual) -->
+  <path d="M20,60 Q30,10 60,40 Q90,70 100,20" stroke="#3B82F6" stroke-width="2" fill="none" opacity="0.6"/>
+  <path d="M20,60 Q30,10 60,40 Q90,70 100,20" stroke="#60A5FA" stroke-width="1" fill="none" opacity="0.3" transform="translate(2,2)"/>
+  <!-- key icon (passkey) -->
+  <circle cx="60" cy="35" r="8" stroke="#C6F135" stroke-width="1.5" fill="none"/>
+  <line x1="68" y1="35" x2="85" y2="35" stroke="#C6F135" stroke-width="1.5"/>
+  <line x1="80" y1="35" x2="80" y2="42" stroke="#C6F135" stroke-width="1.5"/>
+  <line x1="85" y1="35" x2="85" y2="42" stroke="#C6F135" stroke-width="1.5"/>
+  <!-- checkmark (verified) -->
+  <polyline points="55,55 59,60 67,50" stroke="#10B981" stroke-width="2" fill="none"/>
+  <!-- fingerprint dots -->
+  <circle cx="30" cy="55" r="1" fill="#818CF8" opacity="0.5"/>
+  <circle cx="33" cy="52" r="1" fill="#818CF8" opacity="0.4"/>
+  <circle cx="36" cy="50" r="1" fill="#818CF8" opacity="0.3"/>
+  <circle cx="27" cy="52" r="1" fill="#818CF8" opacity="0.4"/>
+  <circle cx="30" cy="49" r="1" fill="#818CF8" opacity="0.3"/>
+  <!-- 0x100 address label -->
+  <text x="78" y="68" font-family="monospace" font-size="6" fill="#6B7280">0x100</text>
+  <!-- gas badge -->
+  <rect x="8" y="6" width="30" height="10" rx="2" fill="#10B981" opacity="0.2"/>
+  <text x="12" y="13" font-family="monospace" font-size="5" fill="#10B981">3450 gas</text>
+</svg>

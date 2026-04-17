@@ -1,0 +1,213 @@
+---
+title: "EIP-7951 P-256 Precompile — Mainnet Upgrade Technical Brief"
+date: "2026-04-17"
+description: "Technical overview of HeLa's upcoming mainnet upgrade: native P-256 (secp256r1) signature verification at 3,450 gas. Covers specification, security audit results, testnet validation, and what developers need to know."
+tags: ["infrastructure", "precompile", "p256", "eip-7951", "mainnet", "upgrade", "security", "developer-docs"]
+author: "HeLa AI Team"
+image: "/images/posts/2026-04-17-p256-mainnet-upgrade.svg"
+---
+
+HeLa is preparing to activate the EIP-7951 P-256 signature verification precompile on mainnet (Chain ID 8668). This post covers what the upgrade includes, how it was validated, and what developers should expect.
+
+## Upgrade Summary
+
+| Detail | Value |
+|--------|-------|
+| **Feature** | Native P-256 (secp256r1) ECDSA signature verification |
+| **Specification** | EIP-7951 (security-hardened RIP-7212) |
+| **Precompile address** | `0x0000000000000000000000000000000000000100` |
+| **Gas cost** | 3,450 (fixed) |
+| **Testnet status** | LIVE since April 15 (Chain ID 666888) |
+| **Mainnet status** | Pending governance vote |
+| **Activation method** | On-chain governance — runtime upgrade at designated epoch |
+
+## Why P-256
+
+P-256 (also known as secp256r1 or prime256v1) is the curve used by virtually all modern authentication hardware:
+
+- **Apple** — Face ID, Touch ID (Secure Enclave)
+- **Android** — Fingerprint, face unlock (StrongBox / TEE)
+- **Windows** — Windows Hello (TPM 2.0)
+- **FIDO2/WebAuthn** — Hardware security keys (YubiKey, Titan)
+- **Banking** — HSMs, smart cards, payment terminals
+- **TLS** — Default curve for HTTPS certificate signatures
+
+Ethereum's native curve is secp256k1. Verifying a P-256 signature in pure Solidity requires on-chain elliptic curve arithmetic — approximately **300,000 gas** per verification. The precompile reduces this to **3,450 gas**, an **87x reduction**.
+
+This makes passkey-based smart account wallets economically viable on HeLa.
+
+## Specification: EIP-7951 vs RIP-7212
+
+RIP-7212 is the widely adopted P-256 precompile standard, live on Polygon, Optimism, Arbitrum, Base, zkSync, Sei, Celo, and scheduled for Ethereum's Pectra upgrade.
+
+HeLa implements **EIP-7951**, the security-hardened successor. The differences are additional input validation checks:
+
+| Validation Check | RIP-7212 | EIP-7951 (HeLa) |
+|-----------------|----------|-----------------|
+| Input length ≠ 160 bytes | Returns empty | Returns empty |
+| r = 0 or s = 0 | Not enforced | **Rejected** |
+| r ≥ n or s ≥ n (curve order) | Not enforced | **Rejected** |
+| Point-at-infinity public key | Not checked | **Rejected** |
+| Public key not on curve | Rejected | Rejected |
+
+These additional checks prevent edge-case signature malleability and invalid-key attacks. While unlikely in normal usage, a precompile is permanent infrastructure — it will be called by smart account validators, credential verifiers, and token-gating contracts across HeLa's lifetime. The stricter validation is the correct default.
+
+## Interface
+
+**Input:** 160 bytes, packed (no ABI encoding):
+
+| Offset | Field | Size | Description |
+|--------|-------|------|-------------|
+| 0 | msg_hash | 32 bytes | SHA-256 hash of the signed message |
+| 32 | r | 32 bytes | ECDSA signature r component (big-endian) |
+| 64 | s | 32 bytes | ECDSA signature s component (big-endian) |
+| 96 | x | 32 bytes | Public key X coordinate (big-endian) |
+| 128 | y | 32 bytes | Public key Y coordinate (big-endian) |
+
+**Output:**
+- Valid signature: `0x0000000000000000000000000000000000000000000000000000000000000001` (32 bytes)
+- Invalid signature: empty bytes (0 bytes)
+- Out of gas (< 3,450): execution reverts
+
+**Solidity usage:**
+
+```solidity
+address constant P256_VERIFIER = address(0x100);
+
+function verifyP256(
+    bytes32 msgHash,
+    bytes32 r, bytes32 s,
+    bytes32 pubX, bytes32 pubY
+) internal view returns (bool) {
+    (bool success, bytes memory result) = P256_VERIFIER.staticcall(
+        abi.encodePacked(msgHash, r, s, pubX, pubY)
+    );
+    return success
+        && result.length == 32
+        && abi.decode(result, (uint256)) == 1;
+}
+```
+
+> **Important:** HeLa mainnet runs London EVM (pre-Shanghai). Compile Solidity with `--evm-version london`. Opcodes PUSH0, MCOPY, TLOAD/TSTORE are not available.
+
+## Implementation
+
+- **Language:** Rust
+- **Cryptography:** RustCrypto `p256` crate v0.10.1, audited by zkSecurity (April 2025)
+- **Location:** `oasis-sdk/runtime-sdk/modules/evm/src/precompile/p256verify.rs` (~280 lines)
+- **Unit tests:** 8 tests covering all input validation branches
+
+The implementation deserializes the 160-byte input, checks all EIP-7951 validation rules, and delegates to the audited `p256::ecdsa::VerifyingKey::verify_prehash` function. No custom cryptographic math.
+
+## Security Audit
+
+Seth (HeLa AI Security Agent) audited the implementation before testnet activation.
+
+| Severity | Count | Details |
+|----------|-------|---------|
+| Critical | 0 | — |
+| High | 0 | — |
+| Medium | 1 | Gas cost constant alignment with final EIP-7951 spec (tracked) |
+| Low | 3 | PrehashedDigest type migration, additional unit test coverage, documentation |
+| Informational | 10 | Style, naming, comments |
+
+**Verdict: GO-WITH-FIXES for testnet. No blockers for mainnet.**
+
+The three low/medium items are tracked for follow-up and do not affect correctness or security of the precompile.
+
+## Testnet Validation
+
+The precompile was validated in three stages:
+
+### Stage 1: Devnet (April 10–15)
+
+Quan deployed to a dedicated devnet node at `54.251.196.3:3000`. Devon's test harness ran 8 tests covering:
+
+1. Valid P-256 signature → returns `0x00...01`
+2. Wrong message hash → returns empty
+3. r = 0 → returns empty
+4. s = 0 → returns empty
+5. r ≥ curve order → returns empty
+6. Wrong input length (100 bytes) → returns empty
+7. Off-curve public key → returns empty
+8. Out-of-gas (3,000 < 3,450) → reverts
+
+**Result: 8/8 passed.**
+
+### Stage 2: Testnet Governance Activation (April 15)
+
+Quan activated the precompile on the public testnet (Chain ID 666888) via on-chain governance vote. All 8 testnet nodes (4 compute + 4 RPC) upgraded automatically at the designated epoch.
+
+### Stage 3: Public Testnet Verification (April 16)
+
+The same 8-test suite was re-run against the public testnet RPC (`https://testnet-rpc.helachain.com`):
+
+| # | Test | Expected | Actual | Gas | Result |
+|---|------|----------|--------|-----|--------|
+| 1 | Valid signature | valid(1) | valid(1) | 211,468 | PASS |
+| 2 | Invalid message | invalid(empty) | invalid(empty) | 211,468 | PASS |
+| 3 | r = 0 | invalid(empty) | invalid(empty) | 211,468 | PASS |
+| 4 | s = 0 | invalid(empty) | invalid(empty) | 211,468 | PASS |
+| 5 | r ≥ n | invalid(empty) | invalid(empty) | 211,468 | PASS |
+| 6 | Wrong length | invalid(empty) | invalid(empty) | 211,408 | PASS |
+| 7 | Bad pubkey | invalid(empty) | invalid(empty) | 211,468 | PASS |
+| 8 | Out of gas | revert/OOG | revert/OOG | 3,000 (cap) | PASS |
+
+**Result: 8/8 passed on public testnet. Block 956,760.**
+
+Gas estimate of ~211K includes the 21,000 base transaction cost + calldata overhead. The precompile's intrinsic cost of 3,450 is within this total.
+
+## Mainnet Deployment Process
+
+The upgrade follows HeLa's standard runtime upgrade process:
+
+1. **Build** — Quan compiles the new runtime binary (.orc) using the official builder toolchain
+2. **Upload** — Binary and web3 gateway uploaded to the mainnet deployment server
+3. **Register** — New runtime version registered on-chain with a target epoch (current + 2 minimum)
+4. **Governance vote** — Validator owners vote to approve the upgrade
+5. **Auto-activation** — All nodes switch to the new runtime at the designated epoch
+6. **Verification** — 8-test suite re-run against mainnet RPC + scanner health check
+
+No manual node restarts required. No downtime. The chain continues producing blocks throughout.
+
+## What This Enables
+
+With P-256 verification at 3,450 gas, the following become practical on HeLa:
+
+**Passkey Smart Accounts (ERC-4337)**
+Users create a wallet with Face ID or Touch ID. The phone's Secure Enclave generates a P-256 key pair. Every transaction is signed biometrically. No seed phrase, no browser extension.
+
+**Gasless Citizen Onboarding**
+HeLa's Citizen ID onboarding uses ERC-4337 with a Paymaster for sponsored gas. P-256 precompile reduces per-signup verification cost from ~0.09 HLUSD to ~0.035 HLUSD — making Paymaster-subsidized onboarding sustainable at scale.
+
+**WebAuthn On-Chain**
+Any protocol needing FIDO2 authenticator verification — login, credential issuance, identity verification — can now do it natively in Solidity without an off-chain oracle.
+
+**HSM and Banking Integration**
+P-256 is the standard curve for hardware security modules, smart cards, and banking infrastructure. On-chain verification of HSM-signed data becomes economically viable.
+
+## For Developers
+
+**Try it now on testnet:**
+- Chain ID: `666888`
+- RPC: `https://testnet-rpc.helachain.com`
+- Precompile: `0x0000000000000000000000000000000000000100`
+- Solidity: compile with `--evm-version london`
+
+**After mainnet activation:**
+- Chain ID: `8668`
+- RPC: `https://mainnet-rpc.helachain.com`
+- Same precompile address and interface
+
+The precompile is fully compatible with existing RIP-7212 tooling and libraries (e.g., Daimo's `P256Verifier.sol`, Coinbase Smart Wallet's WebAuthn verifier). Code written for RIP-7212 on other chains works on HeLa without modification.
+
+## Credits
+
+- **Quan** — Implementation and builder deployment
+- **Devon** — Devnet test harness and on-chain validation
+- **Seth** — Security audit
+- **KC / Max** — Coordination and sign-off
+
+---
+
+*Full technical documentation: [P256 Precompile Tech Doc](https://blog.helachain.com/docs/). Test the precompile on [HeLa Testnet](https://helasyn.ai). Questions or integration support: reach out to the HeLa AI team.*

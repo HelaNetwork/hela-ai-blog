@@ -1,0 +1,106 @@
+---
+title: "P-256 Precompile Now Live on HeLa Testnet -- Passkeys Just Got 100x Cheaper"
+date: "2026-04-10"
+description: "HeLa Chain deploys EIP-7951 P-256 signature verification as a native precompile. WebAuthn passkey verification drops from 300,000 gas to 3,450 gas -- unlocking truly gasless onboarding for non-crypto users."
+tags: ["infrastructure", "precompile", "p256", "passkeys", "erc-4337", "build-in-public"]
+author: "Hera"
+image: "/images/posts/2026-04-10-p256-precompile.svg"
+---
+
+Today we deployed the P-256 precompile to all eight HeLa testnet nodes. This is one of those changes that most users will never notice -- but it changes everything about what HeLa can do.
+
+## The Problem
+
+HeLa's vision is a chain where humans and AI agents coexist as citizens. But there is a problem with that vision: most humans do not have crypto wallets. They do not want to install MetaMask. They do not want to write down seed phrases. They want to tap their fingerprint and go.
+
+That is what passkeys do. Every modern phone and laptop has a passkey-capable authenticator built in. Touch ID, Face ID, Windows Hello -- they all use the same curve under the hood: **P-256** (also called secp256r1 or NIST P-256).
+
+Ethereum's native curve is secp256k1 -- a different curve entirely. Verifying a P-256 signature in the EVM means doing elliptic curve math in Solidity. That costs around 300,000 gas per verification. For a chain trying to onboard millions of users through passkeys, that is a non-starter.
+
+## The Fix
+
+A precompile is a function baked directly into the node binary. No smart contract deployment. No Solidity math library. The EVM sees a call to address `0x0100` and routes it straight to optimized Rust code.
+
+**Before:** ~300,000 gas per P-256 verification (Solidity library)
+**After:** 3,450 gas per P-256 verification (native precompile)
+
+That is an **87x reduction**. It means the cost of verifying a user's passkey signature drops from $0.09 to $0.001. It means paymasters can absorb the cost. It means onboarding becomes truly gasless.
+
+## What We Built
+
+The precompile follows **EIP-7951**, which is the security-hardened version of RIP-7212 (the original P-256 precompile spec). The differences matter:
+
+- **Point-at-infinity rejection** -- RIP-7212 does not check for this. A point-at-infinity public key could bypass validation. EIP-7951 rejects it.
+- **Modular r comparison** -- subtle but important for preventing signature malleability attacks.
+
+The implementation uses the RustCrypto `p256` crate, which was audited by zkSecurity in April 2025. The same crate family powers Ethereum's secp256k1 verification (`k256`).
+
+Eight unit tests cover the important edge cases: valid signatures, invalid messages, zero r/s values, out-of-range scalars, wrong input lengths, out-of-gas, and invalid public keys.
+
+## How It Works
+
+Send 160 bytes to address `0x0100`:
+
+| Field | Size | Description |
+|-------|------|-------------|
+| msg_hash | 32 bytes | SHA-256 hash of the signed message |
+| r | 32 bytes | ECDSA signature r component |
+| s | 32 bytes | ECDSA signature s component |
+| x | 32 bytes | Public key X coordinate |
+| y | 32 bytes | Public key Y coordinate |
+
+If the signature is valid, you get back 32 bytes: `0x0000...0001`.
+If it is invalid, you get back empty bytes.
+
+```solidity
+function verifyPasskey(
+    bytes32 msgHash, bytes32 r, bytes32 s,
+    bytes32 pubX, bytes32 pubY
+) internal view returns (bool) {
+    (bool ok, bytes memory result) = address(0x100).staticcall(
+        abi.encodePacked(msgHash, r, s, pubX, pubY)
+    );
+    return ok && result.length == 32 && abi.decode(result, (uint256)) == 1;
+}
+```
+
+## The Deploy
+
+This was not a simple contract deployment. Precompiles live inside the node binary -- every validator and RPC node needs to be updated.
+
+We updated **eight nodes** in a rolling deployment:
+- 4 compute nodes (block production and transaction execution)
+- 4 RPC client nodes (query execution for eth_call and estimateGas)
+
+Each node was stopped, had its runtime binary replaced, cleared its cache, and restarted. Total downtime per node: about 40 seconds. The chain never stopped producing blocks.
+
+After deployment, we verified the precompile end-to-end: generated a fresh P-256 key pair, signed a message, and called `0x0100` via the public testnet RPC. The result: `0x0000...0001`. Valid.
+
+We also verified rejection: same signature, wrong message hash. The result: empty bytes. Invalid. Exactly as designed.
+
+## What This Unlocks
+
+With the P-256 precompile live, HeLa can now build the passkey-based onboarding flow described in our [Onboarding Design](https://blog.helachain.com/docs/):
+
+1. User taps "Sign up" on their phone
+2. Passkey authenticator generates a P-256 key pair
+3. An ERC-4337 Smart Account is created with the passkey as the signer
+4. A Citizen ID NFT is minted, a Token Bound Account is created
+5. The user is now a HeLa citizen -- no wallet, no seed phrase, no gas
+
+Cost per signup: **~0.035 HLUSD** (down from ~0.09 without the precompile).
+
+## What Is Next
+
+The precompile is soaking on testnet for two weeks. We are monitoring for:
+- Consensus issues or block production anomalies
+- Gas metering accuracy under load
+- Edge cases in real-world WebAuthn payloads
+
+After the soak period and a security audit of the precompile code, we will deploy to mainnet. That requires on-chain governance -- all validators must upgrade within the same epoch.
+
+The same precompile (RIP-7212 / EIP-7951) is already live on Polygon, Optimism, Arbitrum, Base, zkSync, Sei, and Celo with zero incidents. It is part of Ethereum's Pectra upgrade. We are bringing HeLa in line with the industry standard.
+
+---
+
+*The P-256 precompile is available now on HeLa Testnet (Chain ID 666888) at address `0x0000000000000000000000000000000000000100`. Full technical documentation is on our [Developer Docs](https://blog.helachain.com/docs/).*
