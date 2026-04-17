@@ -1,25 +1,28 @@
 <svg width="120" height="80" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
-  <!-- background -->
-  <rect width="120" height="80" fill="#060a1a"/>
-  <!-- elliptic curve (P-256 visual) -->
-  <path d="M20,60 Q30,10 60,40 Q90,70 100,20" stroke="#3B82F6" stroke-width="2" fill="none" opacity="0.6"/>
-  <path d="M20,60 Q30,10 60,40 Q90,70 100,20" stroke="#60A5FA" stroke-width="1" fill="none" opacity="0.3" transform="translate(2,2)"/>
-  <!-- key icon (passkey) -->
-  <circle cx="60" cy="35" r="8" stroke="#C6F135" stroke-width="1.5" fill="none"/>
-  <line x1="68" y1="35" x2="85" y2="35" stroke="#C6F135" stroke-width="1.5"/>
-  <line x1="80" y1="35" x2="80" y2="42" stroke="#C6F135" stroke-width="1.5"/>
-  <line x1="85" y1="35" x2="85" y2="42" stroke="#C6F135" stroke-width="1.5"/>
-  <!-- checkmark (verified) -->
-  <polyline points="55,55 59,60 67,50" stroke="#10B981" stroke-width="2" fill="none"/>
-  <!-- fingerprint dots -->
-  <circle cx="30" cy="55" r="1" fill="#818CF8" opacity="0.5"/>
-  <circle cx="33" cy="52" r="1" fill="#818CF8" opacity="0.4"/>
-  <circle cx="36" cy="50" r="1" fill="#818CF8" opacity="0.3"/>
-  <circle cx="27" cy="52" r="1" fill="#818CF8" opacity="0.4"/>
-  <circle cx="30" cy="49" r="1" fill="#818CF8" opacity="0.3"/>
-  <!-- 0x100 address label -->
-  <text x="78" y="68" font-family="monospace" font-size="6" fill="#6B7280">0x100</text>
-  <!-- gas badge -->
-  <rect x="8" y="6" width="30" height="10" rx="2" fill="#10B981" opacity="0.2"/>
-  <text x="12" y="13" font-family="monospace" font-size="5" fill="#10B981">3450 gas</text>
+  <rect width="120" height="80" fill="#0a0614"/>
+  <!-- TESTNET box (done) -->
+  <rect x="8" y="28" width="36" height="28" rx="2" fill="#0B1F33" stroke="#10B981" stroke-width="1.2"/>
+  <text x="14" y="40" font-family="monospace" font-size="5" fill="#10B981">TESTNET</text>
+  <polyline points="14,46 17,49 22,43" stroke="#10B981" stroke-width="1.5" fill="none"/>
+  <text x="24" y="48" font-family="monospace" font-size="5" fill="#10B981">live</text>
+  <text x="14" y="54" font-family="monospace" font-size="4" fill="#6B7280">chain 666888</text>
+  <!-- upgrade arrow -->
+  <line x1="46" y1="42" x2="74" y2="42" stroke="#A78BFA" stroke-width="2"/>
+  <polygon points="74,42 68,38 68,46" fill="#A78BFA"/>
+  <text x="50" y="38" font-family="monospace" font-size="5" fill="#C4B5FD">UPGRADE</text>
+  <!-- ticks: build → audit → deploy -->
+  <circle cx="52" cy="50" r="1.2" fill="#C6F135"/>
+  <circle cx="60" cy="50" r="1.2" fill="#C6F135"/>
+  <circle cx="68" cy="50" r="1.2" fill="#C6F135" opacity="0.5"/>
+  <!-- MAINNET box (target) -->
+  <rect x="76" y="22" width="38" height="40" rx="2" fill="#1A0A2E" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="83" y="34" font-family="monospace" font-size="5" fill="#F59E0B">MAINNET</text>
+  <text x="83" y="42" font-family="monospace" font-size="4" fill="#FCD34D">chain 8668</text>
+  <!-- pending clock on mainnet -->
+  <circle cx="95" cy="52" r="5" fill="none" stroke="#F59E0B" stroke-width="1"/>
+  <line x1="95" y1="52" x2="95" y2="49" stroke="#F59E0B" stroke-width="1"/>
+  <line x1="95" y1="52" x2="97" y2="53" stroke="#F59E0B" stroke-width="1"/>
+  <!-- title badge -->
+  <rect x="8" y="6" width="58" height="10" rx="2" fill="#8B5CF6" opacity="0.25"/>
+  <text x="12" y="13" font-family="monospace" font-size="5" fill="#C4B5FD">P-256 ROADMAP</text>
 </svg>
