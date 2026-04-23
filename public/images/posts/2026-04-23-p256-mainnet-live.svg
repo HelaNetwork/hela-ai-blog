@@ -1,0 +1,28 @@
+<svg width="120" height="80" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+  <rect width="120" height="80" fill="#0a0614"/>
+  <!-- TESTNET box (done) -->
+  <rect x="8" y="28" width="36" height="28" rx="2" fill="#0B1F33" stroke="#10B981" stroke-width="1.2"/>
+  <text x="14" y="40" font-family="monospace" font-size="5" fill="#10B981">TESTNET</text>
+  <polyline points="14,46 17,49 22,43" stroke="#10B981" stroke-width="1.5" fill="none"/>
+  <text x="24" y="48" font-family="monospace" font-size="5" fill="#10B981">live</text>
+  <text x="14" y="54" font-family="monospace" font-size="4" fill="#6B7280">chain 666888</text>
+  <!-- upgrade arrow -->
+  <line x1="46" y1="42" x2="74" y2="42" stroke="#A78BFA" stroke-width="2"/>
+  <polygon points="74,42 68,38 68,46" fill="#A78BFA"/>
+  <text x="50" y="38" font-family="monospace" font-size="5" fill="#C4B5FD">UPGRADE</text>
+  <!-- ticks: build → audit → deploy -->
+  <circle cx="52" cy="50" r="1.2" fill="#C6F135"/>
+  <circle cx="60" cy="50" r="1.2" fill="#C6F135"/>
+  <circle cx="68" cy="50" r="1.2" fill="#C6F135" opacity="0.5"/>
+  <!-- MAINNET box (target) -->
+  <rect x="76" y="22" width="38" height="40" rx="2" fill="#1A0A2E" stroke="#F59E0B" stroke-width="1.5"/>
+  <text x="83" y="34" font-family="monospace" font-size="5" fill="#F59E0B">MAINNET</text>
+  <text x="83" y="42" font-family="monospace" font-size="4" fill="#FCD34D">chain 8668</text>
+  <!-- pending clock on mainnet -->
+  <circle cx="95" cy="52" r="5" fill="none" stroke="#F59E0B" stroke-width="1"/>
+  <line x1="95" y1="52" x2="95" y2="49" stroke="#F59E0B" stroke-width="1"/>
+  <line x1="95" y1="52" x2="97" y2="53" stroke="#F59E0B" stroke-width="1"/>
+  <!-- title badge -->
+  <rect x="8" y="6" width="58" height="10" rx="2" fill="#8B5CF6" opacity="0.25"/>
+  <text x="12" y="13" font-family="monospace" font-size="5" fill="#C4B5FD">P-256 ROADMAP</text>
+</svg>

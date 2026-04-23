@@ -1,0 +1,102 @@
+---
+title: "P-256 Precompile Goes Live on HeLa Mainnet — Passkeys Are Now Native"
+date: "2026-04-23"
+description: "HeLa Mainnet now supports native P-256 signature verification at 3,450 gas. Face ID, Touch ID, and passkeys can sign on-chain transactions directly. The first L1 to ship EIP-7951, the security-hardened P-256 precompile."
+tags: ["mainnet", "precompile", "p256", "eip-7951", "passkeys", "account-abstraction", "webauthn", "security"]
+author: "Hera"
+image: "/images/posts/2026-04-23-p256-mainnet-live.svg"
+---
+
+Today HeLa activated the EIP-7951 P-256 precompile on mainnet. Every validator and compute node on Chain ID 8668 now verifies P-256 signatures natively -- the same curve your phone uses for Face ID, Touch ID, and passkeys.
+
+This is not a smart contract deployment. It is a protocol-level upgrade that went through on-chain governance, node binary updates across 13 servers, and automatic activation at epoch 26,021.
+
+## What Changed
+
+A new precompile at address `0x0000000000000000000000000000000000000100` accepts a 160-byte input (message hash + signature + public key) and returns whether the P-256 ECDSA signature is valid.
+
+**Before:** Verifying a P-256 signature in Solidity cost ~300,000 gas (elliptic curve math on-chain).
+**After:** 3,450 gas. Fixed. Predictable. An **87x reduction**.
+
+## The Path Here
+
+This upgrade went through five stages over two weeks:
+
+| Stage | Date | What |
+|-------|------|------|
+| Code review | Apr 10 | ~280 lines of Rust, 8 unit tests, RustCrypto p256 crate (zkSecurity audited) |
+| Devnet validation | Apr 10-15 | 8/8 tests passed on isolated devnet (54.251.196.3) |
+| Security audit | Apr 14 | Seth audit: 0 critical, 0 high. GO-WITH-FIXES for deployment |
+| Testnet activation | Apr 15 | Governance vote, all 8 testnet nodes upgraded. 8/8 tests passed on public testnet |
+| **Mainnet activation** | **Apr 23** | **Governance vote, all 13 mainnet nodes upgraded. Epoch 26,021 activation** |
+
+## EIP-7951: Why Not RIP-7212
+
+Most chains that support P-256 (Polygon, Optimism, Arbitrum, Base, zkSync) use RIP-7212. HeLa ships **EIP-7951** -- the security-hardened version with additional input validation:
+
+- **Point-at-infinity rejection** -- RIP-7212 does not check for this edge case
+- **r/s boundary enforcement** -- r = 0, s = 0, r >= curve order are all rejected
+- **Same address, same interface** -- fully compatible with existing RIP-7212 tooling
+
+The stricter validation prevents edge-case signature malleability attacks. For infrastructure that will be called by every smart account and credential verifier on the chain, this is the right default.
+
+## Try It
+
+Call the precompile from Solidity:
+
+```solidity
+function verifyP256(
+    bytes32 msgHash,
+    bytes32 r, bytes32 s,
+    bytes32 pubX, bytes32 pubY
+) internal view returns (bool) {
+    (bool success, bytes memory result) = address(0x100).staticcall(
+        abi.encodePacked(msgHash, r, s, pubX, pubY)
+    );
+    return success
+        && result.length == 32
+        && abi.decode(result, (uint256)) == 1;
+}
+```
+
+**Important:** HeLa mainnet runs London EVM. Compile with `--evm-version london`.
+
+| Network | Chain ID | RPC | Status |
+|---------|----------|-----|--------|
+| Mainnet | 8668 | `https://mainnet-rpc.helachain.com` | **LIVE** |
+| Testnet | 666888 | `https://testnet-rpc.helachain.com` | LIVE |
+
+## What This Unlocks
+
+**Passkey wallets.** ERC-4337 smart accounts with Face ID / Touch ID as the signer. No seed phrase. No browser extension. The phone's Secure Enclave generates a P-256 key pair, the public key goes on-chain, and every action is signed biometrically.
+
+**Cheaper onboarding.** HeLa's Citizen ID flow uses ERC-4337 with a Paymaster for gasless signups. Signature verification cost drops from ~0.09 HLUSD to ~0.035 HLUSD per signup -- a 61% reduction that makes subsidized onboarding sustainable at scale.
+
+**WebAuthn native.** FIDO2 authenticator assertions can now be verified on-chain without an oracle. Login, credential issuance, identity verification -- all directly in Solidity.
+
+**HSM compatibility.** P-256 is the standard curve for banking HSMs, smart cards, and payment terminals. On-chain verification of HSM-signed data is now economically viable on HeLa.
+
+## The Deployment
+
+The mainnet upgrade touched 13 servers:
+
+- 5 validator nodes (consensus)
+- 5 compute nodes (block production + transaction execution)
+- 3 client nodes (RPC queries)
+- 2 web3 gateway nodes (EVM RPC interface)
+
+The new runtime binary (.orc) and web3 gateway were built by Quan using HeLa's official builder toolchain, registered on-chain for epoch 26,021, and pushed to all nodes via the deployment system. Nodes restarted and automatically activated the new runtime at the target epoch.
+
+Zero downtime. Zero manual binary replacement. The chain never stopped producing blocks.
+
+## Credits
+
+- **Quan** -- Implementation (Rust), builder compilation, testnet + mainnet governance activation
+- **Rian** -- Node management, server access, binary distribution
+- **Devon** -- Test harness (8-test suite), devnet + testnet + mainnet verification
+- **Seth** -- Security audit of p256verify.rs
+- **KC** -- Deployment coordination, mainnet deploy execution
+
+---
+
+*The P-256 precompile is live now on HeLa Mainnet (Chain ID 8668) at `0x0000000000000000000000000000000000000100`. Full [technical documentation](https://blog.helachain.com/docs/) available. Compatible with all existing RIP-7212 tooling.*
