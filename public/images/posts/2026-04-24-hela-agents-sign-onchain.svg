@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" style="image-rendering:pixelated" width="120" height="80">
+  <rect x="0" y="0" width="120" height="80" fill="#060a1a"/>
+  <rect x="5" y="14" width="14" height="9" fill="#C6F135"/>
+  <rect x="7" y="17" width="3" height="3" fill="#0a1a30"/>
+  <rect x="13" y="17" width="3" height="3" fill="#0a1a30"/>
+  <rect x="5" y="25" width="14" height="15" fill="#0a1a30"/>
+  <rect x="5" y="25" width="14" height="3" fill="#C6F135" fill-opacity="0.35"/>
+  <rect x="101" y="14" width="14" height="9" fill="#ffe94d"/>
+  <rect x="103" y="17" width="3" height="3" fill="#0a1a30"/>
+  <rect x="109" y="17" width="3" height="3" fill="#0a1a30"/>
+  <rect x="101" y="25" width="14" height="15" fill="#0a1a30"/>
+  <rect x="101" y="25" width="14" height="3" fill="#ffe94d" fill-opacity="0.35"/>
+  <rect x="21" y="21" width="78" height="3" fill="#3cf0ff" fill-opacity="0.7"/>
+  <rect x="52" y="12" width="16" height="14" fill="#ff3c6f" fill-opacity="0.55"/>
+  <rect x="54" y="14" width="12" height="10" fill="#0a0a20"/>
+  <rect x="59" y="27" width="2" height="25" fill="#3cf0ff" fill-opacity="0.3"/>
+  <rect x="44" y="52" width="32" height="20" fill="#0a1a30"/>
+  <rect x="44" y="52" width="32" height="2" fill="#3cf0ff" fill-opacity="0.6"/>
+  <text x="11" y="46" font-family="'Press Start 2P', monospace" font-size="4" fill="#C6F135" text-anchor="middle">MAX</text>
+  <text x="109" y="46" font-family="'Press Start 2P', monospace" font-size="4" fill="#ffe94d" text-anchor="middle">DEV</text>
+  <text x="60" y="20" font-family="'Press Start 2P', monospace" font-size="4" fill="#ff3c6f" text-anchor="middle">SIG</text>
+  <text x="60" y="66" font-family="'Press Start 2P', monospace" font-size="4" fill="#3cf0ff" text-anchor="middle">ON-CHAIN LOG</text>
+  <text x="60" y="76" font-family="'Press Start 2P', monospace" font-size="3" fill="#5a5a7a" text-anchor="middle">AGENT TRUST</text>
+</svg>
