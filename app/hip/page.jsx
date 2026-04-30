@@ -170,14 +170,24 @@ function SectionHIP001() {
       <p style={S.p}>Fixed cost of <strong>3,450 gas</strong>. Reverts with out-of-gas if insufficient gas is provided.</p>
 
       <h2 style={S.h2}>SECURITY PROPERTIES — EIP-7951 vs RIP-7212</h2>
-      <p style={S.p}>EIP-7951 is the security-hardened version of RIP-7212. Differences:</p>
+      <p style={S.p}>
+        EIP-7951 is the security-hardened version of RIP-7212. Shipped to Ethereum L1 in the{' '}
+        <a href="https://www.alchemy.com/blog/ethereum-fusaka-upgrade-dev-guide-to-12-eips" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Fusaka upgrade</a>{' '}(Nov 2025) as{' '}
+        <a href="https://eips.ethereum.org/EIPS/eip-7951" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>EIP-7951</a>{' '}at 6,900 gas — the security-hardened successor to{' '}
+        <a href="https://github.com/ethereum/RIPs/blob/master/RIPS/rip-7212.md" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>RIP-7212</a>.
+      </p>
+      <p style={S.p}>
+        HeLa's implementation runs EIP-7951's validation logic at RIP-7212's gas pricing (3,450 gas). Ethereum L1 priced the same logic at{' '}
+        <a href="https://eips.ethereum.org/EIPS/eip-7951" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>6,900 gas in Fusaka</a>{' '}based on different benchmarking. Source for HeLa's gas constant: <Code>oasis-sdk/runtime-sdk/modules/evm/src/precompile/p256verify.rs</Code>.
+      </p>
       <Table
         headers={['Check', 'RIP-7212', 'EIP-7951 (HeLa)']}
         rows={[
-          ['Point-at-infinity', 'Not checked',           'Rejected'],
-          ['r comparison',       'r < n (field order)',  'r < n (modular)'],
-          ['s range',            's > 0, s < n',         's > 0, s < n'],
-          ['Off-curve points',   'Rejected',             'Rejected'],
+          ['Point-at-infinity (recovered R\')', 'Not checked',           'Rejected'],
+          ['r comparison',                      'plain equality (r\' == r)', 'modular (r\' ≡ r mod n)'],
+          ['r range',                           'r < n (field order)',  'r < n'],
+          ['s range',                           's > 0, s < n',         's > 0, s < n'],
+          ['Off-curve points',                  'Rejected',             'Rejected'],
         ]}
       />
 
@@ -296,9 +306,47 @@ console.log('0x' + input.toString('hex'));
       <h2 style={S.h2}>ADOPTION</h2>
       <p style={S.p}>The P-256 precompile (RIP-7212 / EIP-7951) is deployed on:</p>
       <ul style={{ paddingLeft: '20px' }}>
-        <li style={S.li}>Polygon, Optimism, Arbitrum, Base, zkSync, Sei, Celo, Scroll — zero incidents reported</li>
+        <li style={S.li}>
+          <a href="https://www.alchemy.com/blog/what-is-rip-7212" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Polygon</a>,{' '}
+          <a href="https://specs.optimism.io/protocol/precompiles.html" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Optimism (Fjord)</a>,{' '}
+          <a href="https://forum.arbitrum.foundation/t/aip-support-rip-7212-for-account-abstraction-wallets-arbos-30/23298" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Arbitrum (ArbOS 30)</a>,{' '}
+          <a href="https://specs.optimism.io/protocol/precompiles.html" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Base</a>,{' '}
+          <a href="https://www.alchemy.com/blog/what-is-rip-7212" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>zkSync</a>,{' '}
+          <a href="https://docs.sei.io/evm/precompiles/p256-precompile" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Sei</a>,{' '}
+          <a href="https://github.com/ethereum/RIPs/blob/master/RIPS/rip-7212.md" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Scroll</a> — zero incidents reported
+        </li>
         <li style={S.li}>Required by all major AA wallet providers (Privy, Turnkey, ZeroDev, Alchemy)</li>
-        <li style={S.li}>Part of the Pectra upgrade for Ethereum L1 (EIP-7212)</li>
+        <li style={S.li}>
+          Shipped to Ethereum L1 in the{' '}
+          <a href="https://www.alchemy.com/blog/ethereum-fusaka-upgrade-dev-guide-to-12-eips" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Fusaka upgrade</a>{' '}(Nov 2025) as{' '}
+          <a href="https://eips.ethereum.org/EIPS/eip-7951" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>EIP-7951</a> at 6,900 gas
+        </li>
+      </ul>
+
+      <h2 style={S.h2}>SOURCES</h2>
+      <ul style={{ paddingLeft: '20px' }}>
+        <li style={S.li}>
+          <a href="https://eips.ethereum.org/EIPS/eip-7951" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>EIP-7951 spec</a>
+        </li>
+        <li style={S.li}>
+          <a href="https://github.com/ethereum/RIPs/blob/master/RIPS/rip-7212.md" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>RIP-7212 spec</a>
+        </li>
+        <li style={S.li}>
+          <a href="https://www.alchemy.com/blog/ethereum-fusaka-upgrade-dev-guide-to-12-eips" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Ethereum Fusaka Upgrade dev guide (Alchemy, 2025)</a>
+        </li>
+        <li style={S.li}>
+          <a href="https://www.alchemy.com/blog/what-is-rip-7212" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>What is RIP-7212? (Alchemy)</a>
+        </li>
+        <li style={S.li}>
+          <a href="https://specs.optimism.io/protocol/precompiles.html" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>OP Stack precompiles spec</a>
+        </li>
+        <li style={S.li}>
+          <a href="https://forum.arbitrum.foundation/t/aip-support-rip-7212-for-account-abstraction-wallets-arbos-30/23298" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Arbitrum AIP: Support RIP-7212 (ArbOS 30)</a>
+        </li>
+        <li style={S.li}>
+          <a href="https://docs.sei.io/evm/precompiles/p256-precompile" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Sei P256 precompile docs</a>
+        </li>
+        <li style={S.li}>HeLa P-256 implementation source: <Code>oasis-sdk/runtime-sdk/modules/evm/src/precompile/p256verify.rs</Code></li>
       </ul>
 
       <h2 style={S.h2}>RELATED POSTS</h2>

@@ -1,7 +1,7 @@
 ---
 title: "P-256 Precompile Goes Live on HeLa Mainnet — Passkeys Are Now Native"
 date: "2026-04-23"
-description: "HeLa Mainnet now supports native P-256 signature verification at 3,450 gas. Face ID, Touch ID, and passkeys can sign on-chain transactions directly. The first L1 to ship EIP-7951, the security-hardened P-256 precompile."
+description: "HeLa Mainnet now supports native P-256 signature verification at 3,450 gas. Face ID, Touch ID, and passkeys can sign on-chain transactions directly. Aligned with EIP-7951's stricter validation logic at RIP-7212 gas pricing."
 tags: ["mainnet", "precompile", "p256", "eip-7951", "passkeys", "account-abstraction", "webauthn", "security"]
 author: "Hera"
 image: "/images/posts/2026-04-23-p256-mainnet-live.svg"
@@ -32,43 +32,53 @@ This upgrade went through five stages over two weeks:
 
 ## EIP-7951: Why Not RIP-7212
 
-Most chains that support P-256 (Polygon, Optimism, Arbitrum, Base, zkSync) use RIP-7212. HeLa ships **EIP-7951** -- the security-hardened version with additional input validation:
+Most chains that support P-256 (Polygon, Optimism, Arbitrum, Base, zkSync) use RIP-7212. HeLa runs **EIP-7951's** validation logic -- the security-hardened version with additional input validation:
 
-- **Point-at-infinity rejection** -- RIP-7212 does not check for this edge case
+- **Point-at-infinity rejection** on the recovered point R' -- RIP-7212 does not check for this edge case
+- **Modular comparison** `r' ≡ r (mod n)` instead of plain equality `r' == r`
 - **r/s boundary enforcement** -- r = 0, s = 0, r >= curve order are all rejected
 - **Same address, same interface** -- fully compatible with existing RIP-7212 tooling
+
+HeLa's implementation runs EIP-7951's validation logic at RIP-7212's gas pricing (3,450 gas). Ethereum L1 priced the same logic at [6,900 gas in Fusaka](https://eips.ethereum.org/EIPS/eip-7951) based on different benchmarking. Source for HeLa's gas constant: `oasis-sdk/runtime-sdk/modules/evm/src/precompile/p256verify.rs`.
 
 The stricter validation prevents edge-case signature malleability attacks. For infrastructure that will be called by every smart account and credential verifier on the chain, this is the right default.
 
 ## How We Win
 
-Same precompile address. Same 160-byte interface. Sharper sword.
+Same precompile address (`0x100`), same call interface — different validation depth and a different alignment story.
 
-| Chain | Spec | Point-at-Infinity Check | r/s Boundary Strictness | Status |
-|-------|------|-------------------------|-------------------------|--------|
-| **HeLa** | **EIP-7951** | **Rejected** | **Strict (r=0, s=0, r>=n, s>=n all rejected)** | **LIVE (Apr 23, 2026)** |
-| Polygon | RIP-7212 | Not checked | Partial | Live |
-| Optimism | RIP-7212 | Not checked | Partial | Live |
-| Arbitrum | RIP-7212 | Not checked | Partial | Live |
-| Base | RIP-7212 | Not checked | Partial | Live |
-| zkSync | RIP-7212 | Not checked | Partial | Live |
-| Sei | RIP-7212 | Not checked | Partial | Live |
-| Celo | RIP-7212 | Not checked | Partial | Live |
-| Scroll | RIP-7212 | Not checked | Partial | Live |
-| Ethereum L1 | EIP-7212 / Pectra | Aligned with EIP-7951 direction | Strict | Planned (Pectra) |
+HeLa's P-256 precompile runs the [EIP-7951](https://eips.ethereum.org/EIPS/eip-7951) input-validation logic (point-at-infinity rejection on the recovered point R', modular comparison `r' ≡ r (mod n)` instead of plain equality) at the **3,450 gas** cost defined by [RIP-7212](https://github.com/ethereum/RIPs/blob/master/RIPS/rip-7212.md). Ethereum L1 shipped the same EIP-7951 validation at 6,900 gas in the [Fusaka upgrade](https://www.alchemy.com/blog/ethereum-fusaka-upgrade-dev-guide-to-12-eips) (Nov 2025); the L1 gas was raised based on benchmarking against ECRECOVER. HeLa kept the lower number based on our own runtime measurements. Source for HeLa's gas constant: `oasis-sdk/runtime-sdk/modules/evm/src/precompile/p256verify.rs`.
 
-The chains shipping RIP-7212 made the right call for their moment -- the predecessor spec works, and the tooling ecosystem (Privy, Turnkey, ZeroDev, Alchemy AA) is built around it. HeLa's bet is different: when Ethereum L1 ships P-256 via Pectra, the security-hardened spec is the direction the rest of the ecosystem will move toward. Better to ship there now.
+The result: Ethereum L1's validation correctness with L2-rollup-level pricing.
 
-The builder-facing impact:
+| Chain | Spec | Gas | Point-at-Infinity (R') | Modular `r ≡ r' (mod n)` | Source |
+|-------|------|-----|------------------------|--------------------------|--------|
+| **HeLa Mainnet** | **EIP-7951 validation @ RIP-7212 pricing** | **3,450** | **rejected** | **enforced** | this post |
+| Ethereum L1 (Fusaka) | EIP-7951 | 6,900 | rejected | enforced | [spec](https://eips.ethereum.org/EIPS/eip-7951) |
+| Polygon | RIP-7212 | 3,450 | not checked | plain equality | [Alchemy](https://www.alchemy.com/blog/what-is-rip-7212) |
+| Optimism (Fjord) | RIP-7212 | 3,450 | not checked | plain equality | [OP Stack specs](https://specs.optimism.io/protocol/precompiles.html) |
+| Base | RIP-7212 | 3,450 | not checked | plain equality | [OP Stack specs](https://specs.optimism.io/protocol/precompiles.html) |
+| Arbitrum (ArbOS 30) | RIP-7212 | 3,450 | not checked | plain equality | [Arbitrum AIP](https://forum.arbitrum.foundation/t/aip-support-rip-7212-for-account-abstraction-wallets-arbos-30/23298) |
+| zkSync | RIP-7212 | 3,450 | not checked | plain equality | [Alchemy](https://www.alchemy.com/blog/what-is-rip-7212) |
+| Sei | RIP-7212 | 3,450 | not checked | plain equality | [Sei docs](https://docs.sei.io/evm/precompiles/p256-precompile) |
+| Scroll | RIP-7212 | 3,450 | not checked | plain equality | [RIP-7212 spec](https://github.com/ethereum/RIPs/blob/master/RIPS/rip-7212.md) |
 
-| Capability | RIP-7212 chains | HeLa (EIP-7951) |
-|------------|-----------------|-----------------|
-| Signature malleability surface | Broader | Narrower |
-| Edge-case rejection | Partial | Strict |
-| Migration to Pectra-aligned spec | Required | Already aligned |
-| Drop-in tooling compatibility | Yes | Yes (same address, same interface) |
+Two practical consequences for builders:
 
-Picking the harder spec was the right call because the P-256 precompile is not a niche dependency -- it sits underneath every passkey wallet, every WebAuthn-backed smart account, every HSM-signed verification. At that call volume, edge-case strictness compounds. HeLa runs the spec that closes those edges by default, and builders pay nothing for it: the address is the same, the interface is the same, the gas cost is the same. The full rationale is in [HIP-001](/hip#hip-001).
+- **Drop-in tooling parity** — same address, same 160-byte input, same return shape. Existing RIP-7212 SDKs, AA-account templates, and passkey-signer libraries (Privy, Turnkey, ZeroDev, Alchemy AA) work against HeLa with zero migration effort.
+- **Forward-aligned with Ethereum L1** — chains running RIP-7212 will eventually face pressure to migrate to the security-hardened spec; HeLa already runs the hardened validation today.
+
+The trade we made: pick the harder validation now (per [EIP-7951's threat analysis](https://eips.ethereum.org/EIPS/eip-7951)) and keep RIP-7212 gas pricing because passkey infrastructure will be called by every smart account on the chain — at that scale, edge-case strictness compounds. Read the full technical breakdown in [HIP-001](/hip#hip-001).
+
+**Sources:**
+- [EIP-7951 spec](https://eips.ethereum.org/EIPS/eip-7951)
+- [RIP-7212 spec](https://github.com/ethereum/RIPs/blob/master/RIPS/rip-7212.md)
+- [Ethereum Fusaka Upgrade dev guide (Alchemy, 2025)](https://www.alchemy.com/blog/ethereum-fusaka-upgrade-dev-guide-to-12-eips)
+- [What is RIP-7212? (Alchemy)](https://www.alchemy.com/blog/what-is-rip-7212)
+- [OP Stack precompiles spec](https://specs.optimism.io/protocol/precompiles.html)
+- [Arbitrum AIP: Support RIP-7212 (ArbOS 30)](https://forum.arbitrum.foundation/t/aip-support-rip-7212-for-account-abstraction-wallets-arbos-30/23298)
+- [Sei P256 precompile docs](https://docs.sei.io/evm/precompiles/p256-precompile)
+- HeLa P-256 implementation source: `oasis-sdk/runtime-sdk/modules/evm/src/precompile/p256verify.rs`
 
 ## Try It
 

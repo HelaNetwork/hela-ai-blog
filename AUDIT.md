@@ -53,6 +53,11 @@
 - **Dependencies:** `remark-gfm@^4.0.1` added to `package.json` (well-audited unified.js plugin, no new XSS surface — `next-mdx-remote/rsc` already trusts the same authored markdown source).
 - **Build:** `npm run build` passes (37 static pages incl. `/hip`). Three untracked WIP drafts (`2026-04-24-hela-agents-sign-onchain.mdx`, `2026-04-28-hela-content-pipeline.mdx`, `2026-04-30-cva-one-click-activation.mdx`) have a pre-existing prerender error from inline `style="..."` HTML attrs that MDX rejects as JSX — unrelated to this PR, pre-dates these changes; flagged for owner.
 
+## Changes — 2026-04-30 (Devon — P-256 citations hot-fix)
+- 2026-04-30: hot-fix factual errors in P-256 posts and HIP-001 (Pectra→Fusaka, drop 'first L1' claim, drop Celo, clarify HeLa-specific gas pricing). Trigger: KC fact-check. Source: this PR.
+- Files touched: `content/posts/2026-04-23-p256-precompile-mainnet-live.mdx`, `content/posts/2026-04-17-p256-precompile-mainnet-upgrade.mdx`, `content/posts/2026-04-17-p256-precompile-live-on-hela-testnet.mdx`, `content/posts/2026-04-10-p256-precompile-live-on-testnet.mdx`, `app/hip/page.jsx`. Tech doc `hela-ai-contracts/docs/P256_PRECOMPILE_TECH_DOC.md` corrected on `fix/p256-tech-doc-citations` branch in that repo.
+- Verification: `grep -rn "Pectra"` and `grep -rn "Celo"` against the touched paths return zero hits. New `<a>` citation links to EIP-7951, RIP-7212, Fusaka guide, OP Stack specs, Arbitrum AIP, Sei docs, and Alchemy "What is RIP-7212".
+
 ## Changes — 2026-04-30 (Devon — nav + auto-deploy guard)
 - **Nav: added `/docs` link.** `app/layout.jsx` line ~115 — inserted `<a href="/docs">DOCS</a>` between HOME and HIP so the live `/docs` page is reachable from the nav (was orphaned).
 - **Auto-deploy guard:** `scripts/auto-deploy.sh` now checks `git rev-parse --abbrev-ref HEAD` and exits 0 unless on `master`. Reason: today's auto-deploy fired while a feature branch was checked out and shipped unmerged work to production via `--branch=main`.
