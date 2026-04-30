@@ -102,6 +102,10 @@ Custom MDX components: `YouTubeEmbed`, `ImageFull` (from `components/MediaEmbed`
 - `app/rss/` — generates RSS feed
 - `trailingSlash: true` in next.config.js for Cloudflare Pages URL compatibility
 
+## Editorial Standards
+
+External claims in blog posts and HIP pages must include a public citation. Internal-only sources (e.g., implementation files) cite the file path.
+
 ## Known Risks
 
 - `/drafts` route is publicly accessible — no auth gate

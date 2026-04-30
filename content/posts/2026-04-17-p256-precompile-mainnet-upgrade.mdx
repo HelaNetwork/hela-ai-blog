@@ -38,17 +38,20 @@ This makes passkey-based smart account wallets economically viable on HeLa.
 
 ## Specification: EIP-7951 vs RIP-7212
 
-RIP-7212 is the widely adopted P-256 precompile standard, live on Polygon, Optimism, Arbitrum, Base, zkSync, Sei, Celo, and scheduled for Ethereum's Pectra upgrade.
+RIP-7212 is the widely adopted P-256 precompile standard, live on Polygon, Optimism, Arbitrum, Base, zkSync, Sei, and Scroll. Shipped to Ethereum L1 in the [Fusaka upgrade](https://www.alchemy.com/blog/ethereum-fusaka-upgrade-dev-guide-to-12-eips) (Nov 2025) as [EIP-7951](https://eips.ethereum.org/EIPS/eip-7951) at 6,900 gas — the security-hardened successor to RIP-7212.
 
-HeLa implements **EIP-7951**, the security-hardened successor. The differences are additional input validation checks:
+HeLa runs **EIP-7951's** validation logic at RIP-7212's 3,450 gas pricing. The validation differences are additional input-correctness checks:
 
 | Validation Check | RIP-7212 | EIP-7951 (HeLa) |
 |-----------------|----------|-----------------|
 | Input length ≠ 160 bytes | Returns empty | Returns empty |
 | r = 0 or s = 0 | Not enforced | **Rejected** |
 | r ≥ n or s ≥ n (curve order) | Not enforced | **Rejected** |
-| Point-at-infinity public key | Not checked | **Rejected** |
+| Point-at-infinity on recovered point R' | Not checked | **Rejected** |
+| Modular comparison `r' ≡ r (mod n)` | Plain equality | **Modular** |
 | Public key not on curve | Rejected | Rejected |
+
+HeLa's implementation runs EIP-7951's validation logic at RIP-7212's gas pricing (3,450 gas). Ethereum L1 priced the same logic at [6,900 gas in Fusaka](https://eips.ethereum.org/EIPS/eip-7951) based on different benchmarking. Source for HeLa's gas constant: `oasis-sdk/runtime-sdk/modules/evm/src/precompile/p256verify.rs`.
 
 These additional checks prevent edge-case signature malleability and invalid-key attacks. While unlikely in normal usage, a precompile is permanent infrastructure — it will be called by smart account validators, credential verifiers, and token-gating contracts across HeLa's lifetime. The stricter validation is the correct default.
 

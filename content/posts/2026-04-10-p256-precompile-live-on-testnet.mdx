@@ -28,10 +28,12 @@ That is an **87x reduction**. It means the cost of verifying a user's passkey si
 
 ## What We Built
 
-The precompile follows **EIP-7951**, which is the security-hardened version of RIP-7212 (the original P-256 precompile spec). The differences matter:
+The precompile follows **[EIP-7951](https://eips.ethereum.org/EIPS/eip-7951)**, which is the security-hardened version of [RIP-7212](https://github.com/ethereum/RIPs/blob/master/RIPS/rip-7212.md) (the original P-256 precompile spec). Shipped to Ethereum L1 in the [Fusaka upgrade](https://www.alchemy.com/blog/ethereum-fusaka-upgrade-dev-guide-to-12-eips) (Nov 2025) as EIP-7951 at 6,900 gas. The differences matter:
 
-- **Point-at-infinity rejection** -- RIP-7212 does not check for this. A point-at-infinity public key could bypass validation. EIP-7951 rejects it.
-- **Modular r comparison** -- subtle but important for preventing signature malleability attacks.
+- **Point-at-infinity rejection on recovered R'** -- RIP-7212 does not check for this. A point-at-infinity recovered point could bypass validation. EIP-7951 rejects it.
+- **Modular comparison `r' ≡ r (mod n)`** -- replaces RIP-7212's plain equality `r' == r`. Subtle but important for preventing signature malleability attacks.
+
+HeLa's implementation runs EIP-7951's validation logic at RIP-7212's gas pricing (3,450 gas). Ethereum L1 priced the same logic at [6,900 gas in Fusaka](https://eips.ethereum.org/EIPS/eip-7951) based on different benchmarking. Source for HeLa's gas constant: `oasis-sdk/runtime-sdk/modules/evm/src/precompile/p256verify.rs`.
 
 The implementation uses the RustCrypto `p256` crate, which was audited by zkSecurity in April 2025. The same crate family powers Ethereum's secp256k1 verification (`k256`).
 
@@ -99,7 +101,7 @@ The precompile is soaking on testnet for two weeks. We are monitoring for:
 
 After the soak period and a security audit of the precompile code, we will deploy to mainnet. That requires on-chain governance -- all validators must upgrade within the same epoch.
 
-The same precompile (RIP-7212 / EIP-7951) is already live on Polygon, Optimism, Arbitrum, Base, zkSync, Sei, and Celo with zero incidents. It is part of Ethereum's Pectra upgrade. We are bringing HeLa in line with the industry standard.
+The same precompile (RIP-7212 / EIP-7951) is already live on Polygon, Optimism, Arbitrum, Base, zkSync, Sei, and Scroll with zero incidents. Shipped to Ethereum L1 in the [Fusaka upgrade](https://www.alchemy.com/blog/ethereum-fusaka-upgrade-dev-guide-to-12-eips) (Nov 2025) as [EIP-7951](https://eips.ethereum.org/EIPS/eip-7951) at 6,900 gas. We are bringing HeLa in line with the industry standard.
 
 ---
 
