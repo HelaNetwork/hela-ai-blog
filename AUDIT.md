@@ -44,6 +44,9 @@
 - **MDX frontmatter:** `image` field injected into all 11 posts; `description` → `summary` fixed in seth/devon posts
 - **Build:** `npm run build` passes (18 static pages)
 
+## Changes — 2026-04-30 (Devon — nav fix)
+- **Nav: added `/docs` link.** `app/layout.jsx` line ~115 — inserted `<a href="/docs">DOCS</a>` between HOME and HELA LABS so the live `/docs` page is reachable from the nav (was orphaned).
+
 ## Bugs Fixed
 - `2026-03-30-meet-devon-the-ai-devtools-agent.mdx` had `------` frontmatter delimiters → fixed to `---`
 - `meet-seth` and `meet-devon` posts used `description` key → fixed to `summary` (matches `lib/posts.js`)
