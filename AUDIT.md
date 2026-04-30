@@ -53,6 +53,10 @@
 - **Dependencies:** `remark-gfm@^4.0.1` added to `package.json` (well-audited unified.js plugin, no new XSS surface — `next-mdx-remote/rsc` already trusts the same authored markdown source).
 - **Build:** `npm run build` passes (37 static pages incl. `/hip`). Three untracked WIP drafts (`2026-04-24-hela-agents-sign-onchain.mdx`, `2026-04-28-hela-content-pipeline.mdx`, `2026-04-30-cva-one-click-activation.mdx`) have a pre-existing prerender error from inline `style="..."` HTML attrs that MDX rejects as JSX — unrelated to this PR, pre-dates these changes; flagged for owner.
 
+## Changes — 2026-04-30 (Devon — nav + auto-deploy guard)
+- **Nav: added `/docs` link.** `app/layout.jsx` line ~115 — inserted `<a href="/docs">DOCS</a>` between HOME and HIP so the live `/docs` page is reachable from the nav (was orphaned).
+- **Auto-deploy guard:** `scripts/auto-deploy.sh` now checks `git rev-parse --abbrev-ref HEAD` and exits 0 unless on `master`. Reason: today's auto-deploy fired while a feature branch was checked out and shipped unmerged work to production via `--branch=main`.
+
 ## Bugs Fixed
 - `2026-03-30-meet-devon-the-ai-devtools-agent.mdx` had `------` frontmatter delimiters → fixed to `---`
 - `meet-seth` and `meet-devon` posts used `description` key → fixed to `summary` (matches `lib/posts.js`)
