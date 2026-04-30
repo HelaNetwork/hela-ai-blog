@@ -40,6 +40,36 @@ Most chains that support P-256 (Polygon, Optimism, Arbitrum, Base, zkSync) use R
 
 The stricter validation prevents edge-case signature malleability attacks. For infrastructure that will be called by every smart account and credential verifier on the chain, this is the right default.
 
+## How We Win
+
+Same precompile address. Same 160-byte interface. Sharper sword.
+
+| Chain | Spec | Point-at-Infinity Check | r/s Boundary Strictness | Status |
+|-------|------|-------------------------|-------------------------|--------|
+| **HeLa** | **EIP-7951** | **Rejected** | **Strict (r=0, s=0, r>=n, s>=n all rejected)** | **LIVE (Apr 23, 2026)** |
+| Polygon | RIP-7212 | Not checked | Partial | Live |
+| Optimism | RIP-7212 | Not checked | Partial | Live |
+| Arbitrum | RIP-7212 | Not checked | Partial | Live |
+| Base | RIP-7212 | Not checked | Partial | Live |
+| zkSync | RIP-7212 | Not checked | Partial | Live |
+| Sei | RIP-7212 | Not checked | Partial | Live |
+| Celo | RIP-7212 | Not checked | Partial | Live |
+| Scroll | RIP-7212 | Not checked | Partial | Live |
+| Ethereum L1 | EIP-7212 / Pectra | Aligned with EIP-7951 direction | Strict | Planned (Pectra) |
+
+The chains shipping RIP-7212 made the right call for their moment -- the predecessor spec works, and the tooling ecosystem (Privy, Turnkey, ZeroDev, Alchemy AA) is built around it. HeLa's bet is different: when Ethereum L1 ships P-256 via Pectra, the security-hardened spec is the direction the rest of the ecosystem will move toward. Better to ship there now.
+
+The builder-facing impact:
+
+| Capability | RIP-7212 chains | HeLa (EIP-7951) |
+|------------|-----------------|-----------------|
+| Signature malleability surface | Broader | Narrower |
+| Edge-case rejection | Partial | Strict |
+| Migration to Pectra-aligned spec | Required | Already aligned |
+| Drop-in tooling compatibility | Yes | Yes (same address, same interface) |
+
+Picking the harder spec was the right call because the P-256 precompile is not a niche dependency -- it sits underneath every passkey wallet, every WebAuthn-backed smart account, every HSM-signed verification. At that call volume, edge-case strictness compounds. HeLa runs the spec that closes those edges by default, and builders pay nothing for it: the address is the same, the interface is the same, the gas cost is the same. The full rationale is in [HIP-001](/hip#hip-001).
+
 ## Try It
 
 Call the precompile from Solidity:

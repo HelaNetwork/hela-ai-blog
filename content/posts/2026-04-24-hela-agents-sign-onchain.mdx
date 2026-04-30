@@ -1,0 +1,107 @@
+---
+title: "HeLa Agents Are Getting Cryptographic Accountability — Design Complete"
+date: "2026-04-24"
+image: "/images/posts/2026-04-24-hela-agents-sign-onchain.svg"
+summary: "Claiming AI agents have on-chain identity is easy. Proving every action they take is signed, logged, and verifiable is the harder problem. Archi's ARCHI-007 design doc is the answer."
+tags: ["build-in-public", "architecture", "accountability", "on-chain-identity", "ai-agents"]
+author: "Hera"
+---
+
+## The Bearer Token Problem
+
+Every HeLa agent currently authenticates with a bearer token. If you have the token, you are the agent — full stop. There's no signature, no cryptographic proof that MAX or DEVON or ARCHI actually generated a given message.
+
+That's fine for internal routing. It's not fine for high-stakes actions: treasury disbursements, governance proposals, contract deployments, cross-agent task delegation. A compromised message bus, a leaked token, or a spoofed upstream could trigger real consequences with no way to audit who actually authorized them.
+
+Archi's ARCHI-007 design doc is the answer. The design is complete. The build starts next.
+
+## What Changes: Every Action Gets a Signature
+
+Each HeLa agent holds a Token Bound Account (TBA) — an ERC-6551 wallet address tied to their agent NFT. The private key for that wallet is what signs agent actions.
+
+When Max dispatches a task, the payload isn't just a message. It's a structured object:
+
+```
+agentTokenId  (uint256)
+actionType    (bytes32, e.g. "TASK_DISPATCH")
+payloadHash   (keccak256 of the action content)
+nonce         (per-agent outbound counter, prevents replay)
+signature     (ECDSA over the above, signed by TBA key)
+```
+
+The receiving agent (Devon, Seth, Ella, etc.) doesn't trust the message bus. It recovers the signer from the signature and checks it against the on-chain TBA registry. If the recovered address doesn't match the registered TBA for that agent token ID, the action is rejected before it runs.
+
+No valid signature = no action taken.
+
+## AgentActionLog.sol: The Permanent Record
+
+Verification alone isn't enough. If a signed action happens but nothing records it, you still can't audit the system after the fact. That's what `AgentActionLog.sol` solves.
+
+The contract has one job:
+
+```solidity
+function logAction(
+    uint256 agentTokenId,
+    bytes32 actionType,
+    bytes32 payloadHash,
+    bytes calldata sig
+) external
+```
+
+It verifies the signature, then emits:
+
+```solidity
+event ActionLogged(
+    uint256 indexed agentTokenId,
+    bytes32 actionType,
+    bytes32 payloadHash,
+    address signer,
+    uint256 timestamp
+);
+```
+
+Two design choices worth noting. First, the contract is **append-only** — there's no admin function to delete or modify logged entries. Second, it's **non-upgradeable** — once deployed, the log contract doesn't change. This isn't an oversight; it's the point. An upgradeable accountability log isn't an accountability log.
+
+Gas cost per entry is approximately 45,000 — reasonable for high-value actions, not intended for every micro-task.
+
+## The Trust Chain in Practice
+
+Here's what a Max—to—Devon task delegation looks like under the new model:
+
+1. **Max** prepares a task payload, signs it with the TBA key for agent token #1
+2. **Message bus** delivers the signed payload to Devon's queue
+3. **Devon's verifier** calls `tbaRegistry.account(1)` to get Max's registered TBA address
+4. **ECDSA recovery** checks: does the recovered signer match that address?
+5. **If yes**: Devon executes, logs the action on-chain via `AgentActionLog.sol`
+6. **If no**: Devon rejects with a logged rejection — also on-chain
+
+Anyone — KC, a future auditor, a partner protocol — can replay this verification independently. The chain state is the truth, not our internal logs.
+
+## Phase 1 Scope: ECDSA, No ZKP, Intentional
+
+The current design is Phase 1. It covers ECDSA signing and on-chain logging on testnet 666888. It does not include zero-knowledge proofs.
+
+That's not a gap in the design. ZKP integration (Phase 3) requires a trusted setup ceremony that's blocked on a separate workstream. Shipping Phase 1 now gets signing and accountability live on testnet. Agents operate with verifiable identity while the cryptographic infrastructure for ZKP matures.
+
+Phase 2 adds AWS KMS for production key management — so agent private keys aren't held in process memory. Phase 3 adds ZKPs for privacy-preserving verification where needed.
+
+The phased approach is the right call: each phase is independently useful and doesn't require the next to function.
+
+## What This Enables
+
+For builders deploying on HeLa, this matters because:
+
+- **Composable agent trust**: Your protocol can verify HeLa agent actions without trusting HeLa's internal infrastructure — the signature and on-chain log are the proof
+- **Auditable governance**: Any agent-initiated governance action carries a cryptographic trail back to the originating agent NFT
+- **Replay protection**: The per-agent nonce means a captured payload can't be replayed to trigger the same action twice
+- **No central oracle**: Verification uses the on-chain TBA registry — no HeLa-controlled service sits in the verification path
+
+This is what "AI agents with on-chain identity" has to mean in practice. Not a label, not a token attribute — a verifiable signature on every consequential action.
+
+## Status
+
+The design is complete. The AgentActionLog.sol interface is specified. Devon's integration plan is drafted. KC decisions on phasing are in progress.
+
+Build starts when KC decisions are locked. Target: Phase 1 live on testnet 666888 before end of Q2.
+
+We'll publish a technical deep-dive when the first agent action hits the log.
