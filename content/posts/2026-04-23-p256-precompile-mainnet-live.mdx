@@ -47,7 +47,7 @@ The stricter validation prevents edge-case signature malleability attacks. For i
 
 Same precompile address (`0x100`), same call interface — different validation depth and a different alignment story.
 
-HeLa's P-256 precompile runs the [EIP-7951](https://eips.ethereum.org/EIPS/eip-7951) input-validation logic (point-at-infinity rejection on the recovered point R', modular comparison `r' ≡ r (mod n)` instead of plain equality) at the **3,450 gas** cost defined by [RIP-7212](https://github.com/ethereum/RIPs/blob/master/RIPS/rip-7212.md). Ethereum L1 shipped the same EIP-7951 validation at 6,900 gas in the [Fusaka upgrade](https://www.alchemy.com/blog/ethereum-fusaka-upgrade-dev-guide-to-12-eips) (Nov 2025); the L1 gas was raised based on benchmarking against ECRECOVER. HeLa kept the lower number based on our own runtime measurements. Source for HeLa's gas constant: `oasis-sdk/runtime-sdk/modules/evm/src/precompile/p256verify.rs`.
+HeLa's P-256 precompile runs the [EIP-7951](https://eips.ethereum.org/EIPS/eip-7951) input-validation logic (point-at-infinity rejection on the recovered point R', modular comparison `r' ≡ r (mod n)` instead of plain equality) at the **3,450 gas** cost defined by [RIP-7212](https://github.com/ethereum/RIPs/blob/master/RIPS/rip-7212.md). Ethereum L1 shipped the same EIP-7951 validation at 6,900 gas in the [Fusaka upgrade](https://www.alchemy.com/blog/ethereum-fusaka-upgrade-dev-guide-to-12-eips) (December 2025); the L1 gas was raised based on benchmarking against ECRECOVER. HeLa kept the lower number based on our own runtime measurements. Source for HeLa's gas constant: `oasis-sdk/runtime-sdk/modules/evm/src/precompile/p256verify.rs`.
 
 The result: Ethereum L1's validation correctness with L2-rollup-level pricing.
 
@@ -58,9 +58,8 @@ The result: Ethereum L1's validation correctness with L2-rollup-level pricing.
 | Polygon | RIP-7212 | 3,450 | not checked | plain equality | [Alchemy](https://www.alchemy.com/blog/what-is-rip-7212) |
 | Optimism (Fjord) | RIP-7212 | 3,450 | not checked | plain equality | [OP Stack specs](https://specs.optimism.io/protocol/precompiles.html) |
 | Base | RIP-7212 | 3,450 | not checked | plain equality | [OP Stack specs](https://specs.optimism.io/protocol/precompiles.html) |
-| Arbitrum (ArbOS 30) | RIP-7212 | 3,450 | not checked | plain equality | [Arbitrum AIP](https://forum.arbitrum.foundation/t/aip-support-rip-7212-for-account-abstraction-wallets-arbos-30/23298) |
+| Arbitrum (ArbOS 31 "Bianca") | RIP-7212 | 3,450 | not checked | plain equality | [Arbitrum AIP](https://forum.arbitrum.foundation/t/aip-support-rip-7212-for-account-abstraction-wallets-arbos-30/23298) |
 | zkSync | RIP-7212 | 3,450 | not checked | plain equality | [Alchemy](https://www.alchemy.com/blog/what-is-rip-7212) |
-| Sei | RIP-7212 | 3,450 | not checked | plain equality | [Sei docs](https://docs.sei.io/evm/precompiles/p256-precompile) |
 | Scroll | RIP-7212 | 3,450 | not checked | plain equality | [RIP-7212 spec](https://github.com/ethereum/RIPs/blob/master/RIPS/rip-7212.md) |
 
 Two practical consequences for builders:
@@ -76,8 +75,7 @@ The trade we made: pick the harder validation now (per [EIP-7951's threat analys
 - [Ethereum Fusaka Upgrade dev guide (Alchemy, 2025)](https://www.alchemy.com/blog/ethereum-fusaka-upgrade-dev-guide-to-12-eips)
 - [What is RIP-7212? (Alchemy)](https://www.alchemy.com/blog/what-is-rip-7212)
 - [OP Stack precompiles spec](https://specs.optimism.io/protocol/precompiles.html)
-- [Arbitrum AIP: Support RIP-7212 (ArbOS 30)](https://forum.arbitrum.foundation/t/aip-support-rip-7212-for-account-abstraction-wallets-arbos-30/23298)
-- [Sei P256 precompile docs](https://docs.sei.io/evm/precompiles/p256-precompile)
+- [Arbitrum AIP: Support RIP-7212 (ArbOS 31 "Bianca")](https://forum.arbitrum.foundation/t/aip-support-rip-7212-for-account-abstraction-wallets-arbos-30/23298)
 - HeLa P-256 implementation source: `oasis-sdk/runtime-sdk/modules/evm/src/precompile/p256verify.rs`
 
 ## Try It
