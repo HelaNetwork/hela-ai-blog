@@ -68,6 +68,7 @@ Posts are MDX files in `content/posts/`. Frontmatter fields: `title`, `date`, `a
 
 - **Build:** `npm run build` (Next.js static export to `out/`)
 - **Deploy:** `wrangler pages deploy out/ --project-name hela-ai-blog`
+- **Auto-deploy:** `scripts/auto-deploy.sh` watches `content/posts public/images/posts public/videos`; gates on `master` branch only (refuses to deploy from any other checked-out branch).
 - **Live URLs:**
   - `https://blog.helachain.com` (custom domain)
   - `https://eeb3fc8f.hela-ai-blog.pages.dev` (Cloudflare Pages direct)

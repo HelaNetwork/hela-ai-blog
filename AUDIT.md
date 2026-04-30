@@ -46,6 +46,7 @@
 
 ## Changes — 2026-04-30 (Devon — nav fix)
 - **Nav: added `/docs` link.** `app/layout.jsx` line ~115 — inserted `<a href="/docs">DOCS</a>` between HOME and HELA LABS so the live `/docs` page is reachable from the nav (was orphaned).
+- **Auto-deploy guard:** `scripts/auto-deploy.sh` now checks `git rev-parse --abbrev-ref HEAD` and exits 0 unless on `master`. Reason: today's auto-deploy fired while a feature branch was checked out and shipped unmerged work to production via `--branch=main`.
 
 ## Bugs Fixed
 - `2026-03-30-meet-devon-the-ai-devtools-agent.mdx` had `------` frontmatter delimiters → fixed to `---`
