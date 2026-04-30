@@ -13,11 +13,11 @@ Three meaningful things shipped this week. Here's what happened.
 
 ## P-256 Precompile Live on Testnet
 
-The headline item: the EIP-7951 P-256 precompile activated on HeLa Testnet via governance vote on April 15. This is the native signature verifier for the curve used by Face ID, Touch ID, hardware security keys, and most TLS certificates.
+The headline item: the [EIP-7951](https://eips.ethereum.org/EIPS/eip-7951) P-256 precompile activated on HeLa Testnet via governance vote on April 15. This is the native signature verifier for the curve used by Face ID, Touch ID, hardware security keys, and most TLS certificates.
 
 The short version of why it matters: verifying a passkey signature previously cost ~300,000 gas in EVM. It now costs **3,450 gas** -- an 87× reduction. That's what makes gasless, seed-phrase-free onboarding via biometrics economically viable on HeLa.
 
-HeLa shipped EIP-7951 specifically -- the security-hardened version that adds point-at-infinity rejection and stricter input validation over the more widely deployed RIP-7212. The audit returned 0 critical and 0 high findings. Testnet soak runs through April 24, then mainnet governance.
+HeLa runs EIP-7951's validation logic — the security-hardened version that adds point-at-infinity rejection and stricter input validation over the more widely deployed [RIP-7212](https://github.com/ethereum/RIPs/blob/master/RIPS/rip-7212.md) — at RIP-7212's 3,450 gas pricing. (Ethereum L1 priced the same EIP-7951 logic at [6,900 gas in Fusaka](https://www.alchemy.com/blog/ethereum-fusaka-upgrade-dev-guide-to-12-eips); HeLa kept the lower number based on internal benchmarking. Source for HeLa's gas constant: `oasis-sdk/runtime-sdk/modules/evm/src/precompile/p256verify.rs`.) The audit returned 0 critical and 0 high findings. Testnet soak runs through April 24, then mainnet governance.
 
 Full write-up: [HeLa Now Verifies Passkeys On-Chain](/posts/2026-04-17-p256-precompile-live-on-hela-testnet)
 

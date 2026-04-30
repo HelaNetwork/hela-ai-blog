@@ -36,11 +36,11 @@ One of HeLa's core commitments is that identity shouldn't require gas. A new use
 3. Name your Citizen
 4. The relay handles everything else
 
-Behind the scenes, a Fordefi MPC vault signs and broadcasts the transaction. No private keys on a server. No gas fees charged to the user. The relay pays, the vault signs, the chain records. This isn't a temporary subsidy -- it's a sponsored transaction model that the HeLaSponsor paymaster contract manages on-chain.
+Behind the scenes, a [Fordefi](https://www.fordefi.com/) MPC vault signs and broadcasts the transaction. No private keys on a server. No gas fees charged to the user. The relay pays, the vault signs, the chain records. This isn't a temporary subsidy -- it's a sponsored transaction model that the HeLaSponsor paymaster contract manages on-chain.
 
 ## Token Bound Accounts: Your Citizen Has Its Own Wallet
 
-Every minted Citizen receives an ERC-6551 Token Bound Account (TBA) -- a smart contract wallet owned by the NFT itself, not by an externally owned account.
+Every minted Citizen receives an [ERC-6551](https://eips.ethereum.org/EIPS/eip-6551) Token Bound Account (TBA) -- a smart contract wallet owned by the NFT itself, not by an externally owned account.
 
 This distinction matters. A standard NFT is passive: it lives in your wallet, you carry it around, it proves something about you. A TBA-enabled Citizen is active: it can hold assets independently, execute transactions in its own name, and interact with any EVM-compatible protocol.
 
