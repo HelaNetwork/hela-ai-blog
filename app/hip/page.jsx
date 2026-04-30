@@ -172,7 +172,7 @@ function SectionHIP001() {
       <h2 style={S.h2}>SECURITY PROPERTIES — EIP-7951 vs RIP-7212</h2>
       <p style={S.p}>
         EIP-7951 is the security-hardened version of RIP-7212. Shipped to Ethereum L1 in the{' '}
-        <a href="https://www.alchemy.com/blog/ethereum-fusaka-upgrade-dev-guide-to-12-eips" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Fusaka upgrade</a>{' '}(Nov 2025) as{' '}
+        <a href="https://www.alchemy.com/blog/ethereum-fusaka-upgrade-dev-guide-to-12-eips" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Fusaka upgrade</a>{' '}(December 2025) as{' '}
         <a href="https://eips.ethereum.org/EIPS/eip-7951" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>EIP-7951</a>{' '}at 6,900 gas — the security-hardened successor to{' '}
         <a href="https://github.com/ethereum/RIPs/blob/master/RIPS/rip-7212.md" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>RIP-7212</a>.
       </p>
@@ -309,16 +309,15 @@ console.log('0x' + input.toString('hex'));
         <li style={S.li}>
           <a href="https://www.alchemy.com/blog/what-is-rip-7212" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Polygon</a>,{' '}
           <a href="https://specs.optimism.io/protocol/precompiles.html" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Optimism (Fjord)</a>,{' '}
-          <a href="https://forum.arbitrum.foundation/t/aip-support-rip-7212-for-account-abstraction-wallets-arbos-30/23298" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Arbitrum (ArbOS 30)</a>,{' '}
+          <a href="https://forum.arbitrum.foundation/t/aip-support-rip-7212-for-account-abstraction-wallets-arbos-30/23298" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Arbitrum (ArbOS 31 "Bianca")</a>,{' '}
           <a href="https://specs.optimism.io/protocol/precompiles.html" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Base</a>,{' '}
           <a href="https://www.alchemy.com/blog/what-is-rip-7212" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>zkSync</a>,{' '}
-          <a href="https://docs.sei.io/evm/precompiles/p256-precompile" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Sei</a>,{' '}
           <a href="https://github.com/ethereum/RIPs/blob/master/RIPS/rip-7212.md" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Scroll</a> — zero incidents reported
         </li>
         <li style={S.li}>Required by all major AA wallet providers (Privy, Turnkey, ZeroDev, Alchemy)</li>
         <li style={S.li}>
           Shipped to Ethereum L1 in the{' '}
-          <a href="https://www.alchemy.com/blog/ethereum-fusaka-upgrade-dev-guide-to-12-eips" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Fusaka upgrade</a>{' '}(Nov 2025) as{' '}
+          <a href="https://www.alchemy.com/blog/ethereum-fusaka-upgrade-dev-guide-to-12-eips" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Fusaka upgrade</a>{' '}(December 2025) as{' '}
           <a href="https://eips.ethereum.org/EIPS/eip-7951" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>EIP-7951</a> at 6,900 gas
         </li>
       </ul>
@@ -341,10 +340,7 @@ console.log('0x' + input.toString('hex'));
           <a href="https://specs.optimism.io/protocol/precompiles.html" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>OP Stack precompiles spec</a>
         </li>
         <li style={S.li}>
-          <a href="https://forum.arbitrum.foundation/t/aip-support-rip-7212-for-account-abstraction-wallets-arbos-30/23298" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Arbitrum AIP: Support RIP-7212 (ArbOS 30)</a>
-        </li>
-        <li style={S.li}>
-          <a href="https://docs.sei.io/evm/precompiles/p256-precompile" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Sei P256 precompile docs</a>
+          <a href="https://forum.arbitrum.foundation/t/aip-support-rip-7212-for-account-abstraction-wallets-arbos-30/23298" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent4)' }}>Arbitrum AIP: Support RIP-7212 (ArbOS 31 "Bianca")</a>
         </li>
         <li style={S.li}>HeLa P-256 implementation source: <Code>oasis-sdk/runtime-sdk/modules/evm/src/precompile/p256verify.rs</Code></li>
       </ul>

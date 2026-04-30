@@ -58,6 +58,9 @@
 - Files touched: `content/posts/2026-04-23-p256-precompile-mainnet-live.mdx`, `content/posts/2026-04-17-p256-precompile-mainnet-upgrade.mdx`, `content/posts/2026-04-17-p256-precompile-live-on-hela-testnet.mdx`, `content/posts/2026-04-10-p256-precompile-live-on-testnet.mdx`, `app/hip/page.jsx`. Tech doc `hela-ai-contracts/docs/P256_PRECOMPILE_TECH_DOC.md` corrected on `fix/p256-tech-doc-citations` branch in that repo.
 - Verification: `grep -rn "Pectra"` and `grep -rn "Celo"` against the touched paths return zero hits. New `<a>` citation links to EIP-7951, RIP-7212, Fusaka guide, OP Stack specs, Arbitrum AIP, Sei docs, and Alchemy "What is RIP-7212".
 
+## Changes — 2026-04-30 (Devon — Quinn-gate hot-patch follow-up)
+- 2026-04-30: Quinn-gate hot-patch — Sei dropped (false RIP-7212 attribution; Sei runs P-256 at `0x...1011`/48,000 gas, not RIP-7212), ArbOS 30 → 31 "Bianca", Fusaka date Nov → Dec 2025. Branch: `fix/p256-quinn-gate-followup`. Files: `content/posts/2026-04-23-p256-precompile-mainnet-live.mdx`, `content/posts/2026-04-17-p256-precompile-mainnet-upgrade.mdx`, `content/posts/2026-04-17-p256-precompile-live-on-hela-testnet.mdx`, `content/posts/2026-04-10-p256-precompile-live-on-testnet.mdx`, `app/hip/page.jsx`.
+
 ## Changes — 2026-04-30 (Devon — nav + auto-deploy guard)
 - **Nav: added `/docs` link.** `app/layout.jsx` line ~115 — inserted `<a href="/docs">DOCS</a>` between HOME and HIP so the live `/docs` page is reachable from the nav (was orphaned).
 - **Auto-deploy guard:** `scripts/auto-deploy.sh` now checks `git rev-parse --abbrev-ref HEAD` and exits 0 unless on `master`. Reason: today's auto-deploy fired while a feature branch was checked out and shipped unmerged work to production via `--branch=main`.
