@@ -1,5 +1,6 @@
 import { getPostBySlug, getAllSlugs } from '../../../lib/posts';
 import { MDXRemote } from 'next-mdx-remote/rsc';
+import remarkGfm from 'remark-gfm';
 import GiscusComments from '../../../components/GiscusComments';
 import ExploreCTA from '../../../components/ExploreCTA';
 import { YouTubeEmbed, ImageFull } from '../../../components/MediaEmbed';
@@ -176,7 +177,11 @@ export default function PostPage({ params }) {
 
       {/* Body */}
       <div className="prose prose-invert prose-lg max-w-none" style={{ borderLeft: '1px solid var(--border2)', paddingLeft: '24px' }}>
-        <MDXRemote source={post.content} components={components} />
+        <MDXRemote
+          source={post.content}
+          components={components}
+          options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+        />
       </div>
 
       <div style={{ height: '2px', background: 'linear-gradient(90deg, var(--accent), var(--accent4), transparent)', margin: '60px 0 48px' }} />

@@ -31,13 +31,16 @@ Static Next.js 14 site (App Router) with MDX content, exported to static HTML vi
 
 | Path | Purpose |
 |------|---------|
-| `app/layout.jsx` | Root layout — fonts, metadata, nav shell |
+| `app/layout.jsx` | Root layout — fonts, metadata, nav shell (HOME / DOCS / HIP / HELA LABS / HELASYN / RSS) |
 | `app/page.jsx` | Homepage — featured post hero + post grid |
-| `app/posts/[slug]/page.js` | Individual post renderer (MDX via next-mdx-remote) |
+| `app/posts/[slug]/page.jsx` | Individual post renderer (MDX via next-mdx-remote, GFM enabled) |
+| `app/docs/page.jsx` | HelaSyn docs — sidebar + JSX-rendered sections |
+| `app/hip/page.jsx` | HeLa Improvement Proposals — sidebar + per-HIP sections (HIP-001 LIVE, 002/003 PROPOSED) |
+| `app/hip/layout.jsx` | HIP layout with `BreadcrumbList` + `TechArticle` JSON-LD for HIP-001 |
 | `app/drafts/page.js` | Internal drafts listing (no auth — publicly accessible) |
 | `app/rss/` | RSS feed generation |
 | `app/sitemap.js` | Sitemap generation |
-| `app/globals.css` | Global CSS |
+| `app/globals.css` | Global CSS — includes `.prose table/th/td` GFM table styling |
 | `lib/posts.js` | `getAllPosts()`, `getPostBySlug()`, `getAllSlugs()` — filesystem MDX parser |
 | `components/PostCard.jsx` | Post card UI (featured and grid variants) |
 | `components/GiscusComments.jsx` | Giscus comment widget wrapper |
@@ -47,7 +50,7 @@ Static Next.js 14 site (App Router) with MDX content, exported to static HTML vi
 | `content/press/` | Press content |
 | `content/social/` | Social content |
 | `next.config.js` | `output: 'export'`, `trailingSlash: true`, images unoptimized |
-| `out/` | Built static output (15 pages) — deployed artifact |
+| `out/` | Built static output — deployed artifact |
 | `SECURITY_REVIEW.md` | Seth's security review (2026-03-24) |
 
 ## Content Structure
@@ -55,6 +58,24 @@ Static Next.js 14 site (App Router) with MDX content, exported to static HTML vi
 Posts are MDX files in `content/posts/`. Frontmatter fields: `title`, `date`, `author`, `tags`, `summary`, `image`. Posts are sorted by date descending. No database — all content is filesystem.
 
 `lib/posts.js` reads files at build time with `fs.readdirSync` and `gray-matter`. No try/catch around file reads (build-time risk only; no runtime impact).
+
+## MDX Rendering Chain
+
+`app/posts/[slug]/page.jsx` uses `next-mdx-remote/rsc` with the `remark-gfm` plugin to support GitHub-Flavored Markdown — including pipe-delimited tables, strikethrough, autolinks, and task lists. Tables are styled via `.prose table/th/td` selectors in `globals.css`, matching the pixel-art theme used by the JSX `Table` helper in `app/docs/page.jsx`.
+
+Custom MDX components: `YouTubeEmbed`, `ImageFull` (from `components/MediaEmbed`).
+
+## Routes
+
+| Route | Type | Notes |
+|-------|------|-------|
+| `/` | Homepage | Featured post + grid |
+| `/posts/[slug]` | Static | One per MDX file in `content/posts/` |
+| `/docs` | Single page | HelaSyn framework docs, sidebar nav |
+| `/hip` | Single page | HeLa Improvement Proposals — all HIPs rendered in static HTML, hash routing for active section, deep-linkable as `/hip#hip-001` etc. |
+| `/drafts` | Static | Internal drafts list (no auth) |
+| `/rss` | Static | RSS feed |
+| `/sitemap.xml` | Static | Sitemap |
 
 ## Data Flow
 

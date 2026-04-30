@@ -44,9 +44,19 @@
 - **MDX frontmatter:** `image` field injected into all 11 posts; `description` → `summary` fixed in seth/devon posts
 - **Build:** `npm run build` passes (18 static pages)
 
+## Changes — 2026-04-30 (Devon)
+- **GFM table fix:** `app/posts/[slug]/page.jsx` now passes `{ mdxOptions: { remarkPlugins: [remarkGfm] } }` to `MDXRemote`. Previously `next-mdx-remote/rsc` shipped without GFM, so pipe-delimited markdown tables in 13+ posts (incl. all P-256 mainnet/testnet posts, citizen-id-testnet-live, week-in-review) rendered as raw `| col | col |` text. Now they render as proper `<table>` elements.
+- **Table styling:** Added `.prose table/thead/th/td` selectors to `app/globals.css` matching the existing pixel-art theme (background `#0a0a1c`, accent4 cyan headers in Press Start 2P, text in Inter). Mirrors the JSX `Table` helper in `app/docs/page.jsx`.
+- **New route `/hip`:** `app/hip/page.jsx` + `app/hip/layout.jsx` — HeLa Improvement Proposals. Mirrors `/docs` structure (sidebar + section components). Ships HIP-001 (P-256 / EIP-7951, LIVE on mainnet 2026-04-23) with full ABI, security comparison, Solidity + ERC-4337 + curl examples, deployment table, timeline. HIP-002 (Citizen ID) and HIP-003 (Agent Reputation) are PROPOSED placeholders. All sections rendered in static HTML so deep links `/hip#hip-001/002/003` resolve at SSG time and SEO crawlers see full content; client-side hash routing controls visible section.
+- **JSON-LD:** `BreadcrumbList` + `TechArticle` schemas added in `app/hip/layout.jsx` for HIP-001 SEO ("EIP-7951 P-256 Solidity passkey").
+- **Nav update:** `app/layout.jsx` line ~115 — added `<a href="/hip">HIP</a>` between DOCS and HELA LABS.
+- **Dependencies:** `remark-gfm@^4.0.1` added to `package.json` (well-audited unified.js plugin, no new XSS surface — `next-mdx-remote/rsc` already trusts the same authored markdown source).
+- **Build:** `npm run build` passes (37 static pages incl. `/hip`). Three untracked WIP drafts (`2026-04-24-hela-agents-sign-onchain.mdx`, `2026-04-28-hela-content-pipeline.mdx`, `2026-04-30-cva-one-click-activation.mdx`) have a pre-existing prerender error from inline `style="..."` HTML attrs that MDX rejects as JSX — unrelated to this PR, pre-dates these changes; flagged for owner.
+
 ## Bugs Fixed
 - `2026-03-30-meet-devon-the-ai-devtools-agent.mdx` had `------` frontmatter delimiters → fixed to `---`
 - `meet-seth` and `meet-devon` posts used `description` key → fixed to `summary` (matches `lib/posts.js`)
+- 2026-04-30: GFM tables rendering as raw pipe text — root cause was missing `remarkPlugins` in MDXRemote options (see Changes — 2026-04-30 above)
 
 ## Known Risks (from SECURITY_REVIEW.md — Seth, 2026-03-24)
 | # | Finding | Severity | Status |

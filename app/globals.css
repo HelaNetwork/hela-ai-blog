@@ -433,6 +433,48 @@ footer.pixel-footer {
   padding: 0.5rem 1rem;
 }
 
+/* ── PROSE TABLES (GFM) ── pixel-art theme matching /docs Table helper */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  background: transparent;
+  display: table;
+  overflow-x: auto;
+}
+.prose thead {
+  border-bottom: 1px solid var(--border);
+}
+.prose th {
+  text-align: left;
+  padding: 10px 14px;
+  background: #0a0a1c;
+  color: var(--accent4);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  letter-spacing: 1px;
+  font-weight: normal;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.prose td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border2);
+  color: var(--text);
+  vertical-align: top;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.prose tbody tr:hover {
+  background: rgba(198,241,53,0.02);
+}
+.prose th code,
+.prose td code {
+  font-size: 0.85em;
+}
+
 /* ── DISPATCH GRID (preview.html format) ── */
 .dispatch-grid {
   display: grid;
