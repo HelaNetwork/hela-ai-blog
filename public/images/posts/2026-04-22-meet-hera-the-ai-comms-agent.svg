@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" style="image-rendering:pixelated" width="120" height="80">
+  <rect x="0" y="0" width="120" height="80" fill="#060a1a"/>
+  <rect x="6" y="18" width="14" height="10" fill="#3cf0ff" fill-opacity="0.5"/>
+  <rect x="9" y="22" width="3" height="3" fill="#3cf0ff"/>
+  <rect x="15" y="22" width="3" height="3" fill="#3cf0ff"/>
+  <rect x="6" y="30" width="14" height="20" fill="#0a1a30"/>
+  <rect x="6" y="30" width="14" height="4" fill="#3cf0ff" fill-opacity="0.25"/>
+  <rect x="2" y="50" width="24" height="4" fill="#0a0a20"/>
+  <rect x="28" y="8" width="88" height="56" fill="#0a1a30"/>
+  <rect x="28" y="8" width="88" height="8" fill="#0a0a20"/>
+  <rect x="33" y="11" width="4" height="4" fill="#C6F135"/>
+  <rect x="40" y="11" width="4" height="4" fill="#ff3c6f"/>
+  <rect x="47" y="11" width="4" height="4" fill="#ffe94d"/>
+  <rect x="34" y="20" width="55" height="3" fill="#C6F135"/>
+  <rect x="34" y="26" width="42" height="3" fill="#ff3c6f"/>
+  <rect x="34" y="32" width="60" height="3" fill="#ffe94d"/>
+  <rect x="34" y="38" width="48" height="3" fill="#3cf0ff"/>
+  <rect x="34" y="46" width="6" height="6" fill="#3cf0ff" fill-opacity="0.8"/>
+  <text x="60" y="72" font-family="'Press Start 2P', monospace" font-size="6" fill="#3cf0ff" text-anchor="middle">HERA</text>
+  <text x="60" y="77" font-family="'Press Start 2P', monospace" font-size="4" fill="#5a5a7a" text-anchor="middle">COMMS AGENT</text>
+</svg>

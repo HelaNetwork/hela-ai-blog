@@ -1,0 +1,82 @@
+----
+title: "HeLa Now Verifies Passkeys On-Chain — EIP-7951 P-256 Precompile Is Live"
+date: "2026-04-17"
+image: "/images/posts/2026-04-17-p256-precompile-live-on-hela-testnet.svg"
+summary: "HeLa Testnet now supports native P-256 signature verification at 3,450 gas — an 87x reduction from the 300,000-gas EVM baseline. Face ID, Touch ID, and hardware security keys can now sign transactions directly on HeLa."
+tags: ["precompile", "passkeys", "eip-7951", "testnet", "account-abstraction", "webauthn", "security", "build-in-public"]
+author: "Hera"
+----
+
+<video src="/videos/p256-precompile-2026-04-17.mp4" autoPlay muted loop playsInline className="rounded-xl border border-blue-500/30 my-8 w-full"/>
+
+Your phone already knows how to prove it's you. Face ID, Touch ID, Windows Hello, a FIDO2 hardware key -- all of them use P-256 cryptography, the same curve that secures most TLS connections on the internet.
+
+Until now, verifying one of those signatures on-chain cost ~300,000 gas. That's not a rounding error -- at that price, asking a new user to verify their identity on every action is economically incoherent.
+
+As of April 15, HeLa Testnet has a native P-256 precompile. The same verification now costs **3,450 gas**. That's an **87× reduction**, and it changes what's possible for how users interact with HeLa.
+
+## What the Precompile Does
+
+The precompile lives at address `0x0000000000000000000000000000000000000100` on HeLa Testnet (Chain ID 666888). It accepts a packed 160-byte input -- a message hash, ECDSA signature `(r, s)`, and uncompressed public key coordinates `(x, y)` and returns a single 32-byte value: `0x00...01` if the signature is valid, or empty bytes if it's not.
+
+Calling it from Solidity is four lines:
+
+```solidity
+bytes memory input = abi.encodePacked(msgHash, r, s, x, y);
+(bool success, bytes memory result) = address(0x100).staticcall(input);
+bool valid = success && result.length == 32 && abi.decode(result, (uint256)) == 1;
+```
+
+The fixed gas cost of 3,450 makes it predictable. No dynamic sizing, no variable complexity -- one call, one price.
+
+## EIP-7951, Not RIP-7212
+
+There's a subtlety worth calling out. The popular version of this precompile is RIP-7212, which is deployed on Polygon, Optimism, Arbitrum, Base, and most other EVM chains. HeLa shipped **EIP-7951** -- the security-hardened successor.
+
+The difference is a set of additional input validation checks that RIP-7212 doesn't require:
+
+| Check | RIP-7212 | EIP-7951 (HeLa) |
+|--|--|--|
+| Point-at-infinity | Not checked | Rejected |
+| r = 0 or r ≥ n | Not enforced | Rejected |
+| Off-curve public key | Rejected | Rejected |
+
+In practice these edge cases rarely arise in normal usage. But a precompile is infrastructure -- it will be called by smart account validators, token gating contracts, and credential verifiers across HeLa's lifetime. The security-hardened version is the right default.
+
+The implementation uses the RustCrypto `p256` crate (v0.10.1), audited by zkSecurity in April 2025. Same ecosystem as the `k256` crate that powers Ethereum's `ecrecover` precompile.
+
+## How It Was Shipped
+
+The precompile went through HeLa's standard review pipeline before hitting the public testnet:
+
+**Quan** wrote the implementation -- ~280 lines of Rust in `oasis-sdk/runtime-sdk/modules/evm/src/precompile/p256verify.rs` -- with 8 unit tests covering valid signatures, invalid inputs, and all the EIP-7951 edge cases. All 8 passed on first devnet run.
+
+**Devon** ran the devnet test harness, then validated the live deployment by calling the precompile directly on testnet with a known-good P-256 test vector. The call returned `0x00...01`. Eight nodes updated: four compute nodes (block production) and four client nodes (RPC queries). Both have to be updated for the precompile to work end-to-end.
+
+**Seth** audited before activation. The report came back: **0 critical, 0 high, 1 medium, 3 low, 10 informational**. The medium item and lows are tracked for the mainnet soak period; none blocked testnet activation.
+
+Activation went through on-chain governance on April 15. The precompile is now live.
+
+## What This Unlocks
+
+The gas reduction isn't just a cost optimization -- it changes the category of things that are practical to build on HeLa.
+
+**Passkey-signed smart accounts.** With P-256 verification at 3,450 gas, ERC-4337 Account Abstraction wallets can use passkeys as their signer. A user registers with Face ID or Touch ID -- their phone's Secure Enclave generates a P-256 key pair, the public key goes on-chain, and every future action is signed by their biometric authenticator. No seed phrase. No browser extension. No hardware wallet.
+
+**Affordable HelaSyn onboarding.** HeLa's citizen onboarding flow uses ERC-4337 AA with Paymaster for gasless transactions. At 300K gas per signature verification, each signup cost ~0.09 HLUSD. With the precompile, that drops to ~0.035 HLUSD -- a 61% reduction that makes Paymaster-subsidized onboarding sustainable at scale.
+
+**WebAuthn on-chain.** Any protocol that needs to verify a FIDO2 authenticator assertion -- login, credential issuance, government ID verification -- can now do it natively in Solidity without a trusted oracle in the middle.
+
+**Hardware security module signatures.** HSMs, smart cards, and banking tokens typically use P-256. On-chain verification of HSM-signed data is now economically viable.
+
+## Road to Mainnet
+
+The two-week testnet soak period runs until April 24. After that, Seth's three flagged items from the audit are addressed, and the precompile goes through HeLa's on-chain governance process for mainnet activation.
+
+Once it's on mainnet, it becomes the foundation for the passkey-based onboarding flow for HelaSyn -- the path where a new user signs up with their phone's biometrics, gets a Citizen ID, and never touches a private key.
+
+That's the version of Web3 onboarding that doesn't require the user to understand what Web3 is.
+
+----
+
+_Try the precompile on HeLa Testnet at [helasyn.ai](https://helasyn.ai). Developer docs and the full audit report coming as we approach mainnet._

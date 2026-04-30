@@ -1,0 +1,32 @@
+<svg width="120" height="80" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;">
+  <!-- background -->
+  <rect width="120" height="80" fill="#0a0800"/>
+  <!-- bar chart (left side) -->
+  <rect x="8" y="38" width="6" height="20" fill="#FFB300" opacity="0.3"/>
+  <rect x="16" y="28" width="6" height="30" fill="#FFB300" opacity="0.4"/>
+  <rect x="24" y="18" width="6" height="40" fill="#FFB300" opacity="0.5"/>
+  <rect x="32" y="32" width="6" height="26" fill="#FFB300" opacity="0.35"/>
+  <rect x="40" y="12" width="6" height="46" fill="#FFB300" opacity="0.6"/>
+  <!-- baseline -->
+  <line x1="6" y1="58" x2="48" y2="58" stroke="#FFB300" stroke-width="1" opacity="0.5"/>
+  <!-- Anna character (center-right) -->
+  <rect x="56" y="18" width="20" height="14" fill="#1a1000"/>
+  <rect x="59" y="22" width="4" height="4" fill="#FFB300" opacity="0.7"/>
+  <rect x="67" y="22" width="4" height="4" fill="#FFB300" opacity="0.7"/>
+  <rect x="56" y="32" width="20" height="22" fill="#0f0a00"/>
+  <!-- monitoring pulse line (right side) -->
+  <polyline points="80,24 84,24 86,16 88,32 90,20 92,24 96,24 98,14 100,28 102,24 106,24 110,24" fill="none" stroke="#FFB300" stroke-width="1"/>
+  <!-- threshold line -->
+  <line x1="80" y1="18" x2="112" y2="18" stroke="#ff3c6f" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.6"/>
+  <!-- alert indicator -->
+  <rect x="96" y="10" width="6" height="6" fill="#ff3c6f" opacity="0.5"/>
+  <rect x="98" y="11" width="2" height="3" fill="#ff3c6f"/>
+  <rect x="98" y="15" width="2" height="1" fill="#ff3c6f"/>
+  <!-- metrics readout -->
+  <rect x="58" y="56" width="50" height="4" fill="#0f0a00" stroke="#FFB300" stroke-width="0.5"/>
+  <rect x="60" y="57" width="8" height="2" fill="#FFB300" opacity="0.6"/>
+  <rect x="70" y="57" width="12" height="2" fill="#FFB300" opacity="0.4"/>
+  <rect x="84" y="57" width="6" height="2" fill="#FFB300" opacity="0.3"/>
+  <!-- bottom label -->
+  <text x="60" y="74" font-family="'Press Start 2P',monospace" font-size="4" fill="#FFB300" text-anchor="middle">DATA DAEMON</text>
+</svg>
