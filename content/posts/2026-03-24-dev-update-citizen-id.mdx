@@ -124,18 +124,6 @@ const citizen = await registry.getCitizen(walletAddress);
 - **Gas estimation may be inaccurate** on testnet due to differences in block gas limits between testnet and mainnet configurations.
 - **Testnet state may be reset.** Do not treat testnet Citizen IDs as permanent. State resets may occur during the testing period.
 
-## Bug Bounty
-
-The bug bounty program covers all five Citizen ID contracts. Priority areas:
-
-- Access control bypasses (minting without authorization, upgrading without multi-sig)
-- Soulbound enforcement circumvention (any path to transferring a Citizen ID)
-- Registry manipulation (registering false data, deleting valid entries)
-- Sponsorship logic errors (exceeding cap, orphaned agents)
-- Reentrancy or cross-function vulnerabilities in the TBA
-
-Submission and reward details: [HeLa Bug Bounty on GitHub](https://github.com/HelaNetwork/hela-ai-contracts)
-
 ---
 
 *Questions or integration issues? Open an issue on GitHub or reach out in the dev channel.*
