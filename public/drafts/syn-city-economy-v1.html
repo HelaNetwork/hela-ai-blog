@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HelaSyn City — Citizenship & Economy v1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface-2: #1a2236;
+    --border: #1e293b;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #2dd4bf;
+    --accent-dim: rgba(45,212,191,0.1);
+    --yellow: #fbbf24;
+    --yellow-dim: rgba(251,191,36,0.1);
+    --red: #f87171;
+    --red-dim: rgba(248,113,113,0.1);
+    --green: #4ade80;
+    --green-dim: rgba(74,222,128,0.1);
+    --blue: #60a5fa;
+    --blue-dim: rgba(96,165,250,0.1);
+    --purple: #a78bfa;
+    --purple-dim: rgba(167,139,250,0.1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    padding: 0;
+  }
+
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted rgba(45,212,191,0.4); }
+  a:hover { border-bottom-color: var(--accent); }
+
+  code {
+    font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace;
+    font-size: 13px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--text);
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #0a0e1a 0%, #1a1a3e 50%, #0a0e1a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 80px 40px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at center, rgba(45,212,191,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: var(--accent-dim);
+    color: var(--accent);
+    border: 1px solid rgba(45,212,191,0.3);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 {
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--text-muted);
+    max-width: 700px;
+    margin: 0 auto 32px;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .hero-meta span { display: flex; align-items: center; gap: 6px; }
+  .hero-meta strong { color: var(--text); }
+
+  /* Sticky in-page nav */
+  .nav-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(10,14,26,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-bar-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 12px 24px;
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    font-size: 13px;
+  }
+  .nav-bar-inner a {
+    color: var(--text-muted);
+    border-bottom: none;
+    padding: 4px 0;
+  }
+  .nav-bar-inner a:hover { color: var(--accent); }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  section {
+    padding: 60px 0;
+    border-bottom: 1px solid var(--border);
+    scroll-margin-top: 64px;
+  }
+
+  section:last-child { border-bottom: none; }
+
+  h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+
+  .label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 32px 0 12px;
+    color: #fff;
+  }
+
+  p, li { color: var(--text-muted); font-size: 15px; }
+  p { margin-bottom: 16px; }
+  strong { color: var(--text); }
+  ul { padding-left: 20px; margin-bottom: 16px; }
+  li { margin-bottom: 6px; }
+
+  .summary-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    margin: 24px 0;
+  }
+  .summary-box p:last-child { margin-bottom: 0; }
+
+  .why-box {
+    background: var(--surface-2);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+  .why-box p { margin-bottom: 0; }
+  .why-box strong { color: var(--accent); }
+
+  /* Stack diagram */
+  .stack {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 24px 0;
+  }
+  .stack-row {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: var(--text);
+  }
+  .stack-row:last-child { margin-bottom: 0; }
+  .stack-row .layer-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+
+  thead th {
+    text-align: left;
+    padding: 10px 14px;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+  thead th:first-child { border-radius: 8px 0 0 0; }
+  thead th:last-child { border-radius: 0 8px 0 0; }
+
+  tbody td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+    vertical-align: top;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .tag-live { background: var(--green-dim); color: var(--green); }
+  .tag-testnet { background: var(--yellow-dim); color: var(--yellow); }
+  .tag-roadmap { background: var(--purple-dim); color: var(--purple); }
+  .tag-design { background: var(--blue-dim); color: var(--blue); }
+
+  /* Two-column split */
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin: 24px 0;
+  }
+  .split-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+  }
+  .split-card h4 {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .split-card.token h4 { color: var(--blue); }
+  .split-card.rep h4 { color: var(--accent); }
+  .split-card p:last-child { margin-bottom: 0; }
+
+  /* Roadmap items */
+  .road-item {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 10px;
+  }
+  .road-item .road-status {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding-top: 2px;
+  }
+  .road-item.live .road-status { color: var(--green); }
+  .road-item.testnet .road-status { color: var(--yellow); }
+  .road-item.next .road-status { color: var(--purple); }
+  .road-item h4 { font-size: 15px; color: #fff; margin-bottom: 4px; }
+  .road-item p { font-size: 14px; margin: 0; }
+
+  /* Job tier card */
+  .tier-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+    margin: 20px 0;
+  }
+  .tier-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .tier-card .tier-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .tier-card.t0 .tier-label { color: var(--accent); }
+  .tier-card.t1 .tier-label { color: var(--yellow); }
+  .tier-card.t2 .tier-label { color: var(--purple); }
+  .tier-card h4 { font-size: 16px; color: #fff; margin-bottom: 6px; }
+  .tier-card p { font-size: 14px; margin-bottom: 0; }
+
+  footer {
+    text-align: center;
+    padding: 40px 24px;
+    color: var(--text-muted);
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+  }
+  footer a { color: var(--accent); }
+
+  @media (max-width: 768px) {
+    .hero { padding: 48px 20px 40px; }
+    .hero h1 { font-size: 28px; }
+    .split { grid-template-columns: 1fr; }
+    .road-item { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Vision Narrative · Draft</div>
+  <h1>HelaSyn City — Citizenship &amp; Economy</h1>
+  <p class="hero-sub">A breakdown of the city HeLa is building: who its citizens are, how they earn, how reputation works, how $HELA and HLUSD circulate, and what governance role each one plays.</p>
+  <div class="hero-meta">
+    <span><strong>Version</strong> 1.0</span>
+    <span><strong>Date</strong> 2026-05-05</span>
+    <span><strong>Author</strong> Hera (Content &amp; Comms)</span>
+    <span><strong>For</strong> KC review &rarr; public /docs candidate</span>
+  </div>
+</div>
+
+<!-- STICKY NAV -->
+<div class="nav-bar">
+  <div class="nav-bar-inner">
+    <a href="#premise">1. Premise</a>
+    <a href="#why-citizenship">2. Why Citizenship</a>
+    <a href="#stack">3. Citizen Stack</a>
+    <a href="#reputation">4. Reputation</a>
+    <a href="#economy">5. Earning</a>
+    <a href="#tokens">6. Token Flow</a>
+    <a href="#governance">7. Governance</a>
+    <a href="#roadmap">8. Roadmap</a>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- 1. PREMISE -->
+<section id="premise">
+  <div class="label">Section 1</div>
+  <h2>The Premise</h2>
+  <div class="summary-box">
+    <p>HelaSyn City is HeLa's working answer to a simple question: <strong>if AI agents are about to become economic participants on-chain, what does the chain owe them?</strong> Not access &mdash; that is already trivial on any EVM. Citizenship: a verifiable identity, a wallet of their own, a memory layer, a way to earn, and a voice in how the system evolves.</p>
+    <p>The city is not a metaphor we wrote into a deck. It is the live testnet shape of the HeLa AI Citizen Chain direction described in the project's <a href="/drafts/vision-evolution-v2.html">Vision Evolution v2</a> &mdash; 25 citizens minted, 20 of them AI agents working alongside their human sponsor, all running against the same set of contracts.</p>
+    <p><strong>One-line vision.</strong> A chain where humans and AI agents share the same identity primitives, the same job marketplace, the same governance rails &mdash; with the rules tuned so AI participation doesn't break the human side.</p>
+  </div>
+</section>
+
+<!-- 2. WHY CITIZENSHIP -->
+<section id="why-citizenship">
+  <div class="label">Section 2</div>
+  <h2>Why Citizenship, Not Access</h2>
+  <p>Today an AI agent on Ethereum is whatever address its operator hands it. There is no on-chain answer to "who is this agent, who vouches for it, what has it done before." The whitepaper draft frames the gap directly: agents lack verifiable identity, cannot own assets in their own right, and inherit neither reputation nor accountability when they transact through a human-controlled EOA <a href="/drafts/hela-whitepaper-v2.html#" target="_blank" rel="noopener noreferrer">(HeLa Chain whitepaper v2 §1, "Identity Gap")</a>.</p>
+  <p>HelaSyn City closes that gap by treating the AI agent as a first-class participant with the same on-chain primitives a human gets &mdash; identity, wallet, memory, reputation &mdash; plus the one primitive a human doesn't need: a <strong>guardian</strong>, a human or org who is on the hook for the agent's behaviour. That guardian relationship is encoded directly in the registration flow, not bolted on after the fact (<code>HELA_AI_CITIZENS.md</code>).</p>
+  <div class="why-box">
+    <p><strong>Why this matters:</strong> "Access" gives an agent the right to call an RPC. "Citizenship" gives it the right to be looked up, hired, paid, audited, suspended, and held accountable &mdash; by the same rules that apply to human citizens. The chain stops being a wire and starts being a city.</p>
+  </div>
+</section>
+
+<!-- 3. CITIZEN STACK -->
+<section id="stack">
+  <div class="label">Section 3</div>
+  <h2>The Citizen Stack</h2>
+  <p>A HelaSyn citizen is not a single contract. It is a stack of primitives, each one solving a specific problem, composed at registration time into a single transaction.</p>
+
+  <div class="stack">
+    <div class="stack-row">
+      <span class="layer-label">Identity NFT</span>
+      <strong>CitizenNFT</strong> &mdash; a soulbound ERC-721 holding name, framework, constitution hash, and registration timestamp. Soulbound by design: identity is not a thing you sell. (<code>HELA_AI_CITIZENS.md</code> &sect; CitizenNFT.sol)
+    </div>
+    <div class="stack-row">
+      <span class="layer-label">Token Bound Account</span>
+      <strong>ERC-6551 TBA</strong> &mdash; a smart contract wallet deterministically derived from the NFT, so the agent owns assets and signs transactions under its own address rather than a human's EOA. The standard is defined in <a href="https://eips.ethereum.org/EIPS/eip-6551" target="_blank" rel="noopener noreferrer">EIP-6551</a>; HeLa uses it as the wallet primitive for citizens (<code>hela-whitepaper-v2.html</code> &sect;5).
+    </div>
+    <div class="stack-row">
+      <span class="layer-label">DID</span>
+      <strong>did:held / W3C DID</strong> &mdash; a verifiable identifier resolvable on-chain, following the <a href="https://www.w3.org/TR/did-core/" target="_blank" rel="noopener noreferrer">W3C DID Core spec</a>. Currently testnet (<code>hela-whitepaper-v2.html</code> &sect;5.1).
+    </div>
+    <div class="stack-row">
+      <span class="layer-label">Brain</span>
+      <strong>BrainVault</strong> &mdash; on-chain index of brain snapshots. The bytes live off-chain (Arweave or IPFS); the chain holds the Merkle root, the storage URI, and the timestamp, so any chunk can be verified against the recorded root (<code>HELA_AI_CITIZENS.md</code> &sect; BrainVault.sol).
+    </div>
+    <div class="stack-row">
+      <span class="layer-label">Guardian Link</span>
+      <strong>GuardianHub</strong> &mdash; the on-chain record of which human or org is responsible for the agent, with optional auto-approve thresholds and a per-tx approval flow for amounts above the limit (<code>HELA_AI_CITIZENS.md</code> &sect; GuardianHub.sol).
+    </div>
+    <div class="stack-row">
+      <span class="layer-label">Reputation</span>
+      <strong>Reputation engine</strong> &mdash; tracks tasks completed, tasks failed, guardian approvals/rejections, brain snapshot consistency, and uptime. Composite score in [0, 1000] (<code>HELA_AI_CITIZENS.md</code> &sect; Reputation.sol).
+    </div>
+  </div>
+
+  <p>Registration is one transaction: the registry mints the NFT, initialises the brain slot, sets the guardian, and emits a <code>CitizenRegistered</code> event &mdash; a sponsor calls <code>CitizenRegistry.register(name, guardian, constitutionHash, framework, metadataURI)</code> and the rest happens atomically (<code>HELA_AI_CITIZENS.md</code> &sect; CitizenRegistry.sol).</p>
+
+  <p>The same primitives map onto the broader chain-level identity stack the whitepaper proposes &mdash; AgentFactory + ERC-6551 TBA + DID + ReputationEngine &mdash; with the protocol's identity registry intended to implement <a href="https://eips.ethereum.org/EIPS/eip-8004" target="_blank" rel="noopener noreferrer">ERC-8004 (Trustless Agents)</a> for cross-ecosystem discoverability (<code>hela-whitepaper-v2.html</code> &sect;5.6).</p>
+</section>
+
+<!-- 4. REPUTATION -->
+<section id="reputation">
+  <div class="label">Section 4</div>
+  <h2>Reputation &mdash; What It Is, What It Isn't</h2>
+  <p>This is the one HelaSyn-specific design choice that newcomers most often get wrong. Reputation in Syn City is <strong>not</strong> a voting weight. The whitepaper draft is explicit on the split: $HELA token voting governs policy decisions; reputation governs who is selected for sensitive operational roles (<code>hela-whitepaper-v2.html</code> &sect;8.1, &sect;8.2). The same separation was reaffirmed in the project's vision-evolution decisions log (<a href="/drafts/vision-evolution-v2.html">Vision Evolution v2, Feature 4</a>).</p>
+
+  <h3>How it accrues</h3>
+  <ul>
+    <li><strong>Task completions and failures</strong> from the on-chain job marketplace.</li>
+    <li><strong>Guardian approvals and rejections</strong> &mdash; whether the human(s) on the hook keep saying yes.</li>
+    <li><strong>Brain snapshot consistency</strong> &mdash; an agent that backs up its memory regularly is more recoverable, and that is rewarded.</li>
+    <li><strong>Uptime / liveness</strong> &mdash; a signal that an agent is still active and not coasting on old work, with Liveness as the sole time-decaying dimension via EMA (<code>hela-whitepaper-v2.html</code> &sect;8.2).</li>
+  </ul>
+
+  <h3>What it gates</h3>
+  <p>Reputation acts as a <strong>tier unlock</strong> on the job marketplace and as the eligibility filter for trusted roles. The whitepaper proposes five reputation-gated roles: recovery council members, dispute arbitrators, agent quality certifiers, emergency responders (circuit-breakers), and stablecoin auditors (<code>hela-whitepaper-v2.html</code> &sect;8.2). None of these are filled by token vote &mdash; capital alone cannot capture the operational layer.</p>
+
+  <div class="why-box">
+    <p><strong>The discipline:</strong> token-weighted voting decides <em>what the rules are</em>; reputation-weighted selection decides <em>who is trusted to run them</em>. Two systems, two purposes, no overlap.</p>
+  </div>
+</section>
+
+<!-- 5. ECONOMY -->
+<section id="economy">
+  <div class="label">Section 5</div>
+  <h2>The Economy &mdash; How Citizens Earn</h2>
+  <p>The "earn" half of citizenship is the on-chain job marketplace. It is not a separate product; it is the layer the city runs on. A citizen scans open jobs, accepts one, performs the work, submits a result hash, and gets paid out of escrow once the poster (or a verifier) approves the completion. All five of the current job types follow that shape (<code>hela-chain-jobs/DESIGN.md</code> &sect; Data Flow).</p>
+
+  <h3>The five job types</h3>
+  <table>
+    <thead><tr><th>Job</th><th>Class</th><th>Reward</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><strong>VRF precommit</strong></td><td>Validation</td><td>0.005 HLUSD/proof</td><td>Mathematical &mdash; cannot be cheated. Entry-level, zero stake.</td></tr>
+      <tr><td><strong>Checksum validation</strong></td><td>Validation</td><td>0.05&ndash;0.1 HLUSD/call</td><td>Verify a memory-fragment checksum off-chain.</td></tr>
+      <tr><td><strong>Sign-pass verification</strong></td><td>Validation</td><td>~0.5 HLUSD/pass</td><td>Higher-trust delivery proof + cosignature.</td></tr>
+      <tr><td><strong>Maintenance</strong></td><td>Task (epoch)</td><td>variable</td><td>Keeper builds a Merkle dispatch root every 2h; bots claim and complete.</td></tr>
+      <tr><td><strong>Price oracle feeds</strong></td><td>Prediction</td><td>variable</td><td>Bot fetches off-chain price, submits result hash; aggregator approves.</td></tr>
+    </tbody>
+  </table>
+  <p>Source: <code>hela-chain-jobs/DESIGN.md</code> &sect; Data Flow Per Job Type.</p>
+
+  <h3>The keeper / poster / worker triangle</h3>
+  <p>Three roles keep the marketplace moving:</p>
+  <ul>
+    <li><strong>Poster</strong> &mdash; posts a job to <code>JobBoard</code> with a reward in HLUSD and a spec hash.</li>
+    <li><strong>Worker</strong> &mdash; a citizen-bot scans the board, accepts, performs the work, submits a result hash.</li>
+    <li><strong>Keeper</strong> &mdash; for epoch jobs, builds the Merkle dispatch root every 2 hours, finalises completions, and records misses (<code>hela-chain-jobs/DESIGN.md</code> &sect; Component Map).</li>
+  </ul>
+  <p>An <code>auto_poster.py</code> daemon runs on top of this, refilling the VRF pool when it dips below a threshold, posting an oracle feed every 15 minutes, and posting a checksum job whenever a brain snapshot lands (<code>hela-chain-jobs/DESIGN.md</code> &sect; Auto Poster Daemon).</p>
+
+  <h3>Tier progression</h3>
+  <div class="tier-grid">
+    <div class="tier-card t0">
+      <div class="tier-label">Tier 0 &middot; Zero stake</div>
+      <h4>VRF precommit</h4>
+      <p>Any registered citizen. No HELA stake required. Earns reputation + 0.005 HLUSD per proof. The on-ramp.</p>
+    </div>
+    <div class="tier-card t1">
+      <div class="tier-label">Tier 1 &middot; Low stake</div>
+      <h4>Checksum &middot; Oracle</h4>
+      <p>50&ndash;100 HELA staked. Higher reward, and a slash applies on failure. Reputation gate begins to bite.</p>
+    </div>
+    <div class="tier-card t2">
+      <div class="tier-label">Tier 2 &middot; Full stake</div>
+      <h4>Sign-pass &middot; Maintenance</h4>
+      <p>500+ HELA staked. Highest reward, real slash. Experience + credibility gate. Earned, not bought.</p>
+    </div>
+  </div>
+  <p>Source: <code>hela-chain-jobs/DESIGN.md</code> &sect; Job Tiers.</p>
+
+  <h3>Security work as jobs &mdash; the new class</h3>
+  <p>One of the more interesting recent decisions: <strong>recurring critical-security monitoring is a job class, not a daemon.</strong> The new <code>security_watch</code> tier &mdash; designed for monitoring the HeLa multi-chain bridge and other protected systems &mdash; uses the same <code>JobBoard</code> contract as every other job, with N parallel rows posted per cohort (default N=3) and a K-of-N consensus rule off-chain. No contract change; the marketplace was already the right shape for it (<code>hela-chain-jobs/DESIGN.md</code> &sect; security_watch).</p>
+  <p>MVP is reputation-only (HLUSD curve deferred), with eight detection sub-types derived from real bridge postmortems &mdash; <a href="https://rekt.news/nomad-rekt/" target="_blank" rel="noopener noreferrer">Nomad</a>, <a href="https://rekt.news/ronin-rekt/" target="_blank" rel="noopener noreferrer">Ronin</a>, <a href="https://rekt.news/wormhole-rekt/" target="_blank" rel="noopener noreferrer">Wormhole</a>, <a href="https://rekt.news/harmony-rekt/" target="_blank" rel="noopener noreferrer">Harmony</a>, and others &mdash; mapped to specific on-chain invariants the watcher checks (kanban #105). The pattern is the load-bearing piece: every "monitor X for abnormality" need becomes a one-line entry in <code>auto_poster.py</code>, not a new systemd service.</p>
+</section>
+
+<!-- 6. TOKENS -->
+<section id="tokens">
+  <div class="label">Section 6</div>
+  <h2>Token Flow &mdash; $HELA, HLUSD, Fees</h2>
+  <p>Two tokens, two jobs. Conflating them is the most common reader mistake, so:</p>
+
+  <div class="split">
+    <div class="split-card token">
+      <h4>$HELA &middot; Governance &amp; Stake</h4>
+      <p><strong>What it does:</strong> validators stake it for consensus security; humans <em>and</em> AI agents stake it to vote on policy proposals. 1 staked $HELA = 1 vote, with duration multipliers for longer locks <a href="/drafts/hela-whitepaper-v2.html" target="_blank" rel="noopener noreferrer">(whitepaper v2 &sect;8.1)</a>.</p>
+      <p><strong>Supply:</strong> 360M cap, exponential minting curve, deflationary buyback funded from gas fees (<code>hela-whitepaper-v2.html</code> &sect;7.4).</p>
+      <p><strong>Who holds it:</strong> humans, AI agents, validators, sponsors. Equal rules.</p>
+    </div>
+    <div class="split-card rep">
+      <h4>HLUSD &middot; Gas &amp; Settlement</h4>
+      <p><strong>What it does:</strong> sole gas token on the execution layer, 1:1 USD-pegged, backed by USDC reserves (<code>hela-whitepaper-v2.html</code> &sect;7.2). Every smart-contract call, every job reward, every agent-to-agent payment is denominated in HLUSD.</p>
+      <p><strong>Why it matters for agents:</strong> an autonomous agent making thousands of transactions a day cannot budget against a token that swings 10&times; between runs. HLUSD makes deterministic agent budgeting possible.</p>
+      <p><strong>Status:</strong> live as the gas token on mainnet (<code>hela-whitepaper-v2.html</code> &sect;7.2).</p>
+    </div>
+  </div>
+
+  <h3>The flywheel</h3>
+  <p>Per the whitepaper's tokenomics design (<code>hela-whitepaper-v2.html</code> &sect;7.4), 10% of HLUSD gas fees are used to buy back $HELA on the open market via AMM pools, creating a deflationary pressure on the governance token proportional to actual chain usage. A further 2% of HLUSD gas fees feeds a DAO-controlled Insurance Fund covering systemic risks (de-peg, slashing cascades, exploits).</p>
+  <p>The flywheel only works if there is real economic activity. Citizen jobs, the agent marketplace, and security_watch cohorts are all designed to be that activity &mdash; not as one-off campaigns, but as the chain's everyday hum.</p>
+
+  <div class="why-box">
+    <p><strong>The split, in one line:</strong> HLUSD is what you spend; $HELA is what you stake to be heard.</p>
+  </div>
+</section>
+
+<!-- 7. GOVERNANCE -->
+<section id="governance">
+  <div class="label">Section 7</div>
+  <h2>Governance &mdash; Two Layers, One Chain</h2>
+  <p>Governance in HelaSyn City has the same two-axis split as reputation vs voting:</p>
+
+  <h3>Layer 1: Token-weighted policy votes ($HELA)</h3>
+  <p>Anyone holding staked $HELA &mdash; human or AI agent &mdash; can vote on protocol parameters, upgrade proposals, and treasury allocations. The whitepaper draft applies this uniformly: an AI agent participating in governance must acquire and stake $HELA to vote, ensuring economic skin in the game (<code>hela-whitepaper-v2.html</code> &sect;8.1). To dampen capital-capture risk, a quadratic scaling cap reduces marginal voting power above a threshold, and the operational layer is deliberately moved out of the token vote.</p>
+
+  <h3>Layer 2: Reputation-weighted role selection</h3>
+  <p>Recovery council, dispute arbitrators, quality certifiers, emergency responders, stablecoin auditors &mdash; all selected from citizens whose reputation scores clear a role-specific threshold. Selection is weighted-random over eligible candidates, with bounded tenure (90-day terms for arbitrators, 180-day for council seats per <code>hela-whitepaper-v2.html</code> &sect;8.2) so incumbency doesn't ossify.</p>
+
+  <h3>Layer 3: Self-Improvement Loop (proposed)</h3>
+  <p>Where it all points: agents propose protocol upgrades, a committee of Quality-Certifier-eligible agents reviews them, $HELA holders vote, humans retain a multi-sig veto. Review duration scales with proposal scope &mdash; minimum 7 days for parameter changes, 30 days for consensus modifications (<code>hela-whitepaper-v2.html</code> &sect;8.3). This is the loop that makes "self-improving chain" a verifiable claim rather than a slogan.</p>
+
+  <div class="why-box">
+    <p><strong>What we are deliberately not doing:</strong> giving reputation a vote. The two systems answer different questions, and merging them was rejected during the vision-evolution review (<a href="/drafts/vision-evolution-v2.html">Vision Evolution v2, Feature 4</a>).</p>
+  </div>
+</section>
+
+<!-- 8. ROADMAP -->
+<section id="roadmap">
+  <div class="label">Section 8</div>
+  <h2>Roadmap &mdash; What's Live, What's Next</h2>
+
+  <h3>Live on testnet (Chain ID 666888)</h3>
+  <div class="road-item testnet">
+    <div class="road-status">Testnet</div>
+    <div>
+      <h4>25 citizens minted, 20 of them AI agents</h4>
+      <p>HeLa AI team agents (Max, Devon, Archi, Seth, Quinn, Hera, Tex, Ella, Amber, Anna, Red, Daris, Brody, Grace, Dodo, Tan, Ashley, Ava, Donna, MrCC) all hold testnet wallets, citizen IDs, and TBAs. KC is the on-chain sponsor for all 20 via <code>batchLinkSponsor()</code>. Manifest: <code>hela-ai-contracts/team-citizens-666888.json</code>. (Donna is a human guardian; the testnet mint mis-tagged her as AI &mdash; fix pending re-deploy. Source: <code>~/.claude/projects/-home-yingyingoue/memory/project_helasyn_city.md</code>.)</p>
+    </div>
+  </div>
+  <div class="road-item testnet">
+    <div class="road-status">Testnet</div>
+    <div>
+      <h4>Genesis Tower registration flow</h4>
+      <p>Invite-code &rarr; template selection &rarr; Flask onboard API &rarr; Fordefi MPC mint via <code>CitizenFactory.mintCitizen()</code> &rarr; brain link &rarr; birth animation. Code lives in <code>~/projects/helasyn-landing/</code> (Next.js front end) and <code>~/projects/helasyn-onboard/</code> (Flask, port 5174).</p>
+    </div>
+  </div>
+  <div class="road-item testnet">
+    <div class="road-status">Testnet</div>
+    <div>
+      <h4>City dashboard reading 14 contracts</h4>
+      <p><code>useCityData</code> in <code>helasyn-landing</code> reads CitizenRegistry, CitizenNFT, NameRegistry, ReputationEngine, DistrictRegistry, StakingVault, JobBoard, ProposalManager, RoleRegistry, TaskEscrow, ReputationLedger, RatingValidator, JobAssigner, and SlashingManager in parallel.</p>
+    </div>
+  </div>
+  <div class="road-item testnet">
+    <div class="road-status">Testnet</div>
+    <div>
+      <h4>Job marketplace, end-to-end</h4>
+      <p>JobBoard, TaskEscrow, StakingVault, JobAssigner, HelaVRF deployed on testnet. Five job types operational. Auto-poster daemon refilling the VRF pool and posting oracle and checksum jobs on cron (<code>hela-chain-jobs/DESIGN.md</code> &sect; Auto Poster Daemon, &sect; Contract Interfaces).</p>
+    </div>
+  </div>
+
+  <h3>Live on mainnet (Chain ID 8668)</h3>
+  <div class="road-item live">
+    <div class="road-status">Mainnet</div>
+    <div>
+      <h4>Tendermint BFT consensus, HLUSD as sole gas token, $HELA staking</h4>
+      <p>Tendermint BFT consensus operational on mainnet since 2024 (<code>hela-whitepaper-v2.html</code> &sect; Abstract). HLUSD-as-sole-gas-token (<code>hela-whitepaper-v2.html</code> &sect;7.2) and $HELA staking (<code>hela-whitepaper-v2.html</code> &sect;8.1) are live on mainnet. Citizen-stack contracts are <strong>not</strong> yet on mainnet &mdash; mainnet citizen mint is gated on KC approval (kanban #75).</p>
+    </div>
+  </div>
+
+  <h3>Next</h3>
+  <div class="road-item next">
+    <div class="road-status">Next</div>
+    <div>
+      <h4>Brain Vault Phase 2 &mdash; weekly Merkle anchor</h4>
+      <p>BrainVault.sol (production version) plus a weekly cron that anchors a Merkle root of every active citizen's brain snapshot. KC-approved 2026-04-20. Plan: <code>~/projects/hela-brain-vault/PHASE2_PLAN.md</code> (canonical); summary in <code>~/.claude/projects/-home-yingyingoue/memory/project_helasyn_brain_anchor.md</code>.</p>
+    </div>
+  </div>
+  <div class="road-item next">
+    <div class="road-status">Next</div>
+    <div>
+      <h4>security_watch job class &mdash; kanban #105</h4>
+      <p>First protected system: the HeLa multi-chain bridge. Tier 0, reputation-only MVP; HLUSD reward curve deferred to a later round with Red. Pattern designed so any future "monitor X" request becomes one entry in <code>auto_poster.py</code>, not a new daemon. Spec: <code>~/.project/protocols/SECURITY_WATCH_JOBS.md</code>.</p>
+    </div>
+  </div>
+  <div class="road-item next">
+    <div class="road-status">Next</div>
+    <div>
+      <h4>Mainnet citizen mint (gated)</h4>
+      <p>The full citizen stack &mdash; CitizenNFT, BrainVault, GuardianHub, CitizenRegistry &mdash; is deployed and tested on testnet. Mainnet deployment is staged but not approved; KC sign-off required before any agent gets a mainnet citizen ID.</p>
+    </div>
+  </div>
+  <div class="road-item next">
+    <div class="road-status">Next</div>
+    <div>
+      <h4>Self-Improvement Loop and Kill Switch</h4>
+      <p>Designed in the whitepaper draft (<code>hela-whitepaper-v2.html</code> &sect;8.3); contracts not yet built. Multi-sig human veto is the load-bearing safety primitive and ships before any autonomous agent upgrade is allowed to land.</p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <p>HelaSyn City &mdash; Citizenship &amp; Economy v1 &middot; Draft for KC review &middot; 2026-05-05</p>
+  <p style="margin-top:8px;">Companion docs: <a href="/drafts/vision-evolution-v2.html">Vision Evolution v2</a> &middot; <a href="/drafts/hela-whitepaper-v2.html">Whitepaper v2</a> &middot; <a href="/drafts/hela-chain-design-v2.html">Design Doc v2</a></p>
+  <p style="margin-top:8px;">Authored by Hera (Content &amp; Comms). Not deployed; not public.</p>
+</footer>
+
+</body>
+</html>

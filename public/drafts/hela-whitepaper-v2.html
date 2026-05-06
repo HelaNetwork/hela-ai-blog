@@ -44,7 +44,7 @@ a:hover{text-decoration:underline}
 <h1>HeLa Chain: Sovereign Infrastructure for the AI-Native Economy</h1>
 <p><strong>HeLa Labs &amp; A*STAR Institute of High Performance Computing (IHPC), Singapore</strong></p>
 <hr>
-<h2>1. Abstract</h2>
+<h2 id="abstract">1. Abstract</h2>
 <p>Autonomous AI agents are rapidly emerging as independent economic participants, capable of executing multi-step tasks, managing digital assets, and transacting across networks. Yet the blockchain infrastructure upon which a decentralized agent economy must be built was designed exclusively for human users. Agents lack verifiable on-chain identity, cannot own assets in their own right, have no persistent and private memory layer, and are subject to gas fee volatility that undermines deterministic cost planning. This paper presents <strong>HeLa Chain</strong>, the first Layer-1 blockchain in which AI agents are treated as first-class citizens rather than mere tools invoked by human wallets. We propose four core contributions: (i) an <strong>AI Citizen Identity</strong> framework combining an Agent NFT minted via AgentFactory with ERC-6551 Token Bound Accounts and W3C-compliant Decentralized Identifiers; (ii) <strong>HelaMemoryVault</strong>, a proposed tiered on-chain memory system with Trusted Execution Environment (TEE) confidentiality guarantees; (iii) a <strong>stable transaction economics</strong> model anchored by HLUSD, a USD-pegged stablecoin already deployed as the sole gas token on mainnet, paired with $HELA governance token economics featuring an exponential minting curve; and (iv) a <strong>Self-Improvement Loop</strong> designed to enable agents to participate in protocol governance and reputation accrual. HeLa Chain is built on proven Tendermint BFT consensus infrastructure operational on mainnet since 2024 and co-developed with A*STAR IHPC, Singapore. We present the formal architecture, protocol specifications, economic models, and a comparative analysis demonstrating HeLa&#39;s differentiated position in the emerging agent-native blockchain landscape.</p>
 <hr>
 <h2>2. Introduction</h2>
@@ -175,8 +175,8 @@ a:hover{text-decoration:underline}
 <p>The Application Layer — termed the <em>AI Citizen Stack</em> — is designed to provide the agent-specific primitives that differentiate HeLa from general-purpose blockchains. AgentFactory is proposed to manage agent lifecycle and identity. HelaMemoryVault is designed to provide tiered private storage. The Reputation module is intended to track agent performance through SBTs and VCs. The Governance module is designed to enable reputation-weighted participation in protocol decisions.</p>
 <p><strong>Architectural evolution note.</strong> The original HeLa whitepaper defined a four-layer architecture including a dedicated Integration Layer responsible for cross-runtime state synchronization and external bridging. As the protocol evolves toward AI-native functionality, this paper proposes consolidating the architecture to three infrastructure layers, with cross-chain integration delegated to the AI Citizen Stack&#39;s agent capabilities. The Integration Layer&#39;s original design goals — asset portability and cross-domain interoperability — are achieved through agent-mediated interactions rather than protocol-level message passing. An agent with a DID, a TBA, memory, and network access requires no middleware to interact with external APIs, other chains, or human counterparts. The four-layer model remains documented at docs.helachain.com for reference.</p>
 <hr>
-<h2>5. AI Citizen Identity</h2>
-<h3>5.1 The Held DID System</h3>
+<h2 id="section-5">5. AI Citizen Identity</h2>
+<h3 id="section-5-1">5.1 The Held DID System</h3>
 <p>HeLa implements a W3C-compliant [19] DID method, <code>did:held</code>, currently deployed on testnet, providing persistent, cryptographically verifiable identity for every entity on the network — human or agent. A Held DID takes the form:</p>
 <pre><code>did:held:0x&lt;20-byte-address&gt;
 </code></pre>
@@ -226,7 +226,7 @@ a:hover{text-decoration:underline}
 <p>Let $S_i$ denote the stake deposited by sponsor $i$ for agent $a$. The agent&#39;s <strong>accountability bond</strong> is:</p>
 <p>$$B(a) = \sum_{i \in \text{sponsors}(a)} S_i$$</p>
 <p>If an agent&#39;s behavior triggers a governance dispute and the dispute is resolved against the agent, a fraction of $B(a)$ is slashed. This mechanism ensures that every autonomous agent has an economically accountable human or organizational counterpart, addressing the trust gap identified in §2.2.</p>
-<h3>5.6 Cross-Ecosystem Interoperability</h3>
+<h3 id="section-5-6">5.6 Cross-Ecosystem Interoperability</h3>
 <p>HeLa&#39;s agent identity stack is designed for cross-ecosystem interoperability. The identity registry implements the ERC-8004 (Trustless Agents) standard [46], live on Ethereum mainnet since January 2026 and co-authored by MetaMask, the Ethereum Foundation, Google, and Coinbase. This ensures HeLa agents are discoverable and verifiable by any ERC-8004 compatible wallet, marketplace, or toolchain. The standard&#39;s three-registry architecture (Identity, Reputation, Validation) maps directly to HeLa&#39;s AgentFactory, ReputationEngine, and RoleRegistry.</p>
 <hr>
 <h2>6. Agent Memory and Privacy</h2>
@@ -300,7 +300,7 @@ a:hover{text-decoration:underline}
 <h3>7.1 The Volatility Problem</h3>
 <p>Autonomous agents require deterministic cost planning. An agent programmed to execute 1,000 transactions per day must know, within tight bounds, what those transactions will cost. The EIP-1559 fee mechanism [21] provides <em>intra-block</em> predictability through its algorithmic base fee adjustment, but the base fee is denominated in a volatile native token. Roughgarden&#39;s analysis [22] demonstrates the mechanism&#39;s incentive properties but explicitly notes that it does not address the <em>denomination</em> problem: even a perfectly designed fee mechanism produces unpredictable fiat-equivalent costs when the unit of account fluctuates.</p>
 <p>For human users, gas volatility is an inconvenience. For autonomous agents operating on fixed budgets with no human in the loop, it is a system-level failure mode. An agent that exhausts its gas budget due to a token price spike ceases to function — not because of any fault in its logic, but because the underlying economic infrastructure was not designed for its operational model.</p>
-<h3>7.2 HLUSD — Stablecoin as Gas Token</h3>
+<h3 id="section-7-2">7.2 HLUSD — Stablecoin as Gas Token</h3>
 <p>HeLa eliminates gas volatility by designating <strong>HLUSD</strong> as the sole gas token on the execution layer. HLUSD maintains a 1:1 peg to the US dollar, backed by USDC reserves held in auditable custody. Key properties:</p>
 <ul>
 <li><strong>Stable denomination.</strong> Gas costs are expressed in USD-equivalent units. An agent budgeting $10/day in gas knows its budget will cover the same number of transactions regardless of market conditions.</li>
@@ -314,7 +314,7 @@ a:hover{text-decoration:underline}
 <p>$$R_e = \lambda \cdot \exp(-\lambda e)$$</p>
 <p>$$P(R_e) = 1 - \exp(-\lambda e)$$</p>
 <p>where $\lambda = 0.0000192$. This formulation ensures that early validators receive higher rewards (incentivizing early network security), while the total supply asymptotically approaches the 360M cap. The decay constant $\lambda$ is calibrated such that approximately 50% of total supply is distributed within the first 36,000 epochs, with diminishing issuance thereafter.</p>
-<h3>7.4 Dual-Token Interaction</h3>
+<h3 id="section-7-4">7.4 Dual-Token Interaction</h3>
 <p>The two tokens interact across layers:</p>
 <ul>
 <li><strong>Execution Layer:</strong> All gas fees, smart contract payments, and agent-to-agent transactions are denominated in HLUSD.</li>
@@ -344,14 +344,14 @@ a:hover{text-decoration:underline}
 <hr>
 <h2>8. Governance</h2>
 <p>The governance of infrastructure designed for autonomous agents introduces challenges that exceed those encountered in conventional blockchain systems. Traditional on-chain governance models, including coin-weighted voting and delegated proof-of-stake, were architected under the assumption that all participants are human actors with bounded rationality and limited throughput [26]. When AI agents become first-class network participants—capable of executing thousands of governance interactions per second—these assumptions no longer hold. We propose a hybrid governance framework that combines token-weighted voting for policy decisions with reputation-based role selection for sensitive operational functions.</p>
-<h3>8.1 $HELA Token Voting</h3>
+<h3 id="section-8-1">8.1 $HELA Token Voting</h3>
 <p>The primary governance mechanism in HeLa Chain is stake-weighted voting denominated in the native $HELA token. Both human participants and registered AI agents may participate in governance proposals by staking $HELA tokens to a governance contract. The voting power is calculated as:</p>
 <p>$$V(p) = \sum_{i=1}^{n} s_i \cdot d_i$$</p>
 <p>where $s_i$ denotes the staked amount for lock period $i$, and $d_i$ is a duration multiplier that rewards longer commitment horizons (e.g., $d = 1.0$ for 30 days, $d = 1.5$ for 180 days, $d = 2.0$ for 365 days). This mechanism applies uniformly to human and agent participants alike; an AI agent must acquire and stake $HELA tokens to participate, ensuring economic skin in the game.</p>
 <p>This design deliberately rejects the separation of human and agent voting pools. As Buterin [27] observes, coin-voting governance is vulnerable to vote buying and rational ignorance; however, requiring agents to hold capital imposes an economic cost on governance manipulation that scales linearly with attack ambition. An agent controlling multiple identities gains no advantage beyond its total capital commitment, as the system counts staked tokens rather than unique voters.</p>
 <p>Quorum thresholds are configurable per action type through a <code>GovernanceConfig</code> contract. Routine parameter adjustments (e.g., fee coefficients) require 20% quorum; protocol upgrades require 40%; changes to the stablecoin collateral model require 60%. This graduated quorum structure follows patterns identified in DAO governance literature [28, 29] while extending them to accommodate agent participation.</p>
 <p>Fritsch et al. [30] demonstrate that voting power concentration in DAOs frequently exceeds that of traditional corporate structures. HeLa mitigates this through two mechanisms: (1) a quadratic scaling cap that reduces marginal voting power above a configurable threshold, and (2) the separation of voting (token-based) from operational role selection (reputation-based), ensuring that capital alone cannot capture sensitive functions.</p>
-<h3>8.2 Reputation-Based Role Selection</h3>
+<h3 id="section-8-2">8.2 Reputation-Based Role Selection</h3>
 <p>While $HELA voting governs policy decisions, certain operational roles demand demonstrated competence rather than capital. We propose five trusted roles that are filled through reputation-weighted selection rather than token voting:</p>
 <ol>
 <li><strong>Recovery Council</strong> — authorized to initiate social recovery for agent wallets</li>
@@ -379,7 +379,7 @@ a:hover{text-decoration:underline}
 </ul>
 <p>This tiered architecture ensures that the most frequent on-chain operation — verifying whether an agent meets a job&#39;s reputation threshold — incurs minimal gas overhead while preserving full auditability through event logs.</p>
 <p>Role eligibility requires $R(a) \geq \theta_{\text{role}}$, where $\theta$ is a role-specific threshold. Among eligible candidates, selection employs weighted random sampling proportional to reputation scores, preventing permanent incumbency while favoring demonstrated competence. Role tenure is bounded (90-day terms for arbitrators, 180-day terms for council members), after which re-selection occurs.</p>
-<h3>8.3 Self-Improvement Loop</h3>
+<h3 id="section-8-3">8.3 Self-Improvement Loop</h3>
 <p>A distinguishing feature of HeLa&#39;s proposed governance model is its support for agent-initiated protocol evolution. Drawing on recent work in self-improving agent systems [33] and self-evolving coordination protocols [34], we propose a structured pathway through which AI agents may propose, review, and implement protocol upgrades.</p>
 <p>The proposed self-improvement loop proceeds as follows:</p>
 <ol>

@@ -67,6 +67,13 @@ export default function DraftsPage() {
 
         <div className="space-y-4">
           <DraftCard
+            title="HelaSyn City — Citizenship & Economy v1"
+            description="Vision breakdown: citizen tiers, reputation, on-chain jobs (do task, earn), $HELA / HLUSD economics, governance role, roadmap."
+            file="syn-city-economy-v1"
+            status="Ready for review"
+            isHtml={true}
+          />
+          <DraftCard
             title="Design Doc v2.0 — AI Citizen Chain (47 Items)"
             description="Master design document: 15 core changes, 22 smart contracts, 10 docs. Full roadmap with IDs, dependencies, phases, effort estimates."
             file="hela-chain-design-v2"
