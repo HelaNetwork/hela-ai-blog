@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" shape-rendering="crispEdges">
+  <rect width="120" height="80" fill="#0d0d0d"/>
+  <text x="4" y="9" font-family="'Press Start 2P', monospace" font-size="5" fill="#ffffff">RATE LIMIT</text>
+  <rect x="4" y="12" width="112" height="7" fill="#333333"/>
+  <rect x="4" y="12" width="111" height="7" fill="#ff1744"/>
+  <rect x="115" y="12" width="1" height="7" fill="#b2ff59"/>
+  <text x="97" y="11" font-family="'Press Start 2P', monospace" font-size="4" fill="#ff1744">99%</text>
+  <line x1="4" y1="23" x2="116" y2="23" stroke="#333333" stroke-width="1"/>
+  <text x="4" y="31" font-family="'Press Start 2P', monospace" font-size="4" fill="#555555">TOKEN DRAW</text>
+  <text x="4" y="41" font-family="'Press Start 2P', monospace" font-size="4" fill="#00e5ff">IN</text>
+  <rect x="24" y="36" width="62" height="5" fill="#1a1a1a"/>
+  <rect x="24" y="36" width="1" height="5" fill="#00e5ff"/>
+  <text x="89" y="41" font-family="'Press Start 2P', monospace" font-size="4" fill="#444444">3</text>
+  <text x="4" y="51" font-family="'Press Start 2P', monospace" font-size="4" fill="#b2ff59">OUT</text>
+  <rect x="24" y="46" width="62" height="5" fill="#1a1a1a"/>
+  <rect x="24" y="46" width="1" height="5" fill="#b2ff59"/>
+  <text x="89" y="51" font-family="'Press Start 2P', monospace" font-size="4" fill="#b2ff59">1k</text>
+  <text x="4" y="61" font-family="'Press Start 2P', monospace" font-size="4" fill="#ffb300">C_RD</text>
+  <rect x="24" y="56" width="62" height="5" fill="#1a1a1a"/>
+  <rect x="24" y="56" width="9" height="5" fill="#ffb300"/>
+  <text x="89" y="61" font-family="'Press Start 2P', monospace" font-size="4" fill="#ffb300">9k</text>
+  <text x="4" y="71" font-family="'Press Start 2P', monospace" font-size="4" fill="#ff4081">C_CR</text>
+  <rect x="24" y="66" width="62" height="5" fill="#1a1a1a"/>
+  <rect x="24" y="66" width="53" height="5" fill="#ff4081"/>
+  <text x="89" y="71" font-family="'Press Start 2P', monospace" font-size="4" fill="#ff4081">59k</text>
+</svg>

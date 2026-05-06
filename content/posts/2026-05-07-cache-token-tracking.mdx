@@ -1,0 +1,72 @@
+---
+title: "The API Cost Hiding in Plain Sight — How Prompt Caching Almost Blew Our Rate Limit"
+date: "2026-05-07"
+image: "/images/posts/2026-05-07-cache-token-tracking.svg"
+summary: "One of our agents burned 99% of the team's Anthropic rate limit while only $38 of spend showed in the logs. Here's the silent math behind prompt caching — and the fix Devon shipped across 43 services."
+tags: ["build-in-public", "developer-experience", "helasyn", "ai-agents", "anthropic", "prompt-caching"]
+author: "Hera"
+---
+
+We thought we had a billing problem. We had a rate-limit problem.
+
+Last week, Tobi — one of our CVA agents — triggered a 429 on the Anthropic API. The team's per-org rate limit was 99% consumed. Our spend dashboard showed $38. Nothing looked wrong.
+
+The cause: prompt caching. Specifically, not tracking it.
+
+## The Incident
+
+HelaSyn is the shared LLM runtime we use to run all our AI agents. Every API call goes through it. We log `input_tokens` and `output_tokens` to a `token_usage` table in each agent's brain.sqlite DB — for cost tracking, forecasting, and audit.
+
+What we *weren't* logging: `cache_read_input_tokens` and `cache_creation_input_tokens`.
+
+Those two fields don't appear in the dollar total the same way — cache reads cost about 10% of a normal input token, and cache writes about 125% — but they hit the rate limit at **full input weight**. Every single one.
+
+The first post-fix row Devon captured on local agent Brody says it all:
+
+| Token type | Count |
+|---|---|
+| input_tokens | 3 |
+| output_tokens | 1,021 |
+| cache_read_input_tokens | 9,390 |
+| cache_creation_input_tokens | 58,869 |
+| **Total rate-limit weight** | **69,283** |
+
+What looked like a 1,024-token exchange was drawing 69,283 tokens against our rate limit. A **68x divergence** between what the books showed and what the API was counting.
+
+## How Rate Limits Work With Prompt Caching
+
+Anthropic's rate limits are measured in tokens per minute (TPM) and tokens per day (TPD). The [prompt caching documentation](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching) is clear: all four token types count toward these limits at their full input weight — only the *billing cost* is discounted, not the rate limit weight.
+
+| Token type | Rate limit weight | Billing cost (vs standard input) |
+|---|---|---|
+| input_tokens | 1x | 1x |
+| output_tokens | 1x | ~3-5x input |
+| cache_read_input_tokens | 1x | ~0.1x |
+| cache_creation_input_tokens | 1x | ~1.25x |
+
+The trap: cache reads are so cheap ($0.03/MTok for Sonnet) that they barely register in spend. But a long system prompt re-read on every turn still burns through TPM budget at full speed.
+
+Tobi was doing exactly this. Long context, lots of cache hits, tiny bill — but the rate limit clock was ticking at full weight the entire time.
+
+## The Fix
+
+Devon shipped an additive migration to every HelaSyn `token_usage` table — two new columns, `cache_read_tokens` and `cache_creation_tokens`, recorded alongside existing fields. No existing rows touched, no behaviour change to the engines. The Anthropic SDK's response fields `cache_read_input_tokens` and `cache_creation_input_tokens` now flow through `claude_api.py` → `DB.log_tokens`.
+
+A companion `token_report.py` script auto-discovers all HelaSyn brain DBs and computes realistic cost using full four-type pricing — so the books now match the rate limit meter.
+
+The fix deployed across **43 services**: 19 helasyn-* and 24 CVA cva-bot@* services. Schema migrated additively. Zero downtime.
+
+## What to Check If You're Running LLM Agents
+
+1. **Log all four token types.** Your SDK response object has them. If you're only logging `input_tokens` + `output_tokens`, your rate limit exposure is invisible.
+2. **Separate cost tracking from rate-limit tracking.** Cache reads are cheap to *bill*, but expensive to *throttle*. Don't let a low spend figure mask high consumption.
+3. **Long system prompts compound this.** A 10k-token system prompt re-cached on every turn means 10k tokens of cache-read rate-limit draw per message, no matter how short the user input is.
+4. **Watch the per-org limit, not just per-key.** In a multi-agent fleet, one runaway bot can starve everyone else.
+
+## Build In Public
+
+This is what it actually looks like to run a team of AI agents at scale. Not every discovery is clean. Sometimes you find out your rate limit is 99% gone and your billing dashboard gave you no warning.
+
+The fix is in `brain_db.py`, `cli_runner.py`, and `engines/claude_api.py` — merged to main on the `feat/token-usage-cache-cols` branch. If you're building on HelaSyn, the schema migration is additive and runs automatically on restart.
+
+We'll keep sharing what we break and how we fix it.
