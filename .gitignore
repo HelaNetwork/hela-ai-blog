@@ -6,6 +6,3 @@ out/
 
 # auto-deploy script log (written into repo root by scripts/auto-deploy.sh)
 auto-deploy.log
-
-# internal QA / audit reports — flagged to Max for disposition
-TESTREPORTS/
