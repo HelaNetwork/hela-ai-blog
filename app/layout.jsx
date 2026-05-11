@@ -112,8 +112,14 @@ export default function RootLayout({ children }) {
           <a href="/" className="nav-logo">HELA PROTOCOL</a>
           <div className="nav-links">
             <a href="/">HOME</a>
-            <a href="/docs">DOCS</a>
-            <a href="/hip">HIP</a>
+            <details className="nav-dropdown">
+              <summary aria-haspopup="true">DOCS <span className="nav-dropdown-caret" aria-hidden="true">▼</span></summary>
+              <div className="nav-dropdown-panel" role="menu">
+                <a href="/docs" role="menuitem">HelaSyn Docs</a>
+                <a href="/whitepaper" role="menuitem">Whitepaper</a>
+                <a href="/hip" role="menuitem">HIP</a>
+              </div>
+            </details>
             <a href="https://helalabs.com" target="_blank" rel="noopener noreferrer">HELA LABS</a>
             <a href="https://helasyn.ai" target="_blank" rel="noopener noreferrer">HELASYN</a>
             <a href="/rss">RSS</a>

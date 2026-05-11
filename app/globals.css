@@ -119,6 +119,64 @@ nav.pixel-nav {
 }
 .nav-badge:hover { opacity: 0.85; }
 
+/* ── NAV DROPDOWN (DOCS) ── */
+.nav-dropdown {
+  position: relative;
+  display: inline-block;
+}
+.nav-dropdown > summary {
+  list-style: none;
+  cursor: pointer;
+  color: var(--dim);
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  letter-spacing: 2px;
+  user-select: none;
+  outline: none;
+}
+.nav-dropdown > summary::-webkit-details-marker { display: none; }
+.nav-dropdown > summary::marker { content: ''; }
+.nav-dropdown > summary:hover,
+.nav-dropdown > summary:focus-visible {
+  color: var(--accent);
+}
+.nav-dropdown-caret {
+  font-size: 10px;
+  letter-spacing: 0;
+  margin-left: 2px;
+}
+.nav-dropdown-panel {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 180px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 6px 0;
+  z-index: 200;
+}
+.nav-dropdown[open] > .nav-dropdown-panel,
+.nav-dropdown:hover > .nav-dropdown-panel,
+.nav-dropdown:focus-within > .nav-dropdown-panel {
+  display: block;
+}
+.nav-dropdown-panel a {
+  display: block;
+  padding: 8px 14px;
+  color: var(--dim);
+  text-decoration: none;
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  letter-spacing: 2px;
+}
+.nav-dropdown-panel a:hover,
+.nav-dropdown-panel a:focus-visible {
+  color: var(--accent);
+  background: rgba(198, 241, 53, 0.06);
+  outline: none;
+}
+
 /* ── TICKER ── */
 .ticker {
   overflow: hidden;
