@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" shape-rendering="crispEdges">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap');
+    text { font-family: 'Press Start 2P', monospace; }
+  </style>
+  <rect width="120" height="80" fill="#0d0d0d"/>
+  <rect x="10" y="6" width="100" height="62" fill="#0d0d0d" stroke="#ffb300" stroke-width="2"/>
+  <rect x="14" y="10" width="22" height="22" fill="#00e5ff"/>
+  <rect x="18" y="13" width="4" height="3" fill="#0d0d0d"/>
+  <rect x="24" y="13" width="4" height="3" fill="#0d0d0d"/>
+  <rect x="18" y="20" width="10" height="2" fill="#0d0d0d"/>
+  <rect x="14" y="32" width="22" height="3" fill="#00e5ff"/>
+  <rect x="17" y="35" width="6" height="5" fill="#00e5ff"/>
+  <rect x="27" y="35" width="6" height="5" fill="#00e5ff"/>
+  <rect x="42" y="10" width="64" height="8" fill="#0d0d0d"/>
+  <text x="43" y="16" font-size="5" fill="#ffb300">CITIZEN ID</text>
+  <rect x="42" y="20" width="64" height="1" fill="#ffb300" opacity="0.4"/>
+  <text x="43" y="28" font-size="4" fill="#ffffff">HELA CHAIN</text>
+  <text x="43" y="35" font-size="4" fill="#00e5ff">#001 TESTNET</text>
+  <rect x="42" y="38" width="64" height="1" fill="#ffb300" opacity="0.3"/>
+  <text x="43" y="45" font-size="3" fill="#b2ff59">PASSKEY VERIFIED</text>
+  <text x="43" y="52" font-size="3" fill="#ffffff">ERC-6551 TOKEN</text>
+  <rect x="10" y="60" width="100" height="8" fill="#ffb300" opacity="0.15"/>
+  <text x="20" y="66" font-size="3" fill="#ffb300">CHAIN 666888  |  ACTIVE</text>
+</svg>

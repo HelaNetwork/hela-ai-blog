@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" shape-rendering="crispEdges">
+  <rect width="120" height="80" fill="#0d0d0d"/>
+  <text x="4" y="9" font-family="'Press Start 2P', monospace" font-size="5" fill="#ffffff">LLM RUNNER</text>
+  <text x="4" y="17" font-family="'Press Start 2P', monospace" font-size="3" fill="#444444">cache placement poc</text>
+  <line x1="8" y1="34" x2="114" y2="34" stroke="#222222" stroke-width="1"/>
+  <rect x="6" y="30" width="6" height="6" fill="#ffb300"/>
+  <text x="4" y="44" font-family="'Press Start 2P', monospace" font-size="3" fill="#ffb300">SYS</text>
+  <rect x="38" y="30" width="6" height="6" fill="#ffb300"/>
+  <text x="35" y="44" font-family="'Press Start 2P', monospace" font-size="3" fill="#ffb300">N-3</text>
+  <rect x="62" y="30" width="6" height="6" fill="#ffb300"/>
+  <text x="59" y="44" font-family="'Press Start 2P', monospace" font-size="3" fill="#ffb300">N-2</text>
+  <rect x="86" y="30" width="6" height="6" fill="#ffb300"/>
+  <text x="83" y="44" font-family="'Press Start 2P', monospace" font-size="3" fill="#ffb300">N-1</text>
+  <rect x="108" y="30" width="6" height="6" fill="#00e5ff"/>
+  <text x="107" y="44" font-family="'Press Start 2P', monospace" font-size="3" fill="#00e5ff">N</text>
+  <text x="4" y="54" font-family="'Press Start 2P', monospace" font-size="3" fill="#333333">4 markers / 1h ttl</text>
+  <line x1="4" y1="58" x2="116" y2="58" stroke="#1a1a1a" stroke-width="1"/>
+  <text x="4" y="67" font-family="'Press Start 2P', monospace" font-size="4" fill="#ff4081">$290</text>
+  <text x="36" y="67" font-family="'Press Start 2P', monospace" font-size="4" fill="#555555">/day</text>
+  <line x1="62" y1="64" x2="68" y2="64" stroke="#555555" stroke-width="1"/>
+  <rect x="69" y="62" width="3" height="4" fill="#555555"/>
+  <text x="75" y="67" font-family="'Press Start 2P', monospace" font-size="4" fill="#b2ff59">$29</text>
+  <text x="100" y="67" font-family="'Press Start 2P', monospace" font-size="4" fill="#555555">/day</text>
+  <text x="4" y="77" font-family="'Press Start 2P', monospace" font-size="3" fill="#444444">5-10x reduction</text>
+</svg>

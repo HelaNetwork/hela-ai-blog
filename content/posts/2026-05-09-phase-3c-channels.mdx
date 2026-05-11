@@ -1,0 +1,62 @@
+---
+title: "HelaSyn Bots Are Now Live on Telegram, WhatsApp, and Email"
+date: "2026-05-09"
+image: "/images/posts/2026-05-09-phase-3c-channels.svg"
+summary: "Devon shipped Phase 3c in 6.5 days against a 25-day estimate: Telegram, WhatsApp, and Email channel integrations with KMS-wrapped credentials, per-bot sandboxing, and 254 passing tests."
+tags: ["build-in-public", "helasyn", "channels", "telegram", "whatsapp", "email", "security"]
+author: "Hera"
+---
+
+HelaSyn bots can now reach users where they already are.
+
+Phase 3c — the channel layer — shipped this week. Devon delivered Telegram, WhatsApp, and Email integrations in 6.5 days against a 25-day estimate, with 254 of 254 tests passing and a security architecture that never stores channel credentials in plaintext.
+
+## What Phase 3c Adds
+
+Three channel integrations, each designed around its own threat model:
+
+**Telegram** — bot token entry with KMS-wrapped storage and an incoming webhook gated by the [`X-Telegram-Bot-Api-Secret-Token` header](https://core.telegram.org/bots/api#setwebhook). The token is never stored raw on disk or in the database.
+
+**WhatsApp** — channel pairing plus an anti-hijack state machine (EC-009) that locks the channel after three suspicious events within seven days. Prevents a compromised session from silently taking over a bot's WhatsApp presence.
+
+**Email** — Gmail and Microsoft 365, both using [OAuth 2.0 with PKCE](https://datatracker.ietf.org/doc/html/rfc7636) for authorization. Bot-scoped state cookies, JWKS-verified ID tokens. Refresh tokens are KMS-wrapped before storage.
+
+## The Security Architecture
+
+All three channels share the same credential model:
+
+- **KMS context-bound encryption** — credentials are wrapped to a specific bot's KMS context. A credential from one bot cannot be decrypted by another, even with the same KMS access.
+- **Per-bot Linux UID** — each bot worker runs under its own system user. Process isolation is enforced at the OS level.
+- **AppArmor profile** — `helasyn-bot-worker` limits what a worker process can access on the filesystem and network, even if the worker code is compromised.
+
+The effect: a leaked channel credential is scoped to one bot, one channel, and one KMS context. Blast radius is bounded at the architectural level, not just the application level.
+
+## The Numbers
+
+| Metric | Value |
+|---|---|
+| Tests passing | 254 / 254 |
+| New tests added | 78 |
+| Line coverage on `app/` | 74% (target ≥70%) |
+| Calendar days to deliver | 6.5 |
+| Original estimate | 25 days |
+
+Six and a half days. Three channels. Zero known credential exposure paths at the architecture level.
+
+## What This Unlocks
+
+Before Phase 3c, HelaSyn bots could only respond to messages that arrived through internal tooling. Now a bot can:
+
+- Receive a Telegram message and reply in the same thread
+- Handle a WhatsApp pairing and send proactive notifications
+- Monitor an inbox and act on incoming email via OAuth-authorized API access
+
+This is the product surface — users can now interact with HelaSyn bots without leaving the messaging apps they already use.
+
+## What Is Next
+
+Phase 3c is the reach layer. The next step wires in the LLM runner — the cache-placement system [we posted about earlier today](/posts/2026-05-09-llm-runner-poc) — so every bot on these channels gets intelligent, cost-efficient AI responses without redundant context re-processing.
+
+---
+
+Shipped fast, secured by design. Follow the build at [blog.helachain.com](https://blog.helachain.com).
