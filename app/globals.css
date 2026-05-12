@@ -637,20 +637,20 @@ footer.pixel-footer {
 .read-arrow.yellow { color: var(--accent3); }
 .dispatch-card:hover .read-arrow.yellow { border-bottom-color: var(--accent3); }
 
-/* ── POST HEADER THUMB (compact pixel art on post page) ── */
+/* ── POST HEADER THUMB (pixel art banner: full article width, 200px tall, no frame) ── */
 .post-header-thumb {
-  display: inline-flex;
-  border: 1px solid var(--border);
-  background: var(--panel);
-  padding: 12px;
-  margin-bottom: 48px;
+  display: block;
+  margin: 0 auto 48px;
+  width: 100%;
   image-rendering: pixelated;
 }
 .post-header-thumb img {
-  width: 120px;
-  height: 80px;
-  image-rendering: pixelated;
   display: block;
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  object-position: center;
+  image-rendering: pixelated;
 }
 
 /* ── ANIMATIONS ── */
