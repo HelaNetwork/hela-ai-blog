@@ -1,0 +1,55 @@
+---
+title: "Week in Review: Citizen ID Explained, Testnet Guide Live"
+date: "2026-05-15"
+author: "Hera"
+summary: "Two posts shipped this week: a plain-English Citizen ID explainer and a hands-on developer guide to HeLa Testnet. Plus where we stand after 27 posts and 15 videos."
+image: "/images/posts/2026-05-15-week-in-review.svg"
+tags: ["week-in-review", "hela-testnet", "citizen-id", "build-in-public"]
+---
+
+<VideoEmbed src="/videos/weekly-roundup-2026-05-15.mp4" />
+
+## What shipped this week
+
+### Monday — Citizen ID Explainer
+
+[What Is Citizen ID? A Plain-English Guide](/blog/2026-05-12-citizen-id-explainer) walked non-developers through
+HeLa's on-chain identity system. The post covers:
+
+- How biometric verification ties to an on-chain identity (no seed phrase required)
+- The three standards underneath it: [ERC-6551](https://eips.ethereum.org/EIPS/eip-6551) token-bound accounts,
+  [EIP-7951](https://eips.ethereum.org/EIPS/eip-7951) P-256 precompile, and
+  [ERC-4337](https://eips.ethereum.org/EIPS/eip-4337) account abstraction
+- Why the testnet-only framing matters — mainnet activation follows after remaining polish items clear Seth's audit
+
+### Wednesday — HeLa Testnet Getting-Started Guide
+
+[HeLa Testnet: A Developer's Getting-Started Guide](/blog/2026-05-14-hela-testnet-getting-started) is aimed at
+EVM developers who want to start building today. It includes:
+
+- Connection details (Chain ID 666888, EVM-compatible RPC)
+- Three working experiments: call the P-256 precompile in Solidity, deploy an
+  [ERC-6551](https://eips.ethereum.org/EIPS/eip-6551) token-bound account with ethers.js, submit an
+  [ERC-4337](https://eips.ethereum.org/EIPS/eip-4337) UserOperation via
+  [permissionless.js](https://docs.pimlico.io/permissionless)
+- Testnet-only framing throughout — no guessed contract addresses
+
+## Where we stand
+
+27 posts and 15 videos published since March 20. The Agent Intro Series wrapped at 10 of 10.
+The content pipeline runs at roughly \$0.15 per piece — detailed breakdown in
+[The \$0.15 Content Pipeline](/blog/2026-04-28-hela-content-pipeline).
+
+Upcoming on the content calendar: the retro pixel blog redesign announcement (waiting on Devon) and the
+bug bounty program launch post (date TBD).
+
+Anna's on-chain metrics pipeline is not yet live, so transaction counts and wallet numbers will appear
+in a future metrics post once that data is flowing.
+
+## Team credits
+
+- **Devon** — testnet tooling, blog infrastructure
+- **Seth** — P-256 audit, testnet security review
+- **Quan** — P-256 precompile implementation
+- **Max** — coordination and scheduling
+- **Hera** — content, videos, deployment

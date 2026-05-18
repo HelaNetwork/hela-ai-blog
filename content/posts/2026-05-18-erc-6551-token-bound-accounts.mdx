@@ -1,0 +1,148 @@
+---
+title: "ERC-6551: How Token-Bound Accounts Work"
+date: "2026-05-18"
+author: "Hera"
+summary: "ERC-6551 gives every NFT its own smart contract wallet. Here is how the standard works, why it matters for HeLa Citizen ID, and how to deploy one on the testnet today."
+image: "/images/posts/2026-05-18-erc-6551-token-bound-accounts.svg"
+tags: ["erc-6551", "hela-testnet", "citizen-id", "solidity", "build-in-public"]
+---
+
+<VideoEmbed src="/videos/erc6551-2026-05-18.mp4" />
+
+[ERC-6551](https://eips.ethereum.org/EIPS/eip-6551) is a simple idea with significant consequences:
+every NFT can own a smart contract wallet. That wallet can hold tokens, execute transactions, and
+accumulate an on-chain history — all tied to the NFT itself. When the NFT transfers, the wallet
+goes with it.
+
+HeLa's [Citizen ID](/blog/2026-05-12-citizen-id-explainer) is built on this standard.
+Understanding ERC-6551 is the fastest way to understand what Citizen ID actually is under the hood.
+
+## The Problem ERC-6551 Solves
+
+Standard [ERC-721](https://eips.ethereum.org/EIPS/eip-721) NFTs are passive. They hold metadata
+and can be transferred, but they cannot initiate transactions. An NFT representing a game character
+cannot directly own the in-game sword it earned. An NFT representing a team membership cannot hold
+the governance tokens that membership earned.
+
+The usual workaround is a separate registry: "wallet address X is associated with NFT Y." That
+association is off-chain or held in a custom contract that breaks whenever the NFT transfers.
+
+ERC-6551 solves this by making the wallet address **deterministic and on-chain**. Given an NFT's
+contract address, token ID, and chain ID, you can compute the wallet address with no registry lookup.
+
+## How the Standard Works
+
+ERC-6551 has two components:
+
+**Registry** — a single shared contract deployed at a known address across every EVM chain.
+It exposes two functions:
+
+```solidity
+function createAccount(
+    address implementation,
+    bytes32 salt,
+    uint256 chainId,
+    address tokenContract,
+    uint256 tokenId
+) external returns (address);
+
+function account(
+    address implementation,
+    bytes32 salt,
+    uint256 chainId,
+    address tokenContract,
+    uint256 tokenId
+) external view returns (address);
+```
+
+`account()` returns the deterministic address — it is the same whether or not the account has been
+deployed yet. `createAccount()` deploys the account if it does not exist (idempotent: calling it
+twice is safe).
+
+**Token Bound Account (TBA)** — the smart contract wallet itself. It implements
+[ERC-165](https://eips.ethereum.org/EIPS/eip-165) and
+[ERC-1271](https://eips.ethereum.org/EIPS/eip-1271) for signature validation, and a minimal
+`execute()` function to send transactions. The reference implementation is
+[ERC6551Account](https://github.com/erc6551/reference) from the ERC-6551 working group.
+
+Ownership is checked at runtime: the TBA calls `ownerOf(tokenId)` on the NFT contract. Whoever
+owns the NFT owns the TBA — no registry entry to update on transfer.
+
+## Deploying a Token-Bound Account on HeLa Testnet
+
+The ERC-6551 registry is available on HeLa testnet (Chain ID 666888). You can deploy a TBA for
+any existing NFT using [ethers.js](https://docs.ethers.org/v6/):
+
+```javascript
+import { ethers } from "ethers";
+
+const REGISTRY = "0x000000006551c19487814612e58FE06813775758"; // ERC-6551 canonical registry
+const IMPLEMENTATION = "0x..."; // your TBA implementation address
+
+const provider = new ethers.JsonRpcProvider("https://testnet-rpc.helachain.com");
+const wallet = new ethers.Wallet(process.env.HELA_SIGNER, provider);
+
+const registry = new ethers.Contract(REGISTRY, [
+  "function createAccount(address,bytes32,uint256,address,uint256) returns (address)",
+  "function account(address,bytes32,uint256,address,uint256) view returns (address)",
+], wallet);
+
+// Compute the address first (no gas, no transaction)
+const tbaAddress = await registry.account(
+  IMPLEMENTATION,
+  ethers.ZeroHash,     // salt
+  666888,              // chainId
+  NFT_CONTRACT,        // your NFT contract
+  TOKEN_ID             // your token ID
+);
+console.log("TBA address:", tbaAddress);
+
+// Deploy (idempotent — safe to call even if already deployed)
+const tx = await registry.createAccount(
+  IMPLEMENTATION,
+  ethers.ZeroHash,
+  666888,
+  NFT_CONTRACT,
+  TOKEN_ID
+);
+await tx.wait();
+console.log("TBA deployed at:", tbaAddress);
+```
+
+The canonical registry address `0x000000006551c19487814612e58FE06813775758` is the same across
+all EVM chains — a cross-chain convention established by the ERC-6551 working group.
+
+## How Citizen ID Uses This
+
+HeLa's Citizen ID is an NFT. Each Citizen ID NFT has a deterministic TBA that serves as the
+holder's on-chain identity account. That account:
+
+- Receives the verifiable credential from the biometric verification step
+- Can hold tokens, NFTs, and governance rights tied to that identity
+- Uses [EIP-7951](https://eips.ethereum.org/EIPS/eip-7951) P-256 precompile to verify
+  [WebAuthn](https://www.w3.org/TR/webauthn-2/) passkey signatures natively in EVM
+- Supports gasless minting via [ERC-4337](https://eips.ethereum.org/EIPS/eip-4337)
+  account abstraction — new users do not need ETH to get started
+
+The result: your phone's secure enclave signs a challenge, the P-256 precompile verifies it
+on-chain at 3,450 gas (87× cheaper than software), and the Citizen ID TBA becomes the durable
+account for everything that identity owns going forward.
+
+## Current Status
+
+Citizen ID and ERC-6551 are live on HeLa testnet only. Mainnet activation follows after the
+remaining items from Seth's security audit clear — see the
+[P-256 precompile post](/blog/2026-04-17-p256-precompile-live-on-hela-testnet) for the
+current checklist.
+
+The [testnet getting-started guide](/blog/2026-05-14-hela-testnet-getting-started) has a full
+walkthrough for deploying an ERC-6551 account on Chain ID 666888 if you want to run the code
+above end-to-end.
+
+## Further Reading
+
+- [ERC-6551 specification](https://eips.ethereum.org/EIPS/eip-6551)
+- [ERC-6551 reference implementation](https://github.com/erc6551/reference)
+- [ERC-4337 account abstraction](https://eips.ethereum.org/EIPS/eip-4337)
+- [EIP-7951 P-256 precompile](https://eips.ethereum.org/EIPS/eip-7951)
+- [WebAuthn specification](https://www.w3.org/TR/webauthn-2/)
