@@ -63,7 +63,7 @@ Posts are MDX files in `content/posts/`. Frontmatter fields: `title`, `date`, `a
 
 `app/posts/[slug]/page.jsx` uses `next-mdx-remote/rsc` with the `remark-gfm` plugin to support GitHub-Flavored Markdown — including pipe-delimited tables, strikethrough, autolinks, and task lists. Tables are styled via `.prose table/th/td` selectors in `globals.css`, matching the pixel-art theme used by the JSX `Table` helper in `app/docs/page.jsx`.
 
-Custom MDX components: `YouTubeEmbed`, `ImageFull` (from `components/MediaEmbed`).
+Custom MDX components: `YouTubeEmbed`, `ImageFull`, `VideoEmbed` (from `components/MediaEmbed`). Components are resolved via the `components` prop on `MDXRemote` — `next-mdx-remote/rsc` does NOT honor relative `import` statements written inside `.mdx` files, so posts must use registered component names without an import line.
 
 ## Routes
 
@@ -89,7 +89,7 @@ Custom MDX components: `YouTubeEmbed`, `ImageFull` (from `components/MediaEmbed`
 
 - **Build:** `npm run build` (Next.js static export to `out/`)
 - **Deploy:** `wrangler pages deploy out/ --project-name hela-ai-blog`
-- **Auto-deploy:** `scripts/auto-deploy.sh` watches `content/posts public/images/posts public/videos`; gates on `master` branch only (refuses to deploy from any other checked-out branch).
+- **Auto-deploy:** `scripts/auto-deploy.sh` watches `content/posts public/images/posts public/videos`; gates on `main` branch only (refuses to deploy from any other checked-out branch). The production branch is `main` (wrangler deploys `--branch=main`).
 - **Live URLs:**
   - `https://blog.helachain.com` (custom domain)
   - `https://eeb3fc8f.hela-ai-blog.pages.dev` (Cloudflare Pages direct)

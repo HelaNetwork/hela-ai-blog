@@ -12,6 +12,22 @@ export function YouTubeEmbed({ id, title }) {
   );
 }
 
+export function VideoEmbed({ src, caption }) {
+  return (
+    <figure className="my-6">
+      <video
+        src={src}
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="w-full rounded-lg"
+      />
+      {caption && <figcaption className="text-center text-sm text-gray-400 mt-2">{caption}</figcaption>}
+    </figure>
+  );
+}
+
 export function ImageFull({ src, alt, caption }) {
   return (
     <figure className="my-6">

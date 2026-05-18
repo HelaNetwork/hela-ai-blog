@@ -14,7 +14,7 @@ if ! flock -n 9; then
 fi
 
 CURRENT_BRANCH="$(git -C "$REPO" rev-parse --abbrev-ref HEAD 2>/dev/null || echo unknown)"
-ALLOWED_BRANCH="master"
+ALLOWED_BRANCH="main"
 if [[ "$CURRENT_BRANCH" != "$ALLOWED_BRANCH" ]]; then
   echo "$(date -Iseconds) [skip] auto-deploy not allowed on branch '$CURRENT_BRANCH' (allowed: $ALLOWED_BRANCH)" >> "$LOG"
   exit 0

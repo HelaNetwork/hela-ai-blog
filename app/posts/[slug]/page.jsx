@@ -3,10 +3,10 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
 import GiscusComments from '../../../components/GiscusComments';
 import ExploreCTA from '../../../components/ExploreCTA';
-import { YouTubeEmbed, ImageFull } from '../../../components/MediaEmbed';
+import { YouTubeEmbed, ImageFull, VideoEmbed } from '../../../components/MediaEmbed';
 import { notFound } from 'next/navigation';
 
-const components = { YouTubeEmbed, ImageFull };
+const components = { YouTubeEmbed, ImageFull, VideoEmbed };
 
 export async function generateStaticParams() {
   return getAllSlugs().map(slug => ({ slug }));
