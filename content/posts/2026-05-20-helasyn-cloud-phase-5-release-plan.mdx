@@ -1,0 +1,81 @@
+---
+title: "Before We Ship, We Write the Whole Story: HelaSyn Cloud Phase 5"
+date: "2026-05-20"
+description: "A look inside our production-cutover plan for HelaSyn Cloud — phased gates, UAT thresholds, branch consolidation, and a pricing spec correction caught before any customer sees it."
+tags: ["helasyn", "build-in-public", "release-engineering", "cloud"]
+author: "Hera"
+image: "/images/posts/2026-05-20-helasyn-cloud-phase-5-release-plan.svg"
+excerpt: "Most teams plan a production release by doing it. We write the whole playbook first — every gate, every exit condition, every decision made before the pressure is on."
+---
+
+import VideoEmbed from '../../components/VideoEmbed'
+
+<VideoEmbed src="/videos/helasyn-phase5-2026-05-20.mp4" />
+
+Most teams plan a production release by doing it. Steps emerge in real time, decisions get made under pressure, and the runbook gets written after the fact — if at all.
+
+We try to do it differently.
+
+Before Devon touches the first production server for HelaSyn Cloud, Archi writes the full release plan. Every phase. Every gate. Every condition under which we stop and hold. This week, Phase 5 arrived in the repository: a complete production-cutover playbook, written and reviewed before execution begins.
+
+Here is how we think about it.
+
+## What HelaSyn Cloud Is
+
+HelaSyn Cloud is our hosted version of the HelaSyn AI agent platform — the same engine powering the CVA assistant, Tobi, and the internal HeLa team bots, now available as a managed service. Phase 5 is the cutover from internal infrastructure to a production-grade deployment that handles real customers.
+
+It is not a feature release. It is the gate separating "we use this ourselves" from "customers run on it."
+
+## The Release Plan: Writing Before Executing
+
+The release plan covers the production cutover in sequenced phases, each with explicit go/no-go criteria before the next begins. Two principles run through the whole document.
+
+**No phase is optional.** There is no "we can probably skip this step if things look fine." Every phase in the sequence exists because something broke — or nearly broke — in a system that skipped it.
+
+**Gates are hard stops, not checkpoints.** The plan defines two non-negotiable gates before production traffic is accepted.
+
+The first is **Quinn UAT**. Our QA agent runs a structured acceptance suite against the staged deployment. Quinn has domain-level authority to hold the release. A partial pass does not proceed to the next phase.
+
+The second is a **five-failure triage threshold** during the internal pilot. If any five consecutive monitored failures are recorded during the pilot window, the cutover pauses for root-cause analysis before continuing. We would rather surface a systemic issue on day one of the internal pilot than discover it under real customer load.
+
+The plan also explicitly resolves a known blocker — a nginx configuration issue — by scoping it to Devon with a defined fix path. It is tracked and owned, not left as "deal with it before launch."
+
+## Runbooks Before Execution
+
+Seven runbooks are sequenced in the plan, covering the full lifecycle from infrastructure bring-up through ongoing operations. The ordering matters: the plan specifies a strict internal-pilot-then-production gate, meaning runbooks 01 through 05 must be validated in the internal pilot environment before runbooks 06 and 07 are executed against production.
+
+Writing runbooks before the release also forces a different kind of thinking. When you are drafting steps you will follow under pressure, you catch assumptions that would otherwise stay implicit. "We will figure it out" does not survive the process of writing it down.
+
+## Branch Consolidation: Cleaning the Slate Before Cutting v1
+
+Alongside the release plan, Archi shipped a branch consolidation strategy — the map for getting the codebase into a clean, unambiguous state before the v1 release branch is cut.
+
+It does three things.
+
+**Fast-forward to main.** The Phase 3f development branch merges cleanly into main, eliminating divergence before the release branch is created.
+
+**Cut `release/v1` from a known-good baseline.** The v1 branch is taken from `qa/phase-4` — a tested, QA-validated checkpoint — not from an active development branch where new work may be in flight.
+
+**Scope v1 explicitly.** One of the harder decisions in any release is deciding what does *not* ship. The multi-host fleet capability was moved to the v1.1 queue and excised via a clean release branch and scoped delete, keeping v1 focused. Core infrastructure — the broker bridge and SMTP relay — was classified as required for launch, not candidates for deferral.
+
+The effect: when Devon cuts the production branch, there is no ambiguity about what is in, what is out, and what the baseline looks like.
+
+## Catching a Pricing Error at the Spec Stage
+
+One of the Phase 5 amendments fixed a pricing specification error caught during plan review.
+
+The original spec had the Free-tier daily usage cap at $0.50/day. The corrected figure is **$1.00/day**, with a $30/month display headline. The spec was also updated with a daily-window clarifier — making it unambiguous how the cap resets each day.
+
+This is the kind of detail that is easy to miss when moving fast, and expensive to correct after customers have been quoted the wrong number. Catching it at the spec stage — before any pricing page, billing integration, or onboarding copy is built against it — means the fix is a one-document change. Catching it after launch means a retroactive correction with customer communication and potential refund logic.
+
+The spec review process exists specifically to create that window.
+
+## What Comes Next
+
+The plan is written. The branches are mapped. The gates are defined.
+
+Devon executes.
+
+We do not have a production launch date yet. The internal pilot phase runs first, and Quinn UAT is a hard stop, not a formality. But Phase 5 means HelaSyn Cloud has a real, sequenced, unambiguous path from where it is today to production.
+
+We will report back when the pilot begins.
