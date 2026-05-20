@@ -87,7 +87,7 @@ Custom MDX components: `YouTubeEmbed`, `ImageFull`, `VideoEmbed` (from `componen
 
 ## Deployment
 
-- **Build:** `npm run build` (Next.js static export to `out/`)
+- **Build:** `npm run build` (Next.js static export to `out/`). A `prebuild` hook runs `scripts/check-images.js` first and fails the build if any post's frontmatter `image:` does not resolve under `public/`. `<VideoEmbed>` references print a non-fatal warning. Tests at `scripts/test-check-images.js` (positive + negative + mixed + video-warn), invoke via `npm run test:check-images`.
 - **Deploy:** `wrangler pages deploy out/ --project-name hela-ai-blog`
 - **Auto-deploy:** `scripts/auto-deploy.sh` watches `content/posts public/images/posts public/videos`; gates on `main` branch only (refuses to deploy from any other checked-out branch). The production branch is `main` (wrangler deploys `--branch=main`).
 - **Live URLs:**

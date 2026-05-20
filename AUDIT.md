@@ -29,20 +29,8 @@
 | 2026-03-26 | Tex | https://eeb3fc8f.hela-ai-blog.pages.dev | First deploy, 15 pages |
 | 2026-03-26 | Tex | https://blog.helachain.com | Custom domain verified live |
 
-## Changes — 2026-03-30 (Hera)
-- **SVG thumbnails:** 11 unique pixel-art SVG thumbnails created at `public/images/posts/{slug}.svg` — one per post, 120x80 viewBox, dark bg + neon accents (lime/cyan/pink/yellow), pure `<rect>`/`<polygon>`/`<line>`/`<text>` only (no paths/gradients)
-- **Frontmatter:** All 11 MDX `image:` fields updated from `.png` → `.svg`
-- **Components unchanged:** `PostCard.jsx` and `app/posts/[slug]/page.jsx` both already use `<img>` tags which render SVG natively — no code changes needed
-- **Build:** `npm run build` passes (18 static pages)
-
-## Changes — 2026-03-30 (Devon)
-- **Restyle:** Full retro pixel-art redesign applied to `app/globals.css`, `app/layout.jsx`, `app/page.jsx`, `components/PostCard.jsx`, `app/posts/[slug]/page.jsx`, `tailwind.config.js`
-- **Fonts:** Press Start 2P (headings/labels) + VT323 (body) imported from Google Fonts; replaced Inter/Space Grotesk/JetBrains Mono
-- **Colors:** Replaced hela-navy/cyan palette with retro scheme: bg #080810, panel #0f0f1c, card #13131f, accents lime/pink/yellow/cyan
-- **Hero:** Animated grid background, pixel scene with all 11 char sprites, ground line glow
-- **Header images:** 11 PNG headers (800x400) generated with PIL at `public/images/posts/{slug}.png` — dark bg + grid + character poses + top accent bar
-- **MDX frontmatter:** `image` field injected into all 11 posts; `description` → `summary` fixed in seth/devon posts
-- **Build:** `npm run build` passes (18 static pages)
+## Changes — 2026-03-30 (Hera, Devon)
+- SVG thumbnails (Hera) + retro pixel-art restyle (Devon). Archived to `AUDIT_HISTORY.md`.
 
 ## Changes — 2026-04-30 (Devon)
 - **GFM table fix:** `app/posts/[slug]/page.jsx` now passes `{ mdxOptions: { remarkPlugins: [remarkGfm] } }` to `MDXRemote`. Previously `next-mdx-remote/rsc` shipped without GFM, so pipe-delimited markdown tables in 13+ posts (incl. all P-256 mainnet/testnet posts, citizen-id-testnet-live, week-in-review) rendered as raw `| col | col |` text. Now they render as proper `<table>` elements.
@@ -73,6 +61,12 @@
 - **Frontmatter fixes:** new posts used `excerpt:` (2026-05-15/18) and `description:` (2026-05-14); `lib/posts.js` reads `data.summary` only, so cards/SEO/OG would be blank. Renamed to `summary:` (same fix already recorded under Bugs Fixed for the seth/devon posts; matches the convention across all 27 existing posts).
 - **Citations:** all 3 new posts reviewed against CLAUDE.md Citation Policy — every external claim links to a public source (EIP-721/165/1271/4337/6551/7951 on eips.ethereum.org, WebAuthn w3.org, FIDO2 fidoalliance.org, ethers.js/permissionless docs, erc6551/reference). P-256 "3,450 gas / 87×" is HeLa's own benchmark, consistent with the already-published P-256 posts/HIP-001 and linked to the testnet P-256 post. No unverifiable superlatives; testnet-only framing explicit. PASS.
 - **Build:** `npm run build` passes clean (34 post paths, no prerender errors). New posts verified rendered in `out/` with video embeds + summaries; SVG/MP4 assets copied.
+
+## Changes — 2026-05-20 (Devon — missing-image incident + prebuild guard)
+- **Incident:** `content/posts/2026-05-20-helasyn-cloud-phase-5-release-plan.mdx` was auto-published in commit `8411788` with frontmatter `image: "/images/posts/2026-05-20-helasyn-cloud-phase-5-release-plan.svg"`, but the SVG was never produced or committed. Production returned HTTP 404 for the hero image; the previous post's SVG returned 200, confirming only this one file was missing. The pre-existing `scripts/check-images.js` validator was orphaned (not wired into `npm run build`), so the gap shipped silently.
+- **Quick fix (commit `f43b3eb`):** hand-authored `public/images/posts/2026-05-20-helasyn-cloud-phase-5-release-plan.svg` (1.2 KB, Press Start 2P / yellow-border style matching the 2026-05-18 and 2026-05-15 siblings). Deployed via `npm run build` + `wrangler pages deploy out/`. Verified: `curl -I` returns `HTTP/2 200` with `content-type: image/svg+xml`; homepage still 200; no regression.
+- **Systemic fix (commit `c4a9759`):** added `prebuild` script in `package.json` so `npm run build` runs `node scripts/check-images.js` first. Validator rewritten to (a) honor `POSTS_DIR` + `PUBLIC_DIR` env overrides for testing, (b) print a non-fatal warning for missing `<VideoEmbed src=...>` references (one currently exists — `helasyn-phase5-2026-05-20.mp4`). Test scaffold `scripts/test-check-images.js` covers positive, negative, mixed, and video-warn cases (11 assertions, all green). Run with `npm run test:check-images`.
+- **Verification:** `npm run prebuild` reports `All 35 post images verified.` and warns about the 1 missing video. `npm run build` now fails fast if a future post ships without its hero asset.
 
 ## Bugs Fixed
 - `2026-03-30-meet-devon-the-ai-devtools-agent.mdx` had `------` frontmatter delimiters → fixed to `---`
