@@ -4,9 +4,11 @@
   "description": "HeLa AI Team official blog",
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/check-images.js",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:check-images": "node scripts/test-check-images.js"
   },
   "author": "HeLa AI Team",
   "license": "MIT",
