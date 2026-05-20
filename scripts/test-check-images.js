@@ -2,9 +2,11 @@
 /**
  * Tests for scripts/check-images.js
  *
- * Positive: synthetic post pointing at an existing SVG -> exit 0.
- * Negative: synthetic post pointing at a missing SVG -> exit 1
- *           with the offending path in stderr.
+ * Case 1 (positive): post with valid image AND valid video    -> exit 0.
+ * Case 2 (negative image): post with missing image            -> exit 1.
+ * Case 3 (negative video): post with valid image, no video    -> exit 1.
+ * Case 4 (mixed):    missing image AND missing video          -> exit 1,
+ *                    both surfaced in summary.
  *
  * Uses POSTS_DIR + PUBLIC_DIR env overrides so we can stand up a
  * sandbox under /tmp without touching the real content tree.
@@ -57,31 +59,36 @@ function assertContains(haystack, needle, label) {
 }
 
 // ============================================================
-// Case 1: positive — image exists -> exit 0
+// Case 1: positive — image AND video both exist -> exit 0
 // ============================================================
 {
   const root = tmpDir();
   const postsDir = path.join(root, 'posts');
   const publicDir = path.join(root, 'public');
   const imgDir = path.join(publicDir, 'images', 'posts');
+  const vidDir = path.join(publicDir, 'videos');
   fs.mkdirSync(postsDir, { recursive: true });
   fs.mkdirSync(imgDir, { recursive: true });
+  fs.mkdirSync(vidDir, { recursive: true });
 
   const imgRef = '/images/posts/sample.svg';
+  const vidRef = '/videos/sample.mp4';
   fs.writeFileSync(path.join(publicDir, imgRef.slice(1)), '<svg/>');
-  writePost(postsDir, '2099-01-01-sample.mdx', {
-    title: 'Sample',
-    date: '2099-01-01',
-    image: imgRef,
-  });
+  fs.writeFileSync(path.join(publicDir, vidRef.slice(1)), 'fake-mp4-bytes');
+  writePost(
+    postsDir,
+    '2099-01-01-sample.mdx',
+    { title: 'Sample', date: '2099-01-01', image: imgRef },
+    `<VideoEmbed src="${vidRef}" />`
+  );
 
   const r = runValidator(postsDir, publicDir);
   assertEq(r.status, 0, 'positive: exit 0');
-  assertContains(r.stdout, 'All 1 post images verified.', 'positive: ok message');
+  assertContains(r.stdout, 'All 1 post images and videos verified.', 'positive: ok message');
 }
 
 // ============================================================
-// Case 2: negative — image missing -> exit 1, names the file + ref
+// Case 2: negative image — missing image -> exit 1
 // ============================================================
 {
   const root = tmpDir();
@@ -98,41 +105,14 @@ function assertContains(haystack, needle, label) {
   });
 
   const r = runValidator(postsDir, publicDir);
-  assertEq(r.status, 1, 'negative: exit 1');
-  assertContains(r.stderr, '2099-02-02-missing.mdx', 'negative: names the post file');
-  assertContains(r.stderr, imgRef, 'negative: names the missing ref');
-  assertContains(r.stderr, '1 missing image(s)', 'negative: summary line');
+  assertEq(r.status, 1, 'negative image: exit 1');
+  assertContains(r.stderr, '2099-02-02-missing.mdx', 'negative image: names the post file');
+  assertContains(r.stderr, imgRef, 'negative image: names the missing ref');
+  assertContains(r.stderr, '1 missing image(s)', 'negative image: summary line');
 }
 
 // ============================================================
-// Case 3: mixed — one good, one bad -> exit 1, reports the bad one only
-// ============================================================
-{
-  const root = tmpDir();
-  const postsDir = path.join(root, 'posts');
-  const publicDir = path.join(root, 'public');
-  const imgDir = path.join(publicDir, 'images', 'posts');
-  fs.mkdirSync(postsDir, { recursive: true });
-  fs.mkdirSync(imgDir, { recursive: true });
-
-  const goodRef = '/images/posts/good.svg';
-  const badRef = '/images/posts/bad.svg';
-  fs.writeFileSync(path.join(publicDir, goodRef.slice(1)), '<svg/>');
-  writePost(postsDir, '2099-03-01-good.mdx', { title: 'G', date: '2099-03-01', image: goodRef });
-  writePost(postsDir, '2099-03-02-bad.mdx', { title: 'B', date: '2099-03-02', image: badRef });
-
-  const r = runValidator(postsDir, publicDir);
-  assertEq(r.status, 1, 'mixed: exit 1');
-  assertContains(r.stderr, '2099-03-02-bad.mdx', 'mixed: names bad post');
-  if (r.stderr.includes('2099-03-01-good.mdx')) {
-    console.error('FAIL [mixed: does not flag good post]');
-    process.exit(1);
-  }
-  console.log('PASS [mixed: does not flag good post]');
-}
-
-// ============================================================
-// Case 4: VideoEmbed missing -> WARN, does NOT fail
+// Case 3: negative video — image present, video missing -> exit 1
 // ============================================================
 {
   const root = tmpDir();
@@ -152,8 +132,38 @@ function assertContains(haystack, needle, label) {
   );
 
   const r = runValidator(postsDir, publicDir);
-  assertEq(r.status, 0, 'video missing: exit 0 (warn only)');
-  assertContains(r.stderr, '/videos/no-such-video.mp4', 'video missing: prints WARN with path');
+  assertEq(r.status, 1, 'negative video: exit 1');
+  assertContains(r.stderr, 'MISSING VIDEO', 'negative video: MISSING VIDEO line');
+  assertContains(r.stderr, '/videos/no-such-video.mp4', 'negative video: names the missing ref');
+  assertContains(r.stderr, '1 missing video(s)', 'negative video: summary line');
+}
+
+// ============================================================
+// Case 4: mixed — missing image AND missing video in same tree -> exit 1
+// ============================================================
+{
+  const root = tmpDir();
+  const postsDir = path.join(root, 'posts');
+  const publicDir = path.join(root, 'public');
+  fs.mkdirSync(postsDir, { recursive: true });
+  fs.mkdirSync(publicDir, { recursive: true });
+
+  const badImgRef = '/images/posts/missing.svg';
+  const badVidRef = '/videos/missing.mp4';
+  writePost(
+    postsDir,
+    '2099-05-01-mixed.mdx',
+    { title: 'Mixed', date: '2099-05-01', image: badImgRef },
+    `<VideoEmbed src="${badVidRef}" />`
+  );
+
+  const r = runValidator(postsDir, publicDir);
+  assertEq(r.status, 1, 'mixed: exit 1');
+  assertContains(r.stderr, 'MISSING IMAGE', 'mixed: image flagged');
+  assertContains(r.stderr, 'MISSING VIDEO', 'mixed: video flagged');
+  assertContains(r.stderr, badImgRef, 'mixed: names missing image ref');
+  assertContains(r.stderr, badVidRef, 'mixed: names missing video ref');
+  assertContains(r.stderr, '1 missing image(s), 1 missing video(s)', 'mixed: combined summary line');
 }
 
 console.log('\nAll check-images tests passed.');

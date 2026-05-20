@@ -1,16 +1,14 @@
 #!/usr/bin/env node
 /**
- * Pre-build validator: ensures every blog post's hero image exists.
- * Fails the build (exit 1) if any referenced image is missing.
+ * Pre-build validator: ensures every blog post's hero image AND every
+ * referenced <VideoEmbed src="..." /> exists on disk.
  *
- * Also scans for <VideoEmbed src="..."/> references and prints a
- * warning (non-fatal) for any missing video file. Promote to strict
- * once the existing gaps backfill.
+ * Exits 1 if any image OR any video is missing. Both counts contribute
+ * to the same fatal summary. Env overrides:
+ *   POSTS_DIR=... PUBLIC_DIR=... node scripts/check-images.js
  *
  * Wired into npm via the `prebuild` script so it runs automatically
- * before `next build`. Can also be invoked directly:
- *   node scripts/check-images.js
- *   POSTS_DIR=... PUBLIC_DIR=... node scripts/check-images.js
+ * before `next build`.
  */
 const fs = require('fs');
 const path = require('path');
@@ -31,8 +29,6 @@ function resolvePublic(refPath) {
 const posts = fs.readdirSync(POSTS_DIR).filter(f => f.endsWith('.mdx'));
 let missingImages = 0;
 let missingVideos = 0;
-const missingImageList = [];
-const missingVideoList = [];
 
 for (const file of posts) {
   const content = fs.readFileSync(path.join(POSTS_DIR, file), 'utf8');
@@ -43,33 +39,25 @@ for (const file of posts) {
     const imgPath = resolvePublic(imgMatch[1]);
     if (!fs.existsSync(imgPath)) {
       console.error(`MISSING IMAGE: ${file} -> ${imgMatch[1]}`);
-      missingImageList.push({ file, ref: imgMatch[1] });
       missingImages++;
     }
   }
 
-  // <VideoEmbed src="..." /> references (non-fatal, warning only for now)
+  // <VideoEmbed src="..." /> references (FATAL on miss, parity with image)
   const videoRegex = /<VideoEmbed[^>]*\ssrc=["']([^"']+)["']/g;
   let m;
   while ((m = videoRegex.exec(content)) !== null) {
     const vidPath = resolvePublic(m[1]);
     if (!fs.existsSync(vidPath)) {
-      console.warn(`WARN missing video: ${file} -> ${m[1]}`);
-      missingVideoList.push({ file, ref: m[1] });
+      console.error(`MISSING VIDEO: ${file} -> ${m[1]}`);
       missingVideos++;
     }
   }
 }
 
-if (missingImages > 0) {
-  console.error(`\n${missingImages} missing image(s). Fix before deploying.`);
-  if (missingVideos > 0) {
-    console.error(`(plus ${missingVideos} missing video(s) — warning only.)`);
-  }
+if (missingImages > 0 || missingVideos > 0) {
+  console.error(`\n${missingImages} missing image(s), ${missingVideos} missing video(s). Fix before deploying.`);
   process.exit(1);
 }
 
-console.log(`All ${posts.length} post images verified.`);
-if (missingVideos > 0) {
-  console.log(`Warning: ${missingVideos} missing video(s). Not blocking deploy.`);
-}
+console.log(`All ${posts.length} post images and videos verified.`);
