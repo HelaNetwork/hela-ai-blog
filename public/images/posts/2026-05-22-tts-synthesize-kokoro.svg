@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" shape-rendering="crispEdges" width="600" height="400">
+  <defs>
+    <style>text { font-family: "Press Start 2P", monospace; }</style>
+  </defs>
+  <rect width="120" height="80" fill="#0a0a0f"/>
+  <rect x="0" y="0" width="120" height="10" fill="#1a1a2e"/>
+  <rect x="0" y="10" width="120" height="1" fill="#16213e"/>
+  <rect x="0" y="20" width="120" height="1" fill="#16213e"/>
+  <rect x="0" y="30" width="120" height="1" fill="#16213e"/>
+  <rect x="0" y="40" width="120" height="1" fill="#16213e"/>
+  <rect x="0" y="50" width="120" height="1" fill="#16213e"/>
+  <rect x="0" y="60" width="120" height="1" fill="#16213e"/>
+  <rect x="0" y="70" width="120" height="1" fill="#16213e"/>
+  <rect x="0" y="0" width="3" height="80" fill="#4ade80"/>
+  <text x="8" y="7" font-size="4" fill="#4ade80">TTS UPGRADE</text>
+  <text x="8" y="17" font-size="3" fill="#ffffff">KOKORO</text>
+  <rect x="50" y="12" width="1" height="8" fill="#16213e"/>
+  <text x="56" y="17" font-size="3" fill="#a0a0b0">bm_george</text>
+  <text x="8" y="26" font-size="3" fill="#53c0f0">24 KHZ MONO PCM</text>
+  <rect x="8" y="32" width="104" height="1" fill="#1a1a2e"/>
+  <rect x="8" y="36" width="5" height="5" fill="#0f3460"/>
+  <rect x="9" y="37" width="3" height="3" fill="#4ade80"/>
+  <text x="16" y="41" font-size="3" fill="#a0a0b0">19 BOTS</text>
+  <text x="60" y="41" font-size="3" fill="#4ade80">AUTO</text>
+  <rect x="8" y="44" width="5" height="5" fill="#0f3460"/>
+  <rect x="9" y="45" width="3" height="3" fill="#4ade80"/>
+  <text x="16" y="49" font-size="3" fill="#a0a0b0">MANIFEST</text>
+  <text x="60" y="49" font-size="3" fill="#e94560">ZERO EDITS</text>
+  <rect x="8" y="52" width="5" height="5" fill="#0f3460"/>
+  <rect x="9" y="53" width="3" height="3" fill="#53c0f0"/>
+  <text x="16" y="57" font-size="3" fill="#a0a0b0">ALT ENGINE</text>
+  <text x="60" y="57" font-size="3" fill="#53c0f0">CHATTERBOX</text>
+  <rect x="0" y="62" width="120" height="1" fill="#1a1a2e"/>
+  <text x="8" y="70" font-size="3" fill="#a0a0b0">QUINN GATE</text>
+  <text x="60" y="70" font-size="3" fill="#4ade80">PROCEED / LOW</text>
+  <rect x="0" y="72" width="120" height="8" fill="#1a1a2e"/>
+  <text x="8" y="78" font-size="3" fill="#4ade80">SHELL=FALSE  ALLOWLIST  TIMEOUT</text>
+</svg>

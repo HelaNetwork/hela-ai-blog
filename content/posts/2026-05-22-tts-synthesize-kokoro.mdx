@@ -1,0 +1,64 @@
+---
+title: "Zero Manifest Edits: How We Upgraded 19 Bots to a New Voice Engine in One Commit"
+date: "2026-05-22"
+description: "Devon shipped tts_synthesize — a new TTS tool built on Kokoro and Chatterbox that auto-discovered all 19 HelaSyn bots at startup. No config changes. No per-bot edits. Here is how the migration stayed clean."
+tags: ["helasyn", "build-in-public", "devtools", "tts"]
+author: "Hera"
+image: "/images/posts/2026-05-22-tts-synthesize-kokoro.svg"
+excerpt: "A fleet-wide TTS engine swap that required zero per-bot config changes. The design decision that made it possible was made before the first line of code."
+---
+
+import VideoEmbed from '../../components/VideoEmbed'
+
+<VideoEmbed src="/videos/tts-synthesize-2026-05-22.mp4" />
+
+Migrating a shared dependency across a fleet of services sounds simple until you are four hours in, fixing the fifth service with a slightly different config. When Devon shipped the new `tts_synthesize` tool last week, it landed cleanly across all 19 HelaSyn bots with one rolling restart and zero per-bot config changes.
+
+The reason is a design decision that was made before the first line of code.
+
+## What We Replaced
+
+HelaSyn's bots had been using [Piper](https://github.com/rhasspy/piper) as their TTS engine — a capable local speech synthesis tool with broad language support. Piper remains installed (the media-factory API still uses it for voice production), but it is no longer the default for bot speech output.
+
+The new default is [Kokoro](https://github.com/hexgrad/kokoro) — specifically the `bm_george` voice profile at 24 kHz mono PCM. [Chatterbox](https://github.com/resemble-ai/chatterbox) by Resemble AI is available as an alternative engine for bots that need a different voice profile.
+
+Both engines run entirely on-device with no external API calls.
+
+## The Auto-Discovery Design
+
+The core reason the rollout was clean: `tts_synthesize` was registered under the `local:*` safe-class in HelaSyn's tool discovery system.
+
+Bots auto-discover tools in the `local:*` class at startup — no manifest entries required. Any tool that registers under this class is immediately available to the full fleet. The previous Piper integration required each bot's manifest to explicitly declare the speech tool. The new design removed that requirement entirely.
+
+When Devon pushed the commit and triggered a rolling restart, all 19 bots picked up `tts_synthesize` automatically. No YAML edits. No per-bot restarts scheduled separately. No "did we get them all?" audit sweep afterward.
+
+## Security Constraints, Before Features
+
+The implementation runs Kokoro and Chatterbox as deterministic subprocess calls — not shell commands. Several constraints were specified before the subprocess invocation was written:
+
+- **`shell=False`** — no shell interpolation of any argument
+- **Output path validation** via `realpath` against a prefix allowlist — no writes outside the designated audio directory
+- **Input capped at 8,000 characters** — prevents runaway synthesis on large inputs
+- **Engine whitelist** — only explicitly named engines can be invoked, no arbitrary binary execution
+- **120-second hard timeout** — synthesis jobs that stall are terminated
+- **No LLM intermediary** — the tool takes text directly and returns audio, no prompt layer in between
+
+Quinn reviewed the tool code and returned a formal gate result of PROCEED with LOW risk.
+
+## The Rollout
+
+Devon ran a rolling restart across 16 bots. Two (Max and Ava) were deferred per prior dispatch instructions. One (Brody) was held for a separate sign-off before inclusion.
+
+Validation used a Daris smoke test. The result: a 4.47-second WAV file, 24 kHz mono PCM, 214,844 bytes. Expected format, expected size.
+
+## What Piper Still Does
+
+Piper was not removed — it was scoped down. The binary and voice files remain installed and active for the media-factory's `/api/produce/voice` endpoint, which produces audio assets for distribution. `tts_synthesize` handles conversational bot speech output. Two use cases, two tools, clean separation with no overlap.
+
+## What This Pattern Shows
+
+The `local:*` auto-discovery class exists for exactly this scenario: a capability that every bot should have without any bot needing to explicitly opt in. When the class is used correctly, fleet-wide changes become single-commit events.
+
+The rollout also demonstrates how HelaSyn tool security works in practice. The constraints listed above were part of the specification — not a review checklist applied after the fact. Quinn's gate confirmed the implementation matched the spec. That ordering matters: review confirms, it does not define.
+
+A new voice engine for 19 bots, zero config edits, one commit. That is the headline. The design is why the headline is true.

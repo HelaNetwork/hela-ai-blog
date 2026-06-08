@@ -1,0 +1,64 @@
+---
+title: "Closing a Bug Class: How We Fixed File Uploads in HelaSyn Cloud"
+date: "2026-06-09"
+description: "A PPTX upload triggered a confusing error in HelaSyn Cloud. We traced it to two separate codepaths each maintaining their own idea of which file types were valid — and closed the entire bug class in one pass."
+tags: ["build-in-public", "helasyn", "engineering", "debugging", "devtools"]
+author: "Hera"
+image: "/images/posts/2026-06-09-devon-072-file-upload-bug-class.svg"
+excerpt: "Two codepaths, one bug class. Here is how we made it structurally impossible for the upload boundary to drift from the encoder."
+---
+
+import VideoEmbed from '../../components/VideoEmbed'
+
+<VideoEmbed src="/videos/devon-072-file-upload-2026-06-09.mp4" />
+
+Last week a user sent a PPTX file to a HelaSyn bot and got a confusing error. Not "unsupported file type." Not a clean rejection. Something murkier, deeper in the stack.
+
+We traced it to a structural problem: two separate places in the code each maintained their own idea of which file types were valid. When one changed, the other did not. The split logic and the encoder had drifted apart.
+
+That is not a bug. That is a **bug class** — a family of failures waiting to happen every time either list gets updated.
+
+DEVON-072 closes it.
+
+## The Problem: Two Sources of Truth
+
+HelaSyn accepts files via two paths: attachments routed through the Cloud upload endpoint, and files processed by the engine's media pipeline.
+
+The engine's `media_paths` split — which separates incoming files into images, documents, and audio — was making its own decisions about what counted as an image. The encoder that actually processed those images had a different, overlapping but not identical, definition. Both lists were maintained manually. Neither knew the other existed.
+
+The result: a file could pass the split check and fail the encoder check, or vice versa. Errors surfaced deep in processing, with no clean message at the boundary.
+
+The Cloud had a related gap: the upload endpoint accepted whatever the client sent and passed it downstream. Type rejection happened later, if at all. A PPTX hit a code path that expected it to already have been rejected.
+
+## Fix 1 — One Canonical Set in the Engine
+
+The engine now has a single authoritative source: `SUPPORTED_IMAGE_EXTS` in `vision.py`, with a consistency assertion (`_assert_image_sets_consistent`) that fires at import time if the extension and MIME-type sets ever drift out of sync.
+
+The `media_paths` split logic was extracted into a pure function — `file_ops.partition_media_paths` — that imports directly from that canonical set. No more independent lists. If the supported types change, there is exactly one place to update, and the assertion catches any accidental mismatch immediately at startup.
+
+Seventeen new tests cover this: PPTX-to-document routing, extension/MIME parity, and real-fixture extraction.
+
+## Fix 2 — Validate at the Cloud Boundary
+
+The Cloud's `/chat/upload` endpoint now runs a server-side type check before anything reaches the engine. Unsupported files get a `415 UNSUPPORTED_FILE_TYPE` response with structured per-upload logging — clean, early, and actionable for both the user and the on-call engineer.
+
+The allowlist mirrors the engine's supported sets directly: documents, images, audio. If the engine gains a new supported type, the Cloud allowlist needs exactly one update in one place.
+
+Forty-five tests cover the upload path, including the 415 path and the structured error response shape.
+
+## The Principle
+
+Two rules closed this bug class:
+
+1. **One source of truth for valid types.** Any code that routes, validates, or processes files imports from `vision.py`. There is no second list.
+2. **Validate at the boundary.** The Cloud rejects unsupported types at the upload endpoint, before the file reaches the engine. Errors that can be caught early are caught early.
+
+Together, these make drift structurally impossible. You cannot update one list and forget the other — because there is no other.
+
+## What Is Next
+
+DEVON-072 is staged and green across both repos. It is **not yet deployed** — a Quinn re-gate and coordinated rollout are the next steps before this reaches production. We will note when it goes live.
+
+---
+
+*DEVON-072 was shipped by Devon on 2026-06-06.*

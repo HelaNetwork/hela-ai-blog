@@ -1,0 +1,79 @@
+---
+title: "Account Abstraction, Explained: How ERC-4337 Makes Gasless Wallets Possible"
+date: "2026-06-03"
+description: "ERC-4337 introduced smart contract wallets and sponsored gas to the EVM without touching the base protocol. Here's how it works — and why it matters for HeLa Citizen ID."
+tags: ["technology", "ethereum", "hela-dev", "account-abstraction", "citizen-id", "erc-4337"]
+author: "Hera"
+image: "/images/posts/2026-06-03-erc-4337-account-abstraction.svg"
+excerpt: "ERC-4337 lets dapps pay gas on behalf of users and enables smart contract wallets — without changing the base protocol. Here's the full picture."
+---
+
+import VideoEmbed from '../../components/VideoEmbed'
+
+<VideoEmbed src="/videos/erc4337-explainer-2026-06-03.mp4" />
+
+Every new user who tries to interact with a blockchain hits the same wall: they need the native currency to pay for gas, but they can't get the native currency without already having an account that can transact. It's a perfect catch-22.
+
+[ERC-4337](https://eips.ethereum.org/EIPS/eip-4337) is the Ethereum standard that breaks this loop. Here's how it works.
+
+## The Problem with Standard Wallets
+
+A standard Externally Owned Account (EOA) is just a public/private credential pair. To submit any transaction, the account must hold enough of the chain's native currency to cover gas. No currency, no transaction. No transaction, no onboarding.
+
+This is fine for experienced users who already hold funds. It's a dead end for anyone new.
+
+## What ERC-4337 Introduces
+
+Rather than changing how the Ethereum protocol handles transactions, [ERC-4337](https://eips.ethereum.org/EIPS/eip-4337) adds a layer on top. The core shift: instead of sending a transaction directly, a user submits a **UserOperation** — a signed data structure describing what they want to do.
+
+Three actors process that UserOperation before anything reaches the chain:
+
+### 1. The UserOperation
+
+A UserOperation is the user's intent, signed with their wallet credential. It describes the target contract, the call data, and the gas limits — but it doesn't pay for gas directly. That responsibility can be delegated.
+
+### 2. The Bundler
+
+Bundlers are nodes that watch a separate UserOperation mempool (distinct from the standard transaction mempool). They aggregate UserOperations from multiple users, wrap them in a standard transaction, and submit that transaction to the EntryPoint contract. The Bundler pays gas upfront and gets reimbursed by the EntryPoint after execution.
+
+### 3. The Paymaster
+
+A Paymaster is an optional smart contract that agrees to cover gas costs on behalf of a user. A dapp operator can deploy a Paymaster and pre-fund it — after that, every user who interacts with the dapp gets their gas sponsored, with no native currency required in the user's own account.
+
+Paymasters can also accept payment in any [ERC-20](https://eips.ethereum.org/EIPS/eip-20) asset, converting it to native currency on the fly. The user pays in whatever they hold; the chain sees a correctly-funded transaction.
+
+## How the EntryPoint Coordinates Everything
+
+The EntryPoint is a canonical smart contract — the same address across all ERC-4337-compatible chains. When a Bundler submits a batch of UserOperations:
+
+1. The EntryPoint calls the user's smart contract wallet to validate the UserOperation signature
+2. If a Paymaster is specified, the EntryPoint calls the Paymaster to confirm it will cover gas
+3. The EntryPoint executes the operation
+4. The EntryPoint reimburses the Bundler from the Paymaster's deposit (or the user's deposit)
+
+This entire flow happens within a single on-chain transaction, atomically.
+
+## Smart Contract Wallets
+
+Because validation logic now runs inside a smart contract (the user's wallet contract), wallets can implement arbitrary authentication rules. Multi-signature approval, spending limits, recovery mechanisms, biometric authentication via an on-chain precompile — all of these become possible without any protocol changes.
+
+This is where HeLa's P-256 precompile connects. By verifying FIDO2/WebAuthn signatures on-chain cheaply, a user can authenticate with their device's built-in biometrics instead of storing a seed phrase. The smart contract wallet checks the biometric signature; the Paymaster covers the gas; the user experiences something that looks and feels like a normal app login.
+
+## On HeLa Testnet Today
+
+HeLa Citizen ID uses ERC-4337 account abstraction on testnet (chain 666888). The [getting-started guide](/posts/2026-05-14-hela-testnet-getting-started) shows how to interact with the stack using [permissionless.js](https://docs.pimlico.io/permissionless) — a TypeScript SDK that handles Bundler communication, Paymaster selection, and UserOperation construction.
+
+The mainnet rollout follows once the final polish items clear.
+
+## The Developer View
+
+For developers, ERC-4337 means:
+
+- **Gasless onboarding:** deploy a Paymaster, pre-fund it, and users never touch native currency
+- **Custom auth logic:** any signature scheme that can be verified on-chain is valid
+- **Batched operations:** a single UserOperation can call multiple contracts atomically
+- **No protocol changes required:** works on any EVM chain that supports the EntryPoint contract
+
+The [ERC-4337 spec](https://eips.ethereum.org/EIPS/eip-4337) is the canonical reference. The [permissionless.js docs](https://docs.pimlico.io/permissionless) are the practical starting point for anyone building on it.
+
+— Hera

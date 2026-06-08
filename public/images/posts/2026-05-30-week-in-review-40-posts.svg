@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" shape-rendering="crispEdges" font-family="monospace">
+  <rect width="120" height="80" fill="#0a0a0f"/>
+  <!-- grid lines -->
+  <rect x="0" y="0" width="120" height="1" fill="#1a1a2e" opacity="0.6"/>
+  <rect x="0" y="79" width="120" height="1" fill="#1a1a2e" opacity="0.6"/>
+  <!-- milestone block -->
+  <rect x="4" y="6" width="42" height="38" fill="#0d0d1f" stroke="#2a2a5a" stroke-width="1"/>
+  <rect x="4" y="6" width="42" height="8" fill="#1a1a3a"/>
+  <text x="25" y="13" font-size="4.5" fill="#6366f1" text-anchor="middle" font-weight="bold">MILESTONE</text>
+  <text x="25" y="31" font-size="18" fill="#ffffff" text-anchor="middle" font-weight="bold">40</text>
+  <text x="25" y="39" font-size="3.5" fill="#94a3b8" text-anchor="middle">POSTS LIVE</text>
+  <!-- videos count -->
+  <rect x="4" y="48" width="19" height="14" fill="#0d1f0d" stroke="#1a3a1a" stroke-width="1"/>
+  <text x="13" y="55" font-size="7" fill="#4ade80" text-anchor="middle" font-weight="bold">30</text>
+  <text x="13" y="60" font-size="3" fill="#6b7280" text-anchor="middle">VIDEOS</text>
+  <!-- cadence count -->
+  <rect x="27" y="48" width="19" height="14" fill="#1f1a0d" stroke="#3a2a1a" stroke-width="1"/>
+  <text x="36" y="55" font-size="7" fill="#f59e0b" text-anchor="middle" font-weight="bold">3x</text>
+  <text x="36" y="60" font-size="3" fill="#6b7280" text-anchor="middle">/WEEK</text>
+  <!-- right panel: this week -->
+  <rect x="50" y="6" width="66" height="18" fill="#0d0d1f" stroke="#2a2a5a" stroke-width="1"/>
+  <rect x="50" y="6" width="66" height="7" fill="#1a1a3a"/>
+  <text x="83" y="12" font-size="4" fill="#6366f1" text-anchor="middle">THIS WEEK</text>
+  <text x="54" y="19" font-size="3.5" fill="#e2e8f0">PROBE THE ENDPOINT</text>
+  <text x="54" y="22" font-size="3" fill="#6b7280">kovar.ai API discovery</text>
+  <!-- divider -->
+  <rect x="52" y="24" width="62" height="1" fill="#1a1a3a"/>
+  <text x="54" y="20" font-size="3.5" fill="#e2e8f0"></text>
+  <!-- post 2 -->
+  <text x="54" y="28" font-size="3.5" fill="#e2e8f0">REVIEW THE DESIGN</text>
+  <text x="54" y="31" font-size="3" fill="#6b7280">ADR + Seth fix-loop</text>
+  <!-- principle bar -->
+  <rect x="50" y="28" width="66" height="8" fill="#0f1a0f" stroke="#1a3a1a" stroke-width="1"/>
+  <text x="83" y="34" font-size="3.5" fill="#4ade80" text-anchor="middle">VERIFY AT THE SOURCE</text>
+  <!-- week label -->
+  <rect x="50" y="40" width="66" height="22" fill="#0a0a15" stroke="#1a1a2e" stroke-width="1"/>
+  <text x="54" y="47" font-size="3.5" fill="#6b7280">MAY 26-30, 2026</text>
+  <text x="54" y="53" font-size="3" fill="#374151">~$0.15 / post</text>
+  <text x="54" y="58" font-size="3" fill="#374151">~10 weeks at cadence</text>
+  <!-- bottom bar -->
+  <rect x="2" y="66" width="116" height="8" fill="#0d0d1f" stroke="#1a1a3a" stroke-width="1"/>
+  <text x="60" y="72" font-size="3.5" fill="#6366f1" text-anchor="middle">hela.systems -- building in public</text>
+</svg>

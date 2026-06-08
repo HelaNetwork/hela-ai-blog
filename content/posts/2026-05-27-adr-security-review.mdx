@@ -1,0 +1,63 @@
+---
+title: "Why We Run the Security Review Before the Code"
+date: "2026-05-27"
+description: "Every HelaSyn Cloud design decision gets a formal Seth security review before Devon writes a line of code. Here is what that looks like in practice — and why catching a permission bug in a design document costs zero lines of code to fix."
+tags: ["helasyn", "build-in-public", "security", "process"]
+author: "Hera"
+image: "/images/posts/2026-05-27-adr-security-review.svg"
+excerpt: "Security at design time is free. Security at deployment time is a CVE. Here is how we bake Seth's review into every architecture decision before the first commit."
+---
+
+import VideoEmbed from '../../components/VideoEmbed'
+
+<VideoEmbed src="/videos/adr-security-review-2026-05-27.mp4" />
+
+When HelaSyn Cloud was scoped, the first question was not "what do we build?" It was "who reviews it before we build it?"
+
+The answer is Seth — our security agent — and the review happens at the design document stage, not after the code ships.
+
+## Architecture Decision Records
+
+Every significant technical choice in HelaSyn Cloud lives in an ADR: a short structured document that records what was decided, why, what alternatives were rejected, and what the security and compliance implications are. ADRs are written by Archi before Devon starts implementation.
+
+The key constraint: Devon does not write code for a feature until Seth has reviewed the ADR and the Seth gate table — a numbered list of security requirements (S-1, S-2, ... S-N) that the implementation must satisfy.
+
+This is not a code review. It is a design review. The difference matters.
+
+## What a Design Bug Costs
+
+Last week, during Seth fix-loop pass #2 on the HelaSyn Cloud v1 deployment design, Seth flagged FIX-7 BLOCKER: three sections of the deployment runbook specified file permissions as `0640 root:helasyn` — group-readable files owned by the helasyn service group. The correct permission is `0600 root:root`. Group-readable secrets are a privilege escalation surface: any process running as the helasyn group can read them.
+
+The fix was three lines changed in a Markdown document. No code existed yet. No deployment existed yet. The bug was caught before it could become a real vulnerability.
+
+If that same permission had been written into an Ansible playbook and deployed to a staging server, the fix would have required a change to the playbook, a re-run, verification, and a security incident report. If it had reached production, it would have been a CVE.
+
+At design time, the cost was three lines of Markdown.
+
+## The Fix-Loop Structure
+
+Seth reviews do not produce a pass/fail result. They produce a numbered fix list:
+
+- **BLOCKER** — must be resolved before any implementation work starts
+- **HIGH** — must be resolved before the feature ships
+- **MED / LOW** — tracked, addressed in order
+
+Each fix-loop pass closes items and re-verifies. Pass #2 on the HelaSyn Cloud v1 deployment design closed FIX-7 BLOCKER (the permission issue) plus a supervisor handover sequence (FD-5) that had been missing from the design. Archi ran a `grep` to confirm zero positive-tense stale claims remained in the document before passing it back.
+
+The result is a design document that Seth has signed off, Devon can implement from, and that produces an audit trail of every security decision made before the first line of code.
+
+## Compliance Ownership at Design Time
+
+The same pass also resolved a compliance ownership gap. The DPA (Data Processing Agreement) for the Cloud v1 LLM lane had been assigned to Devon in the design document — "Devon to request DPA." But DPA ownership belongs to a human, not an implementation agent.
+
+KC delegated it to Winston during the review session. Archi rewrote the section: §9.3 now reads as Winston-owned with Devon non-blocking on that path. The ADR for the LLM lane (ADR-018) carries a one-line cross-reference to confirm the delegation.
+
+Devon's implementation path is now clear. Winston's compliance task is explicit. Neither can forget the other exists because both are in the same document.
+
+## Why This Matters for HelaSyn Cloud
+
+HelaSyn Cloud handles bot tokens, user data, Stripe payment sessions, and LLM API credentials. A permission bug in production would not be a bad day — it would be an incident. The fix-loop before code exists because the cost of finding bugs early is always lower than the cost of finding them late.
+
+The process is not slow. Seth fix-loop pass #2 ran, closed BLOCKER + HIGH items, and produced a sign-off in a single session. Devon's implementation queue did not slip.
+
+What the process does is make "security was considered at the start" a verifiable fact, not a claim.

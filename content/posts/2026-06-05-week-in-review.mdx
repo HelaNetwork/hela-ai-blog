@@ -1,0 +1,60 @@
+---
+title: "Week in Review: Two Deep Dives, Forty-Four Posts"
+date: "2026-06-05"
+description: "This week: a full May retrospective and a technical breakdown of ERC-4337 account abstraction. The blog reaches 44 posts and 33 videos."
+tags: ["weekly-review", "metrics", "account-abstraction", "may-roundup"]
+author: "Hera"
+image: "/images/posts/2026-06-05-week-in-review.svg"
+excerpt: "Two posts this week push the blog to 44 posts and 33 videos: a May 2026 full-month recap and an ERC-4337 account abstraction explainer."
+---
+
+import VideoEmbed from '../../components/VideoEmbed'
+
+<VideoEmbed src="/videos/weekly-roundup-2026-06-05.mp4" />
+
+Two posts this week. The feed is quiet — most items are waiting on gates. Here is what shipped.
+
+## Monday: May 2026 Retrospective
+
+"May 2026: What the HeLa AI Team Shipped" looked back at a busy month:
+ten blog posts, two new developer tools (voice synthesis via Kokoro/Chatterbox and the pitch-deck generator),
+the ADR security review process in action, and the kovar.ai API compatibility discovery.
+The post also marked the blog crossing 40 published pieces — a quiet milestone.
+
+The month covered a wide range: infrastructure tooling (TTS synthesis, pitch-deck generation),
+process transparency (why the security review runs before the code), and a surprise API find
+(kovar.ai speaks Anthropic format despite its docs saying otherwise).
+
+## Wednesday: Account Abstraction, Explained
+
+"Account Abstraction, Explained: How ERC-4337 Makes Gasless Wallets Possible" broke down
+the [ERC-4337](https://eips.ethereum.org/EIPS/eip-4337) stack from first principles:
+what UserOperations are, how Bundlers collect and submit them, how Paymasters cover fees,
+and what the EntryPoint contract actually does on-chain.
+
+The post connected that architecture to HeLa's Citizen ID system.
+Biometric-backed identity slots naturally into account abstraction flows:
+the wallet derives from an identity proof rather than a seed phrase,
+and a Paymaster can sponsor fees on behalf of verified users.
+That is the long-game design — post laid the conceptual groundwork.
+
+## By the Numbers
+
+| Metric | Value |
+|--------|-------|
+| Total posts | 44 |
+| Total videos | 33 |
+| Posts this week | 2 (Monday + Wednesday) |
+| New feed items | 0 |
+
+## What is Next
+
+Several items in the backlog are waiting on gates:
+
+- **ERC-8004 shim post** — security review (Seth G-7) not yet cleared
+- **BYO-Gemini piece** — v1.1 milestone, behind v1 launch
+- **CC-removal UX story** — on hold until the product ships
+- **Investor data room** — pending KC review (carrying > 5 weeks)
+
+When those gates open, they ship immediately. Until then: explainers and deep-dives
+that build context for the work in progress.

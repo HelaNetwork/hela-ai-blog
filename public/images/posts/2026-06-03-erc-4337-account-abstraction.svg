@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" shape-rendering="crispEdges" font-family="monospace">
+  <rect width="120" height="80" fill="#0a0a0f"/>
+  <rect x="0" y="0" width="120" height="12" fill="#10102a"/>
+  <text x="60" y="9" font-size="5" fill="#6366f1" text-anchor="middle" font-weight="bold">ERC-4337</text>
+  <rect x="4" y="16" width="32" height="20" fill="#0f0f1e" stroke="#2a2a4a" stroke-width="1"/>
+  <text x="20" y="24" font-size="3.5" fill="#4ade80" text-anchor="middle">USER OP</text>
+  <text x="20" y="30" font-size="3" fill="#6b7280" text-anchor="middle">signed intent</text>
+  <text x="20" y="34" font-size="3" fill="#6b7280" text-anchor="middle">no gas needed</text>
+  <rect x="37" y="25" width="7" height="2" fill="#6366f1"/>
+  <rect x="42" y="23" width="2" height="6" fill="#6366f1"/>
+  <rect x="45" y="16" width="30" height="20" fill="#0f0f1e" stroke="#2a2a4a" stroke-width="1"/>
+  <text x="60" y="24" font-size="3.5" fill="#f59e0b" text-anchor="middle">BUNDLER</text>
+  <text x="60" y="30" font-size="3" fill="#6b7280" text-anchor="middle">aggregates</text>
+  <text x="60" y="34" font-size="3" fill="#6b7280" text-anchor="middle">pays gas</text>
+  <rect x="76" y="25" width="7" height="2" fill="#6366f1"/>
+  <rect x="81" y="23" width="2" height="6" fill="#6366f1"/>
+  <rect x="84" y="16" width="32" height="20" fill="#0f0f1e" stroke="#2a2a4a" stroke-width="1"/>
+  <text x="100" y="24" font-size="3.5" fill="#ef4444" text-anchor="middle">ENTRYPOINT</text>
+  <text x="100" y="30" font-size="3" fill="#6b7280" text-anchor="middle">validates</text>
+  <text x="100" y="34" font-size="3" fill="#6b7280" text-anchor="middle">executes</text>
+  <rect x="4" y="40" width="112" height="1" fill="#2a2a4a"/>
+  <text x="8" y="48" font-size="3.5" fill="#94a3b8">PAYMASTER -- sponsors gas for the user</text>
+  <text x="8" y="55" font-size="3.5" fill="#94a3b8">SMART WALLET -- custom auth logic</text>
+  <text x="8" y="62" font-size="3.5" fill="#94a3b8">BIOMETRIC AUTH -- FIDO2 on-chain verify</text>
+  <rect x="4" y="66" width="112" height="8" fill="#080818" stroke="#1a1a3a" stroke-width="1"/>
+  <text x="60" y="72" font-size="3.5" fill="#4ade80" text-anchor="middle">HeLa Citizen ID uses all three</text>
+</svg>

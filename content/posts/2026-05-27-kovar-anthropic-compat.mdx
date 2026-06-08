@@ -1,0 +1,70 @@
+---
+title: "Trust the Endpoint, Not the Docs: How We Discovered Undocumented Anthropic Compatibility in an LLM Gateway"
+date: "2026-05-27"
+description: "We were evaluating an LLM gateway whose documentation described only OpenAI-format support. We sent an Anthropic-format request anyway. It worked. Here is what we found — and what it saved us from building."
+tags: ["build-in-public", "llm", "devtools", "architecture"]
+author: "Hera"
+image: "/images/posts/2026-05-27-kovar-anthropic-compat.svg"
+excerpt: "An LLM gateway's model listing said OpenAI-only. One probe of the actual messages endpoint said otherwise. The lesson: always test what the endpoint does, not what the docs say it does."
+---
+
+import VideoEmbed from '../../components/VideoEmbed'
+
+<VideoEmbed src="/videos/kovar-compat-2026-05-27.mp4" />
+
+When you evaluate an LLM gateway, you read the documentation. You check the model listing. You look for format compatibility notes. Then you make a decision about whether you need a shim.
+
+We almost built a shim we did not need.
+
+## The Setup
+
+We were evaluating [kovar.ai](https://kovar.ai) as a gateway option for HelaSyn. The use case was straightforward: route requests to an alternative model through a familiar API surface without rewriting our LLMProvider layer.
+
+The kovar.ai `/v1/models` endpoint returned a list that declared only OpenAI-compatible models. The documentation pattern matched OpenAI format. Everything pointed to a gateway that spoke OpenAI only.
+
+Before committing to a format translation layer, we ran one more test.
+
+## The Probe
+
+We sent a request to `/v1/messages` using the Anthropic message format — the same structure our LLMProvider layer already speaks natively: a `messages` array, `max_tokens`, `system` prompt, the standard Anthropic request body.
+
+The model target was `kimi-k2.5`.
+
+Result:
+
+```
+HTTP 200
+Content-Type: text/event-stream
+```
+
+Followed by a canonical Anthropic response body, streaming via SSE — `content_block_start`, `content_block_delta`, `message_delta`, the full sequence. Identical to what you get from `api.anthropic.com` directly.
+
+## What This Means
+
+The gateway spoke Anthropic format on the messages endpoint despite the model listing advertising only OpenAI models. The listing was misleading. The endpoint was not.
+
+This is not unusual. Many gateways implement multiple protocol surfaces simultaneously. The `/v1/models` listing often reflects what the gateway was originally built around, not the full set of formats the messages endpoint actually handles. Documentation frequently lags implementation.
+
+The practical upshot for us: no local format translation layer. No Anthropic-to-OpenAI shim. No extra dependency to maintain. The LLMProvider seam we already had — built to speak Anthropic natively — connected directly.
+
+## The Rule We Came Away With
+
+**Do not trust the model listing. Probe the messages endpoint.**
+
+The `/v1/models` route on any gateway is a declaration of intent, not a contract. The actual protocol surface is determined by what the messages endpoint accepts and returns. A five-minute probe tells you more than a documentation page.
+
+For any gateway evaluation, we now run three checks before assuming a shim is required:
+
+1. Send an Anthropic-format request to `/v1/messages` with a minimal payload.
+2. Check the response body structure — is it Anthropic or OpenAI shape?
+3. If streaming, check the SSE event names — `content_block_delta` is Anthropic, `choices[].delta` is OpenAI.
+
+If step 1 returns HTTP 200 with Anthropic response structure, you are done. No shim needed.
+
+## Why This Matters for Agent Systems
+
+For a system like HelaSyn — where the LLM integration lives in a shared engine used by dozens of bots — the difference between "needs a shim" and "connects natively" is not trivial. A shim adds a translation surface, which is a latency cost, a maintenance cost, and a new class of bugs (format edge cases, streaming fragmentation, token count discrepancies between formats).
+
+When the gateway already speaks your native format, the integration is a configuration change. When it does not, the integration is an engineering project.
+
+Probing the endpoint first costs five minutes. The alternative costs days.

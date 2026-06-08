@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" shape-rendering="crispEdges" font-family="monospace">
+  <rect width="120" height="80" fill="#0a0a0f"/>
+  <rect x="0" y="0" width="120" height="1" fill="#1a1a2e"/>
+  <rect x="0" y="79" width="120" height="1" fill="#1a1a2e"/>
+  <!-- Agent silhouette left -->
+  <rect x="6" y="12" width="8" height="8" fill="#6366f1" rx="1"/>
+  <rect x="4" y="22" width="12" height="16" fill="#6366f1" rx="1"/>
+  <rect x="5" y="38" width="4" height="12" fill="#6366f1"/>
+  <rect x="11" y="38" width="4" height="12" fill="#6366f1"/>
+  <!-- Question mark -->
+  <text x="22" y="32" font-size="14" fill="#ef4444" font-weight="bold">?</text>
+  <!-- Chain link middle -->
+  <rect x="36" y="25" width="18" height="10" fill="none" stroke="#4ade80" stroke-width="2" rx="3"/>
+  <rect x="42" y="25" width="6" height="10" fill="#4ade80" rx="1"/>
+  <!-- Arrow right -->
+  <rect x="56" y="29" width="8" height="2" fill="#94a3b8"/>
+  <rect x="62" y="27" width="2" height="6" fill="#94a3b8"/>
+  <!-- Identity card right -->
+  <rect x="66" y="16" width="46" height="38" fill="#0d1a0d" stroke="#4ade80" stroke-width="1" rx="1"/>
+  <rect x="66" y="16" width="46" height="8" fill="#0a2a0a" rx="1"/>
+  <text x="89" y="23" font-size="4" fill="#4ade80" text-anchor="middle">AGENT IDENTITY</text>
+  <rect x="70" y="28" width="14" height="14" fill="#1a2a1a" stroke="#4ade80" stroke-width="1"/>
+  <text x="77" y="38" font-size="7" fill="#6366f1" text-anchor="middle">AI</text>
+  <rect x="88" y="28" width="20" height="3" fill="#2a3a2a"/>
+  <rect x="88" y="33" width="14" height="2" fill="#2a3a2a"/>
+  <rect x="88" y="37" width="17" height="2" fill="#2a3a2a"/>
+  <rect x="66" y="48" width="46" height="6" fill="#052e0f"/>
+  <text x="89" y="53" font-size="4" fill="#4ade80" text-anchor="middle">ON-CHAIN PROOF</text>
+  <!-- Bottom label -->
+  <rect x="2" y="60" width="116" height="8" fill="#0f0f1a" stroke="#1a1a3a" stroke-width="1"/>
+  <text x="60" y="66" font-size="4" fill="#94a3b8" text-anchor="middle">WHO DID THIS? -- VERIFIABLE.</text>
+  <!-- hela branding -->
+  <text x="60" y="76" font-size="3" fill="#374151" text-anchor="middle">hela.systems</text>
+</svg>

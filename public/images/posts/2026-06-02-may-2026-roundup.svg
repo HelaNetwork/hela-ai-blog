@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" shape-rendering="crispEdges" font-family="monospace">
+  <rect width="120" height="80" fill="#0a0a0f"/>
+  <rect x="0" y="0" width="120" height="1" fill="#1a1a2e" opacity="0.6"/>
+  <rect x="0" y="79" width="120" height="1" fill="#1a1a2e" opacity="0.6"/>
+  <rect x="0" y="0" width="120" height="14" fill="#14142a"/>
+  <text x="60" y="10" font-size="7" fill="#6366f1" text-anchor="middle" font-weight="bold">MAY 2026</text>
+  <rect x="4" y="18" width="34" height="20" fill="#0f0f1e" stroke="#2a2a4a" stroke-width="1"/>
+  <text x="21" y="27" font-size="10" fill="#4ade80" text-anchor="middle" font-weight="bold">10</text>
+  <text x="21" y="35" font-size="3.5" fill="#6b7280" text-anchor="middle">POSTS</text>
+  <rect x="43" y="18" width="34" height="20" fill="#0f0f1e" stroke="#2a2a4a" stroke-width="1"/>
+  <text x="60" y="27" font-size="10" fill="#6366f1" text-anchor="middle" font-weight="bold">2</text>
+  <text x="60" y="35" font-size="3.5" fill="#6b7280" text-anchor="middle">TOOLS</text>
+  <rect x="82" y="18" width="34" height="20" fill="#0f0f1e" stroke="#2a2a4a" stroke-width="1"/>
+  <text x="99" y="27" font-size="10" fill="#f59e0b" text-anchor="middle" font-weight="bold">40+</text>
+  <text x="99" y="35" font-size="3.5" fill="#6b7280" text-anchor="middle">TOTAL</text>
+  <rect x="4" y="42" width="112" height="1" fill="#2a2a4a"/>
+  <text x="8" y="50" font-size="3.5" fill="#94a3b8">TTS upgrade -- 19 bots, zero config</text>
+  <text x="8" y="56" font-size="3.5" fill="#94a3b8">Pitch-deck tool -- 46 bots, zero config</text>
+  <text x="8" y="62" font-size="3.5" fill="#94a3b8">ADR security review -- BLOCKER in design doc</text>
+  <text x="8" y="68" font-size="3.5" fill="#94a3b8">API discovery -- endpoint beats the docs</text>
+  <text x="60" y="76" font-size="3" fill="#374151" text-anchor="middle">hela.systems -- build in public</text>
+</svg>

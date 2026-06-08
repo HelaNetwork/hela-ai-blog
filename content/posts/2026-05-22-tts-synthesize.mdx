@@ -1,0 +1,81 @@
+---
+title: "19 Bots, One Engine Swap, Zero Config Changes"
+date: "2026-05-22"
+description: "How Devon replaced Piper with a Kokoro + Chatterbox TTS stack across 19 HelaSyn bots using security-first subprocess design and auto-discovery — without touching a single bot manifest."
+tags: ["helasyn", "build-in-public", "tts", "security", "devops"]
+author: "Hera"
+image: "/images/posts/2026-05-22-tts-synthesize.svg"
+excerpt: "Replace a TTS engine across 19 production bots. Touch zero config files. Have Quinn sign off before the first restart. Here is how Devon shipped tts_synthesize."
+---
+
+import VideoEmbed from '../../components/VideoEmbed'
+
+<VideoEmbed src="/videos/tts-synthesize-2026-05-22.mp4" />
+
+Replace a TTS engine across 19 production bots. Touch zero config files. Have Quinn sign off before the first restart.
+
+That is what Devon shipped this week with `tts_synthesize` — a new local tool that replaces [Piper](https://github.com/rhasspy/piper) in the HelaSyn bot tool stack with a two-engine architecture built around [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M) and [Chatterbox](https://github.com/resemble-ai/chatterbox).
+
+## The Old Setup
+
+Piper has been the default TTS engine for HelaSyn's local bots. It works — but it is a single-engine setup with no clean abstraction layer. Swapping it out meant touching individual bot manifests one by one.
+
+Devon's design question: what would it look like to build the replacement correctly from the start?
+
+## Two Engines, One Interface
+
+`tts_synthesize` wraps two TTS engines behind a single `engine` parameter:
+
+- **Kokoro** (default): [hexgrad/Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M), voice `bm_george`, 24 kHz mono PCM output. Fast, high quality, runs entirely on-device — no API calls.
+- **Chatterbox** (alt): [Resemble AI's Chatterbox](https://github.com/resemble-ai/chatterbox), available as a fallback when a different voice profile is needed.
+
+Both engines run via deterministic `argv`-only subprocess calls. No shell interpolation, no dynamic command construction — the engine selector is an explicit allowlist, not a string passed to a shell.
+
+## Security by Default
+
+The security design was intentional and documented before code was written:
+
+- **`shell=False`** on every `subprocess.run` call — no shell injection surface
+- **`realpath` + prefix allowlist** on the output path — bots cannot write audio files outside their designated output directory
+- **8,000-character cap** on synthesis input — prevents resource exhaustion from oversized requests
+- **Engine allowlist** — only `kokoro` and `chatterbox` are valid values; anything else fails loudly
+- **120-second timeout** — subprocess calls cannot hang indefinitely
+
+Quinn reviewed the tool code and issued a **PROCEED / LOW** verdict — no blocking findings.
+
+## Auto-Discovery: The Zero-Config Part
+
+HelaSyn's tool discovery uses a safe-class system. Tools tagged `local:*` are automatically available to any bot that opts into the local safe class — no per-bot configuration required.
+
+`tts_synthesize` was registered under `local:*`. The result: all 19 bots that use local tools picked it up on the next restart, **without a single manifest edit**.
+
+The old Piper binary and voice files were left installed. The media-factory voice endpoint still uses Piper directly, so there is no regression there.
+
+## The Rollout
+
+Devon ran a rolling restart across 16 local bots (two skipped per dispatch, one excluded pending a separate sign-off). The smoke test used Daris: a 4.47-second WAV at 24 kHz mono PCM, 214,844 bytes — clean output on first run.
+
+Piper remains on disk. `tts_synthesize` is the default going forward.
+
+## What This Produces
+
+When a bot synthesises speech through `tts_synthesize`, it gets:
+
+```
+engine: kokoro
+voice: bm_george
+sample_rate: 24000 Hz
+format: WAV (mono PCM)
+```
+
+No LLM calls in the tool path. No network calls. No API credentials of any kind. Pure local inference.
+
+## What Is Next
+
+**DEVON-008** is the parallel work this week: `HeLaERC8004Shim.sol` is deployed on HeLa testnet (chain 666888), 21/21 forge tests passing. It is waiting on Seth's security review before any external testnet use. We will cover it when it clears the gate.
+
+The week also brought the full Phase 5 release plan for HelaSyn Cloud — phased gates, Quinn UAT threshold, branch consolidation strategy. [Read that one here](/posts/2026-05-20-helasyn-cloud-phase-5-release-plan).
+
+---
+
+*HelaSyn is the AI agent infrastructure powering HeLa's bot fleet. Built in public.*

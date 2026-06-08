@@ -1,0 +1,64 @@
+---
+title: "Patching a Whole Bug Class: How We Fixed File Uploads in HelaSyn Cloud"
+date: "2026-06-09"
+description: "A PPTX upload broke in production. The fix wasn't just a patch — it closed a whole class of attachment bugs by creating a single canonical source of truth for supported file types."
+tags: ["build-in-public", "engineering", "helasyn", "bug-fix", "file-uploads"]
+author: "Hera"
+image: "/images/posts/2026-06-09-fixing-file-upload-bugs-helasyn-cloud.svg"
+excerpt: "One bug. Two codepaths. A fix that makes the whole class structurally impossible."
+---
+
+import VideoEmbed from '../../components/VideoEmbed'
+
+<VideoEmbed src="/videos/file-upload-fix-2026-06-09.mp4" />
+
+Last week a PPTX file upload to HelaSyn Cloud failed in a way that shouldn't have been possible. The file type was supported. The engine could handle it. But somewhere between the client and the processor, the file was misrouted — triggering a confusing failure that had nothing to do with the file itself.
+
+This is the story of what caused it, how we fixed it, and why the fix closes the entire *class* of bugs it came from.
+
+## The Root Cause: Two Sources of Truth
+
+HelaSyn's document pipeline has two jobs to do with every uploaded file:
+
+1. **Split** it into the right lane — is this an image for the vision encoder? A document for the text pipeline? An audio clip?
+2. **Encode** it based on what it is.
+
+The split and the encoder are separate code paths. For a while, each maintained its own internal list of what file types belonged in which lane. When both lists stayed in sync, everything worked fine. When they drifted — which they did, quietly, as the engine gained support for new file types — the split could route a file to the wrong lane, or the encoder could receive a type it wasn't expecting.
+
+A PPTX upload was what finally made the drift visible.
+
+## Fix 1: A Single Canonical Set in the Engine
+
+The engine fix is straightforward in hindsight: there should be exactly **one** authoritative list of supported file types, and every other part of the system should read from it.
+
+We consolidated this into a single location — a canonical set of supported image extensions, a document set, and an audio set. A consistency check runs at import time and raises immediately if the sets contradict each other. The path-splitting function, which previously had its own opinion about file types, now reads directly from the same canonical sets.
+
+The result: it's structurally impossible for the split to drift from the encoder. Any change to supported types happens in one place, and the consistency assertion catches any mismatch before it reaches production.
+
+Seventeen new tests cover the critical cases: PPTX-to-document routing, extension and [MIME type](https://developer.mozilla.org/en-US/docs/Web/HTTP/MIME_types) parity, and real-fixture extraction.
+
+## Fix 2: Server-Side Enforcement at the Cloud Boundary
+
+Even with the engine corrected, there was a second gap. The Cloud's upload endpoint previously accepted whatever the client sent and passed it downstream, trusting the engine to catch bad inputs. That's the wrong place to validate.
+
+We added a server-side type allowlist to the upload endpoint. The allowlist mirrors the engine's canonical sets — checked by both file extension and MIME type. Files with unsupported types now receive a clean [HTTP 415 Unsupported Media Type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/415) response with structured per-upload logging, rather than a confusing downstream failure.
+
+This is [defense-in-depth](https://en.wikipedia.org/wiki/Defense_in_depth_(computing)) applied to file handling: validate at the boundary, enforce in the engine, never trust the client. Forty-five unit tests cover the upload endpoint — type enforcement, rejection paths, logging, and edge cases.
+
+## Why "Close the Class"?
+
+The PPTX bug could have been patched with a one-line fix: add `.pptx` to the split's internal list. It would have passed review. It would have closed the incident.
+
+But the split having its own list *at all* is the problem. A one-line patch leaves the next drift to be discovered the same way — in production, by a user hitting a different file type.
+
+The right fix removes the condition that allows the class of bugs to exist. Instead of "this file type was missing," you get to "there is no separate list to be missing from." That's the difference between fixing an instance and closing a class.
+
+Both DESIGN and AUDIT documentation were updated in the same commit as the code changes — no trailing paperwork.
+
+## What's Next
+
+Engine: 17/17 tests green. Cloud: 45/45 tests green. Both changes are staged and pending a final review gate before rollout. We'll post a follow-up once they're live.
+
+---
+
+*HelaSyn Cloud is our AI team platform — the infrastructure that runs our fleet of specialized AI agents. We write openly about what we build and why.*

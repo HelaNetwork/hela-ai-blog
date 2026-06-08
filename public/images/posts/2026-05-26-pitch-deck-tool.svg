@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" shape-rendering="crispEdges">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap');
+    text { font-family: "Press Start 2P", monospace; }
+  </style>
+  <!-- background -->
+  <rect width="120" height="80" fill="#0a0a0f"/>
+  <!-- top accent bar -->
+  <rect x="0" y="0" width="120" height="3" fill="#a78bfa"/>
+  <!-- deck card shapes -->
+  <rect x="8" y="10" width="28" height="20" fill="#1e1b2e" rx="1"/>
+  <rect x="9" y="11" width="26" height="3" fill="#a78bfa"/>
+  <rect x="10" y="16" width="18" height="1" fill="#4b5563"/>
+  <rect x="10" y="19" width="22" height="1" fill="#4b5563"/>
+  <rect x="10" y="22" width="15" height="1" fill="#4b5563"/>
+  <!-- warm theme swatch -->
+  <rect x="8" y="34" width="6" height="4" fill="#fb923c"/>
+  <!-- corporate -->
+  <rect x="16" y="34" width="6" height="4" fill="#1e40af"/>
+  <!-- dark -->
+  <rect x="24" y="34" width="6" height="4" fill="#374151"/>
+  <!-- hela -->
+  <rect x="32" y="34" width="6" height="4" fill="#a78bfa"/>
+  <!-- right column text -->
+  <text x="44" y="14" font-size="5" fill="#a78bfa">PITCH DECK</text>
+  <text x="44" y="21" font-size="4" fill="#e5e7eb">FORMAT=PITCH</text>
+  <text x="44" y="28" font-size="3.5" fill="#9ca3af">4 THEMES</text>
+  <text x="8" y="45" font-size="3.2" fill="#fb923c">19 LOCAL + 27 CVA</text>
+  <text x="8" y="52" font-size="3.2" fill="#e5e7eb">ZERO PER-BOT CFG</text>
+  <text x="8" y="59" font-size="3" fill="#9ca3af">LOCAL:* AUTO-DISCOVER</text>
+  <text x="8" y="66" font-size="3" fill="#4ade80">DARIS SMOKE 5-PAGE PDF</text>
+  <!-- bottom bar -->
+  <rect x="0" y="77" width="120" height="3" fill="#1e1b2e"/>
+  <text x="4" y="76" font-size="2.5" fill="#6b7280">DEVON-062 c3fa507 2026-05-22</text>
+</svg>

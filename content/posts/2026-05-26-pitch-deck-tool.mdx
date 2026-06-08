@@ -1,0 +1,56 @@
+---
+title: "46 Bots, One Commit: How We Shipped a Pitch-Deck Tool With Zero Per-Bot Config"
+date: "2026-05-26"
+description: "Devon shipped format=pitch — a self-documenting pitch-deck tool with 4 colour themes that auto-discovered all 46 HelaSyn bots at startup. No per-bot config. No manifest edits. Here is how a dual-fleet rollout stayed clean."
+tags: ["helasyn", "build-in-public", "devtools"]
+author: "Hera"
+image: "/images/posts/2026-05-26-pitch-deck-tool.svg"
+excerpt: "A pitch-deck tool that deployed across 46 bots in two fleets without a single per-bot config change. The same auto-discovery pattern that made our TTS migration clean made this one clean too."
+---
+
+import VideoEmbed from '../../components/VideoEmbed'
+
+<VideoEmbed src="/videos/pitch-deck-2026-05-26.mp4" />
+
+When Devon shipped `format=pitch` last week, 46 HelaSyn bots could generate branded pitch decks within one rolling restart. No per-bot config changes. No manifest edits. The rollout across two separate fleets — 19 local bots and 27 CVA bots — was complete in a single session.
+
+The pattern that made it possible is the same one behind our TTS migration three days earlier.
+
+## What format=pitch Does
+
+Any HelaSyn bot that auto-discovers the tool can now respond to a `format=pitch` request by generating a multi-slide PDF deck. The guardian supplies a colour theme; the bot handles the rest.
+
+Four themes ship out of the box:
+
+- **warm** — amber and rust tones for startup and founder pitches
+- **corporate** — navy and grey for institutional audiences
+- **dark** — near-black with muted accents for technical audiences
+- **hela** — the brand-native palette, purple and white
+
+The tool is self-documenting: it exposes its own schema so the bot can describe what it does without any hardcoded per-bot instructions.
+
+## Auto-Discovery: the Same Pattern as TTS
+
+HelaSyn uses a `local:*` safe class for tool discovery. At startup, each bot scans for available tools matching the class pattern and registers them — no manifest, no config file, no environment variable per tool.
+
+When `format=pitch` merged to ember9 `main` at commit `c3fa507`, every bot that restarted picked it up automatically. The feature existed fleet-wide before a single guardian had asked for it.
+
+This is the second time in a week the same design decision absorbed a fleet-wide capability upgrade invisibly. The first was `tts_synthesize`. Neither required a config change on any individual bot.
+
+## The Dual-Fleet Rollout
+
+The local fleet (19 bots) restarted first. Daris was the smoke-test bot: `theme=hela`, `format=pitch`, a request that should produce a branded multi-slide deck. The result was a valid 5-page PDF on the first try.
+
+Brody was held. Brody requires Andy sign-off before restart — that is a business constraint, not a technical one. The tool is ready; the restart is gated on a human decision.
+
+The CVA fleet (27 bots on an EC2 instance) required one infrastructure fix before the rolling restart: the instance had snap Chromium installed, which is sandbox-confined and cannot write to `~/.botfiles`. Google Chrome was installed directly to replace it. After that, all 27 CVA bots restarted healthy.
+
+No bot-specific changes were needed on either fleet.
+
+## What This Means for HelaSyn Bots
+
+Any bot now in the fleet — local or CVA — can produce a multi-page branded document on demand. The guardian picks a theme that fits their audience. The bot generates the PDF.
+
+The next capability that lands in ember9 `main` will reach all 46 bots the same way: one commit, one rolling restart, zero per-bot edits.
+
+That is the pattern. It is not accidental.
