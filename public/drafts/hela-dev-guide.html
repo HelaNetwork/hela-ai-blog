@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HeLa Chain — Developer Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg2: #111;
+    --bg3: #1a1a1a;
+    --accent: #00e5a0;
+    --accent2: #7c3aed;
+    --text: #e8e8e8;
+    --muted: #888;
+    --border: #222;
+    --code-bg: #0d1117;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+  /* NAV */
+  nav {
+    border-bottom: 1px solid var(--border);
+    padding: 16px 40px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+  }
+  nav .logo {
+    color: var(--accent);
+    font-weight: 500;
+    font-size: 13px;
+    text-decoration: none;
+    margin-right: auto;
+  }
+  nav a { color: var(--muted); text-decoration: none; }
+  nav a:hover { color: var(--text); }
+  nav .badge {
+    background: var(--accent);
+    color: #000;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 500;
+    font-size: 11px;
+  }
+
+  /* HERO */
+  .hero {
+    border-bottom: 1px solid var(--border);
+    padding: 80px 40px 60px;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  .hero .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: block;
+  }
+  .hero h1 {
+    font-size: 52px;
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 20px;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero .sub {
+    color: var(--muted);
+    font-size: 18px;
+    max-width: 560px;
+    line-height: 1.6;
+  }
+  .hero .meta {
+    margin-top: 32px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .hero .meta span { display: flex; align-items: center; gap: 6px; }
+  .hero .meta .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); display: inline-block; }
+
+  /* LAYOUT */
+  .layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    max-width: 1080px;
+    margin: 0 auto;
+    min-height: calc(100vh - 200px);
+  }
+  /* SIDEBAR */
+  .sidebar {
+    border-right: 1px solid var(--border);
+    padding: 40px 24px;
+    position: sticky;
+    top: 57px;
+    height: fit-content;
+    font-size: 13px;
+  }
+  .sidebar .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    margin-top: 24px;
+  }
+  .sidebar a {
+    display: block;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 5px 0;
+    border-left: 2px solid transparent;
+    padding-left: 10px;
+    margin-left: -10px;
+    transition: all 0.15s;
+  }
+  .sidebar a:hover, .sidebar a.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+  }
+
+  /* CONTENT */
+  .content {
+    padding: 60px 60px 100px;
+    max-width: 720px;
+  }
+  .content h2 {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-top: 60px;
+    margin-bottom: 20px;
+    padding-top: 60px;
+    border-top: 1px solid var(--border);
+    scroll-margin-top: 80px;
+  }
+  .content h2:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+  .content h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 36px;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+  .content p { margin-bottom: 16px; color: var(--text); }
+  .content a { color: var(--accent); text-decoration: none; }
+  .content a:hover { text-decoration: underline; }
+
+  /* CODE */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    overflow-x: auto;
+    margin: 20px 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  code {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    background: var(--bg3);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--accent);
+  }
+  pre code {
+    background: none;
+    padding: 0;
+    color: #c9d1d9;
+  }
+  .comment { color: #6e7681; }
+  .keyword { color: #ff79c6; }
+  .string { color: #a8ff78; }
+  .number { color: #bd93f9; }
+  .fn { color: #79c0ff; }
+
+  /* CALLOUT */
+  .callout {
+    background: var(--bg3);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-size: 14px;
+  }
+  .callout.warn { border-left-color: #f59e0b; }
+  .callout.info { border-left-color: #3b82f6; }
+  .callout .callout-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .callout-title.tip { color: var(--accent); }
+  .callout-title.warn { color: #f59e0b; }
+  .callout-title.info { color: #3b82f6; }
+
+  /* CHAIN CARD */
+  .chain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+  .chain-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .chain-card .chain-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .chain-card .chain-id {
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: -0.02em;
+  }
+  .chain-card .chain-label {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .chain-card.testnet .chain-id { color: var(--accent2); }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 20px 0;
+  }
+  th {
+    text-align: left;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  td code { font-size: 12px; }
+
+  /* STEP */
+  .steps { counter-reset: step; margin: 20px 0; }
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    align-items: flex-start;
+  }
+  .step-num {
+    counter-increment: step;
+    min-width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .step-body h4 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .step-body p { font-size: 14px; color: var(--muted); margin-bottom: 0; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 768px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .content { padding: 40px 24px 80px; }
+    .hero { padding: 60px 24px 40px; }
+    .hero h1 { font-size: 36px; }
+    .chain-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://helachain.com" class="logo">// HELA</a>
+  <a href="https://blog.helachain.com">Blog</a>
+  <a href="https://docs.helachain.com">Docs</a>
+  <a href="https://hela-explorer.com">Explorer</a>
+  <span class="badge">CHAIN 8668</span>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <span class="tag">// Developer Guide</span>
+  <h1>Build on<br><span>HeLa Chain.</span></h1>
+  <p class="sub">Everything you need to connect, deploy, and test on HeLa — mainnet and testnet. Compatible with standard Ethereum tooling.</p>
+  <div class="meta">
+    <span><span class="dot"></span> Mainnet: Chain ID 8668</span>
+    <span><span class="dot"></span> Testnet: Chain ID 666888</span>
+    <span><span class="dot"></span> EVM Compatible</span>
+    <span><span class="dot"></span> Updated June 2026</span>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+  <aside class="sidebar">
+    <div class="section-label">Getting Started</div>
+    <a href="#networks" class="active">Networks</a>
+    <a href="#connect">Connect Your Wallet</a>
+    <a href="#faucet">Testnet Faucet</a>
+
+    <div class="section-label">Core Features</div>
+    <a href="#citizen-id">Citizen ID</a>
+    <a href="#erc6551">ERC-6551 Accounts</a>
+    <a href="#gasless">Gasless Transactions</a>
+
+    <div class="section-label">SDK &amp; APIs</div>
+    <a href="#helasyn-sdk">HelaSyn SDK</a>
+    <a href="#rpc">RPC Reference</a>
+    <a href="#tools">Dev Tools</a>
+  </aside>
+
+  <main class="content">
+
+    <!-- NETWORKS -->
+    <h2 id="networks">Networks</h2>
+    <p>HeLa runs two networks. Build and test on testnet first — then deploy to mainnet when ready.</p>
+
+    <div class="chain-grid">
+      <div class="chain-card">
+        <div class="chain-name">Mainnet</div>
+        <div class="chain-id">8668</div>
+        <div class="chain-label">HeLa Chain (Production)</div>
+      </div>
+      <div class="chain-card testnet">
+        <div class="chain-name">Testnet</div>
+        <div class="chain-id">666888</div>
+        <div class="chain-label">HeLa Testnet (Free tokens)</div>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Parameter</th>
+          <th>Mainnet</th>
+          <th>Testnet</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Chain ID</td>
+          <td><code>8668</code></td>
+          <td><code>666888</code></td>
+        </tr>
+        <tr>
+          <td>Currency</td>
+          <td><code>HELA</code></td>
+          <td><code>HELA (test)</code></td>
+        </tr>
+        <tr>
+          <td>RPC URL</td>
+          <td><code>https://mainnet-rpc.helachain.com</code></td>
+          <td><code>https://testnet-rpc.helachain.com</code></td>
+        </tr>
+        <tr>
+          <td>Explorer</td>
+          <td><a href="https://hela-explorer.com">hela-explorer.com</a></td>
+          <td><a href="https://testnet-explorer.helachain.com">testnet-explorer.helachain.com</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- CONNECT -->
+    <h2 id="connect">Connect Your Wallet</h2>
+    <p>HeLa is EVM-compatible. Add it to MetaMask, Hardhat, Foundry, or any standard Ethereum tooling using the network params above.</p>
+
+    <h3>MetaMask — Manual Add</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body"><h4>Open MetaMask Settings</h4><p>Click the network dropdown at the top, then "Add network manually".</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body"><h4>Enter Network Details</h4><p>Use the RPC URL, Chain ID, and currency symbol from the table above.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body"><h4>Save and Switch</h4><p>Hit Save — MetaMask will switch to HeLa automatically.</p></div>
+      </div>
+    </div>
+
+    <h3>Hardhat Config</h3>
+<pre><span class="comment">// hardhat.config.js</span>
+<span class="keyword">module</span>.exports = {
+  networks: {
+    hela_testnet: {
+      url: <span class="string">"https://testnet-rpc.helachain.com"</span>,
+      chainId: <span class="number">666888</span>,
+      accounts: [<span class="keyword">process</span>.env.PRIVATE_KEY]
+    },
+    hela_mainnet: {
+      url: <span class="string">"https://mainnet-rpc.helachain.com"</span>,
+      chainId: <span class="number">8668</span>,
+      accounts: [<span class="keyword">process</span>.env.PRIVATE_KEY]
+    }
+  }
+};</pre>
+
+    <h3>Foundry (foundry.toml)</h3>
+<pre>[rpc_endpoints]
+hela_testnet = <span class="string">"https://testnet-rpc.helachain.com"</span>
+hela_mainnet = <span class="string">"https://mainnet-rpc.helachain.com"</span></pre>
+
+    <!-- FAUCET -->
+    <h2 id="faucet">Testnet Faucet</h2>
+    <div class="callout">
+      <div class="callout-title tip">TIP</div>
+      Get free testnet HELA to pay gas. Visit the <a href="https://faucet.helachain.com">HeLa Faucet</a> and paste your wallet address. No registration needed.
+    </div>
+
+    <!-- CITIZEN ID -->
+    <h2 id="citizen-id">Citizen ID Integration</h2>
+    <p>HeLa Citizen ID is a biometric on-chain identity — users authenticate with face or fingerprint instead of seed phrases. <a href="https://blog.helachain.com/citizen-id">More on Citizen ID →</a></p>
+
+    <div class="callout info">
+      <div class="callout-title info">HOW IT WORKS</div>
+      Each Citizen ID is an ERC-721 NFT on HeLa Chain. Under the hood it uses <strong>passkey-based signature verification</strong> — the private key never leaves the device. No seed phrases, no browser extensions required.
+    </div>
+
+    <h3>Verify a Citizen ID on-chain</h3>
+<pre><span class="comment">// Check if an address holds a Citizen ID</span>
+<span class="keyword">const</span> provider = <span class="keyword">new</span> <span class="fn">ethers</span>.providers.<span class="fn">JsonRpcProvider</span>(
+  <span class="string">"https://mainnet-rpc.helachain.com"</span>
+);
+<span class="keyword">const</span> citizenId = <span class="keyword">new</span> <span class="fn">ethers</span>.<span class="fn">Contract</span>(
+  CITIZEN_ID_CONTRACT,
+  [<span class="string">"function balanceOf(address) view returns (uint256)"</span>],
+  provider
+);
+<span class="keyword">const</span> hasCitizenId = (<span class="keyword">await</span> citizenId.<span class="fn">balanceOf</span>(userAddress)).<span class="fn">gt</span>(<span class="number">0</span>);
+</pre>
+
+    <!-- ERC-6551 -->
+    <h2 id="erc6551">ERC-6551 Token-Bound Accounts</h2>
+    <p>Every HeLa Citizen ID NFT can have its own smart contract wallet via <a href="https://blog.helachain.com/erc-6551">ERC-6551</a>. The NFT owns the wallet — transfer the NFT, transfer the wallet and its assets.</p>
+
+    <h3>Deploy a Token-Bound Account</h3>
+<pre><span class="comment">// Deploy a TBA for a Citizen ID NFT</span>
+<span class="keyword">const</span> registry = <span class="keyword">new</span> <span class="fn">ethers</span>.<span class="fn">Contract</span>(
+  ERC6551_REGISTRY_ADDRESS,
+  ERC6551_REGISTRY_ABI,
+  signer
+);
+
+<span class="keyword">const</span> tbaAddress = <span class="keyword">await</span> registry.<span class="fn">createAccount</span>(
+  IMPLEMENTATION_ADDRESS,  <span class="comment">// TBA implementation</span>
+  <span class="number">8668</span>,                    <span class="comment">// chainId</span>
+  CITIZEN_ID_CONTRACT,     <span class="comment">// NFT contract</span>
+  tokenId,                 <span class="comment">// NFT token ID</span>
+  <span class="number">0</span>,                       <span class="comment">// salt</span>
+  <span class="string">"0x"</span>                     <span class="comment">// initData</span>
+);
+console.<span class="fn">log</span>(<span class="string">"TBA deployed at:"</span>, tbaAddress);
+</pre>
+
+    <div class="callout warn">
+      <div class="callout-title warn">NOTE</div>
+      The ERC-6551 registry address on HeLa testnet matches the canonical EIP deployment at <code>0x000000006551c19487814612e58FE06813775758</code>. Verify on the explorer before use.
+    </div>
+
+    <!-- GASLESS -->
+    <h2 id="gasless">Gasless Transactions</h2>
+    <p>HeLa supports meta-transactions — users sign a payload, a relayer pays the gas. Ideal for onboarding new users with zero HELA balance.</p>
+
+    <h3>Flow</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body"><h4>User signs typed data (EIP-712)</h4><p>No gas needed at this step.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body"><h4>Your backend submits to relayer API</h4><p>POST the signed payload to the HeLa relayer endpoint.</p></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body"><h4>Relayer submits on-chain</h4><p>Transaction is submitted with the relayer's HELA covering gas. User's action executes.</p></div>
+      </div>
+    </div>
+
+    <!-- HELASYN SDK -->
+    <h2 id="helasyn-sdk">HelaSyn SDK</h2>
+    <p>HelaSyn lets you deploy AI agents that live on HeLa Chain, hold their own Citizen IDs, and earn HLUSD from real tasks. <a href="https://helasyn.io/docs">Full SDK docs →</a></p>
+
+    <h3>Install</h3>
+<pre>npm install @hela/syn</pre>
+
+    <h3>Deploy an Agent</h3>
+<pre><span class="keyword">import</span> { HelaSyn } <span class="keyword">from</span> <span class="string">'@hela/syn'</span>;
+
+<span class="keyword">const</span> agent = <span class="keyword">await</span> HelaSyn.<span class="fn">deploy</span>({
+  name:        <span class="string">"my-agent"</span>,
+  persona:     <span class="string">"You are a helpful assistant for HeLa users."</span>,
+  model:       <span class="string">"claude-sonnet"</span>,
+  channels:    [<span class="string">"telegram"</span>, <span class="string">"whatsapp"</span>],
+  network:     <span class="string">"mainnet"</span>,   <span class="comment">// or "testnet"</span>
+});
+
+console.<span class="fn">log</span>(<span class="string">"Agent live at:"</span>, agent.citizenId);
+</pre>
+
+    <div class="callout">
+      <div class="callout-title tip">WHAT YOU GET</div>
+      Each deployed agent gets its own Citizen ID NFT, a token-bound wallet, and can accept jobs from the HeLa City marketplace. Learn more at <a href="https://helasyn.io">helasyn.io</a>.
+    </div>
+
+    <!-- RPC -->
+    <h2 id="rpc">RPC Quick Reference</h2>
+    <table>
+      <thead>
+        <tr><th>Method</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>eth_blockNumber</code></td><td>Latest block number</td></tr>
+        <tr><td><code>eth_getBalance</code></td><td>HELA balance of an address</td></tr>
+        <tr><td><code>eth_sendRawTransaction</code></td><td>Submit a signed transaction</td></tr>
+        <tr><td><code>eth_call</code></td><td>Read contract state (no gas)</td></tr>
+        <tr><td><code>eth_getLogs</code></td><td>Query event logs</td></tr>
+        <tr><td><code>eth_estimateGas</code></td><td>Estimate gas cost</td></tr>
+      </tbody>
+    </table>
+
+    <!-- TOOLS -->
+    <h2 id="tools">Dev Tools</h2>
+    <table>
+      <thead>
+        <tr><th>Tool</th><th>Link</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Block Explorer</td><td><a href="https://hela-explorer.com">hela-explorer.com</a></td></tr>
+        <tr><td>Testnet Faucet</td><td><a href="https://faucet.helachain.com">faucet.helachain.com</a></td></tr>
+        <tr><td>HelaSyn SDK Docs</td><td><a href="https://helasyn.io/docs">helasyn.io/docs</a></td></tr>
+        <tr><td>Dev Blog</td><td><a href="https://blog.helachain.com">blog.helachain.com</a></td></tr>
+        <tr><td>HeLa Docs</td><td><a href="https://docs.helachain.com">docs.helachain.com</a></td></tr>
+        <tr><td>HIP (Improvement Proposals)</td><td><a href="https://hip.helachain.com">hip.helachain.com</a></td></tr>
+      </tbody>
+    </table>
+
+  </main>
+</div>
+
+<footer>
+  <a href="https://helachain.com">helachain.com</a> &nbsp;|&nbsp;
+  <a href="https://blog.helachain.com">Blog</a> &nbsp;|&nbsp;
+  Chain ID 8668 &nbsp;|&nbsp; June 2026
+</footer>
+
+</body>
+</html>
