@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80"
+     shape-rendering="crispEdges" font-family="monospace">
+  <!-- bg -->
+  <rect width="120" height="80" fill="#0a0a0f"/>
+  <!-- top accent bar -->
+  <rect x="0" y="0" width="120" height="3" fill="#39ff14"/>
+  <!-- HUGO label -->
+  <text x="10" y="20" font-size="14" font-weight="bold" fill="#39ff14">HUGO</text>
+  <!-- subtitle -->
+  <text x="10" y="31" font-size="5.5" fill="#f9f9f9">EMAIL SUPPORT BOT</text>
+  <!-- provider-agnostic tag -->
+  <rect x="8" y="36" width="70" height="9" fill="#002a2a" rx="1"/>
+  <text x="10" y="43" font-size="5" fill="#00e5ff">PROVIDER-AGNOSTIC ADAPTER</text>
+  <!-- tests -->
+  <rect x="8" y="48" width="40" height="9" fill="#002a00" rx="1"/>
+  <text x="10" y="55" font-size="5" fill="#39ff14">44/44 TESTS GREEN</text>
+  <!-- status -->
+  <text x="10" y="66" font-size="4.5" fill="#444">STAGING / NOT YET LIVE</text>
+  <!-- footer -->
+  <rect x="0" y="75" width="120" height="1" fill="#222"/>
+  <text x="10" y="79" font-size="3.5" fill="#444">helasyn.ai</text>
+</svg>
