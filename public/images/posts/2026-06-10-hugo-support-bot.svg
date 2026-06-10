@@ -1,23 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80"
-     shape-rendering="crispEdges" font-family="monospace">
-  <!-- bg -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" shape-rendering="crispEdges" width="120" height="80">
   <rect width="120" height="80" fill="#0a0a0f"/>
-  <!-- top accent bar -->
-  <rect x="0" y="0" width="120" height="3" fill="#39ff14"/>
-  <!-- HUGO label -->
-  <text x="10" y="20" font-size="14" font-weight="bold" fill="#39ff14">HUGO</text>
-  <!-- subtitle -->
-  <text x="10" y="31" font-size="5.5" fill="#f9f9f9">EMAIL SUPPORT BOT</text>
-  <!-- provider-agnostic tag -->
-  <rect x="8" y="36" width="70" height="9" fill="#002a2a" rx="1"/>
-  <text x="10" y="43" font-size="5" fill="#00e5ff">PROVIDER-AGNOSTIC ADAPTER</text>
-  <!-- tests -->
-  <rect x="8" y="48" width="40" height="9" fill="#002a00" rx="1"/>
-  <text x="10" y="55" font-size="5" fill="#39ff14">44/44 TESTS GREEN</text>
-  <!-- status -->
-  <text x="10" y="66" font-size="4.5" fill="#444">STAGING / NOT YET LIVE</text>
-  <!-- footer -->
-  <rect x="0" y="75" width="120" height="1" fill="#222"/>
-  <text x="10" y="79" font-size="3.5" fill="#444">helasyn.ai</text>
+  <rect x="1" y="1" width="118" height="78" fill="none" stroke="#444" stroke-width="0.5"/>
+  <rect x="78" y="14" width="28" height="18" fill="none" stroke="#00e5ff" stroke-width="1"/>
+  <line x1="78" y1="14" x2="92" y2="24" stroke="#00e5ff" stroke-width="0.8"/>
+  <line x1="106" y1="14" x2="92" y2="24" stroke="#00e5ff" stroke-width="0.8"/>
+  <text x="10" y="26" font-family="monospace" font-size="20" font-weight="bold" fill="#39ff14" letter-spacing="2">HUGO</text>
+  <text x="10" y="38" font-family="monospace" font-size="7.5" fill="#f9f9f9" letter-spacing="1">SUPPORT BOT</text>
+  <line x1="10" y1="44" x2="110" y2="44" stroke="#444" stroke-width="0.5"/>
+  <text x="10" y="54" font-family="monospace" font-size="5.5" fill="#00e5ff">support@helasyn.ai</text>
+  <text x="10" y="63" font-family="monospace" font-size="5" fill="#00e5ff">44/44 TESTS GREEN</text>
+  <rect x="10" y="68" width="60" height="7" rx="1" fill="#1a1a2e" stroke="#b388ff" stroke-width="0.5"/>
+  <text x="12" y="74" font-family="monospace" font-size="4.5" fill="#b388ff">PROVIDER-AGNOSTIC</text>
+  <text x="76" y="74" font-family="monospace" font-size="4.5" fill="#ff6b35">COMING SOON</text>
 </svg>

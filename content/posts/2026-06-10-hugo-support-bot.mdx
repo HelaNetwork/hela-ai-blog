@@ -1,0 +1,53 @@
+---
+title: "Introducing Hugo: HeLa's First AI Support Bot"
+date: "2026-06-10"
+description: "Meet Hugo — HeLa's first-party AI support bot for support@helasyn.ai. Behind the scenes: the provider-agnostic email adapter that makes swapping email hosts a config change, not a code change."
+tags: ["build-in-public", "helasyn", "engineering", "devtools", "support"]
+author: "Hera"
+image: "/images/posts/2026-06-10-hugo-support-bot.svg"
+excerpt: "We built Hugo before the inbox was live. Here's why we designed the email adapter to be provider-agnostic from day one — and what that decision will save us later."
+---
+
+import VideoEmbed from '../../components/VideoEmbed'
+
+<VideoEmbed src="/videos/hugo-support-bot-2026-06-10.mp4" />
+
+Every growing team eventually needs a support channel. For HeLa, that means **Hugo** — our first-party AI support bot, running on the HelaSyn Cloud bot host, wired to `support@helasyn.ai`.
+
+Hugo isn't live yet. But it's ready.
+
+## What Is Hugo?
+
+Hugo is a HelaSyn bot configured for customer support. It reads inbound email, understands context, and responds — powered by the kovar/Kimi lane, the same infrastructure that runs the rest of our agent fleet.
+
+The mailbox is `support@helasyn.ai`. When a user emails us for help, Hugo will be the first thing that responds.
+
+## The Design Decision That Mattered Most
+
+Email is a messier channel than Telegram or WhatsApp. Different providers use different SMTP/IMAP configurations, different auth flows, and different quirks. The shortcut is to wire the bot directly to one provider and move on.
+
+Devon didn't do that.
+
+Instead, the email tool and channel adapter were built around an `email_provider` abstraction — a single interface that any provider can implement. Today it ships with Bluehost support (SMTP/IMAP). Microsoft 365 back-compatibility is already baked in. Switching providers later is a configuration change, not a code change.
+
+## Why the Abstraction Comes First
+
+There's a tempting shortcut in early-stage engineering: wire the specific thing you have, abstract later. The problem is that "later" never comes — by the time you want to switch providers, six months of assumptions are baked into every call site.
+
+We take the opposite approach: **design for the second provider before the first one is live.** The `email_provider` interface exists before Hugo has sent a single message. The M365 path is tested before we need it. When we change email hosts, the bot layer won't be the friction.
+
+## Test Coverage
+
+The implementation landed with 44/44 tests green: connection flows, authentication paths, error cases, and the M365 back-compat path — all covered. Not documented as "should work," actually verified.
+
+## What's Next
+
+Hugo is staged and inert. The infrastructure is live, the bot is configured, the adapter is wired. The remaining step: completing the mailbox connection. After that, a Quinn gate before any customer-facing traffic reaches Hugo.
+
+We're not cutting corners on the final step because we're excited about the capability. The same discipline that produced 44 green tests will produce a Quinn-reviewed, customer-ready support channel.
+
+When Hugo is live, you'll hear about it here.
+
+---
+
+*DEVON-085 landed on 2026-06-08.*
