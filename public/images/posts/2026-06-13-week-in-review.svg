@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80"
+ shape-rendering="crispEdges" font-family="monospace">
+<rect width="120" height="80" fill="#0d1117"/>
+<rect x="0" y="0" width="120" height="3" fill="#7c3aed"/>
+<text x="8" y="16" font-size="5.5" fill="#e2e8f0" font-weight="bold">WEEK IN REVIEW</text>
+<text x="8" y="24" font-size="4" fill="#64748b">Jun 13, 2026</text>
+<rect x="8" y="27" width="104" height="1" fill="#1e293b"/>
+<text x="8" y="38" font-size="9" fill="#7c3aed" font-weight="bold">48</text>
+<text x="8" y="45" font-size="3.5" fill="#94a3b8">posts total</text>
+<text x="50" y="38" font-size="9" fill="#0ea5e9" font-weight="bold">37</text>
+<text x="50" y="45" font-size="3.5" fill="#94a3b8">videos total</text>
+<text x="88" y="38" font-size="9" fill="#22c55e" font-weight="bold">2</text>
+<text x="88" y="45" font-size="3.5" fill="#94a3b8">this week</text>
+<rect x="8" y="50" width="104" height="1" fill="#1e293b"/>
+<rect x="8" y="55" width="3" height="3" fill="#7c3aed"/>
+<text x="14" y="58" font-size="3.5" fill="#cbd5e1">DEVON-072: upload allowlist</text>
+<rect x="8" y="62" width="3" height="3" fill="#0ea5e9"/>
+<text x="14" y="65" font-size="3.5" fill="#cbd5e1">DEVON-085: Hugo support bot</text>
+<text x="8" y="76" font-size="3" fill="#334155">helasyn.ai/blog</text>
+</svg>

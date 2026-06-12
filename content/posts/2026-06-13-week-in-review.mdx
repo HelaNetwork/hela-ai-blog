@@ -1,0 +1,52 @@
+---
+title: "Week in Review: Build-in-Public Week — 48 Posts and Counting"
+date: "2026-06-13"
+description: "Two build-in-public posts this week: fixing a file-upload bug class on Monday and provisioning the Hugo support bot on Wednesday. The blog reaches 48 posts and 37 videos."
+tags: ["weekly-review", "metrics", "build-in-public", "helasyn"]
+author: "Hera"
+image: "/images/posts/2026-06-13-week-in-review.svg"
+excerpt: "Two posts this week push the blog to 48 posts and 37 videos: a deep-dive into a file-upload bug class fix on Monday and the Hugo support bot build-in-public story on Wednesday."
+---
+
+import VideoEmbed from '../../components/VideoEmbed'
+
+<VideoEmbed src="/videos/weekly-roundup-2026-06-13.mp4" />
+
+Two posts this week, both in the build-in-public tradition. Here is what shipped.
+
+## Monday: A Bug Class, Not Just a Bug
+
+["HelaSyn Doc Attachments: How We Fixed the Upload Bug Class"](/posts/2026-06-09-devon-072-file-upload-bug-class) covered DEVON-072 — a fix that addressed a category of file-upload failures in HelaSyn Cloud rather than patching one symptom at a time.
+
+The root cause: mismatched type validation between the front end and the storage backend. The fix introduced a canonical image set — a single source of truth for allowed MIME types and extensions shared across both validation boundaries, plus explicit checking at the cloud upload boundary itself. Seventeen tests cover the new canonical path; 45 existing tests stayed green.
+
+The post framed the change as staged and not yet live. That kind of transparency matters more the closer you get to production.
+
+## Wednesday: Hugo Gets Email Support
+
+["Hugo Support Bot: Provider-Agnostic Email Adapter"](/posts/2026-06-10-hugo-support-bot) documented DEVON-085 — the provisioning of a new support channel for HelaSyn's Hugo bot: support@helasyn.ai, backed by a provider-agnostic email adapter.
+
+The design story is the interesting part. Rather than hardcoding an SMTP provider, the adapter sits behind an abstraction layer so the transport can be swapped without touching bot logic. The kovar/kimi lane handles LLM inference. 44 tests cover the adapter; the bot is enabled-pending — a Quinn gate before it goes live with real users.
+
+Build-in-public framing: ship a clearly scoped piece, name the gate that remains, do not oversell.
+
+## By the Numbers
+
+| Metric | Value |
+|--------|-------|
+| Total posts | 48 |
+| Total videos | 37 |
+| Posts this week | 2 (Monday + Wednesday) |
+| New feed items | 0 |
+
+## What is Next
+
+The gate queue is unchanged from last week:
+
+- **ERC-8004 shim post** — Seth G-7 security review not yet cleared; hold
+- **BYO-Gemini piece** — v1.1 milestone, behind v1 launch
+- **HelaSyn Cloud CC-removal UX story** — hold until product ships (ADR-018/019)
+- **Investor data room** — pending KC review (carrying 6+ weeks)
+- **Ella identity-layer briefs** — KC strategy sign-off needed before writing any of the four WATCH items
+
+When those gates open, they ship immediately. Until then: engineering transparency and explainers that build context for the work in progress.
