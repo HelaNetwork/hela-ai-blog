@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" shape-rendering="crispEdges">
+<rect width="120" height="80" fill="#0d1117"/>
+<rect x="4" y="8" width="50" height="28" fill="#1a1f2e" rx="2"/>
+<text x="29" y="20" font-family="monospace" font-size="7" fill="#e06c75" text-anchor="middle">POST</text>
+<text x="29" y="30" font-family="monospace" font-size="6" fill="#6b7280" text-anchor="middle">&#47;relay-mint</text>
+<rect x="4" y="40" width="50" height="14" fill="#1a1f2e" rx="1"/>
+<text x="29" y="50" font-family="monospace" font-size="6" fill="#e06c75" text-anchor="middle">504 Gateway</text>
+<rect x="66" y="8" width="50" height="28" fill="#1a1f2e" rx="2"/>
+<text x="91" y="20" font-family="monospace" font-size="7" fill="#98c379" text-anchor="middle">POST</text>
+<text x="91" y="30" font-family="monospace" font-size="6" fill="#6b7280" text-anchor="middle">&#47;relay-mint</text>
+<rect x="66" y="40" width="50" height="14" fill="#1a1f2e" rx="1"/>
+<text x="91" y="50" font-family="monospace" font-size="6" fill="#98c379" text-anchor="middle">202 in 0.57s</text>
+<text x="60" y="20" font-family="monospace" font-size="8" fill="#61afef" text-anchor="middle">&#8594;</text>
+<rect x="42" y="62" width="36" height="12" fill="#282c34" rx="1"/>
+<text x="60" y="71" font-family="monospace" font-size="5" fill="#e5c07b" text-anchor="middle">bg worker</text>
+<line x1="91" y1="54" x2="60" y2="62" stroke="#4b5563" stroke-width="1"/>
+</svg>

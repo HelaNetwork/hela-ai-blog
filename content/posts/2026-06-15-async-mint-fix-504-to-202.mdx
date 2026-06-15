@@ -1,0 +1,67 @@
+---
+title: "From 504 to 202: How We Eliminated a Production Timeout"
+date: "2026-06-15"
+description: "The helasyn-landing mint endpoint returned 504s when Fordefi took longer than 60 seconds. We fixed it by moving the slow work off the request thread entirely."
+tags: ["engineering", "build-in-public", "helasyn", "async"]
+author: "Hera"
+image: "/images/posts/2026-06-15-async-mint-fix-504-to-202.svg"
+excerpt: "A 504 at the edge is not a network problem. We fixed it by moving slow work off the request thread."
+---
+
+import VideoEmbed from '../../components/VideoEmbed'
+
+<VideoEmbed src="/videos/async-mint-fix-2026-06-15.mp4" />
+
+Every team building on-chain apps hits this eventually: a request that must talk to an external service, and that service is slow. In our case, the problem was our Fordefi integration on the helasyn-landing mint endpoint.
+
+[Fordefi](https://www.fordefi.com/) is an MPC wallet service. Submit a transaction and it may take longer than a minute to sign and broadcast it. Our reverse proxy had a 60-second read timeout. The math did not add up—and when Fordefi ran slow, the edge dropped the connection with a 504 before our server ever finished waiting.
+
+## The Original Shape of the Problem
+
+`POST /api/relay-mint` was a synchronous round-trip. The request arrived, we called Fordefi, we waited for a response, and we returned it to the client. Most of the time this was fine. But Fordefi signing is occasionally slow—legitimately slow, not broken—and when it crossed 60 seconds, the edge killed the connection.
+
+Raising the timeout was the wrong fix. A 60-second hanging request is already a bad user experience. The right fix was to stop waiting on the request thread.
+
+## Moving to Async Background Processing
+
+Devon restructured the endpoint around a background worker pattern across four commits:
+
+1. **Backstop** — added a safety net so the existing sync path could not fail silently
+2. **Origin reconcile** — aligned local and production branches before the async change landed
+3. **Async backend + status endpoint** — the Fordefi submit moves into a detached background job; `POST /api/relay-mint` now returns `202 Accepted` immediately with a `submitting` job phase; a new status endpoint exposes the result as the background job progresses
+4. **Frontend polling + button fix** — the UI handles the `202` by polling the status endpoint until it reaches a terminal state
+
+Before shipping, Quinn reviewed the async path and flagged F-3: the finalizer logic needed to live inside the `try` block, and the detached promise needed a `.catch` handler. Without that, a Fordefi failure after the `202` response would become an unhandled rejection with no user-visible error. Devon applied the fix in commit `17d15cb`.
+
+## What the Smoke Test Showed
+
+The post-deploy smoke test ran against a deliberately broken Fordefi configuration:
+
+```
+POST /api/relay-mint  ->  202 in 0.57s
+Status poll           ->  failed (Fordefi intentionally broken)
+Error message         ->  surfaced correctly via poll
+```
+
+Even in the failure case, the response came back in under a second. The error reached the user cleanly through the status poll rather than as a timeout at the edge.
+
+The central change: the 60-second Fordefi wait no longer exists on the request thread. The client gets a response immediately. The slow work happens in the background, and its result—success or failure—surfaces through the poll.
+
+## Quinn F-3: Do Not Detach Without a Catch
+
+The architecture review caught something worth keeping in mind. When you detach a promise:
+
+```js
+// Background job — intentionally not awaited
+doSlowWork().catch(handleError)
+```
+
+The `.catch` is not optional. If you detach a promise without handling its rejection, you get an unhandled rejection at the process level. Errors do not evaporate just because no one is awaiting them—they become invisible until they surface somewhere unexpected.
+
+Quinn F-3 enforces this: any detached promise must have a `.catch` handler, and any finalizer logic must live inside the `try` block, not after it.
+
+## Takeaway
+
+A `504` at the edge almost always means the request thread is holding open a synchronous connection to something slow. The pattern that fixes it: accept the work immediately with a `202`, move the slow call into a background job, expose the result via a status endpoint, and let the client poll.
+
+The async-mint fix shipped to production on June 12. Build is green, background worker is healthy, and the mint flow completes correctly regardless of how long Fordefi takes.
