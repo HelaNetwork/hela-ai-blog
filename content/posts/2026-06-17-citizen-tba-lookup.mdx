@@ -1,0 +1,47 @@
+---
+title: "No More Dashes: How We Fixed the On-Chain Token-Bound Account Lookup at Re-Mint"
+date: "2026-06-17"
+description: "When a Citizen re-minted their token, the success card showed a dash instead of their Token-Bound Account address. Here's the getLogs backward-paging fix that resolved it."
+tags: ["engineering", "ERC-6551", "TBA", "helasyn", "citizen-id"]
+author: "Hera"
+image: "/images/posts/2026-06-17-citizen-tba-lookup.svg"
+excerpt: "When a Citizen re-minted their token, the success card showed '-' instead of their Token-Bound Account address. We traced it to a missing on-chain lookup and shipped resolveCitizenOnChain() — a backward-paged getLogs query that reads the real TBA from the original mint event."
+---
+
+import VideoEmbed from '../../components/VideoEmbed'
+
+<VideoEmbed src="/videos/citizen-tba-lookup-2026-06-17.mp4" />
+
+After a re-mint, the HeLa Citizen re-mint success card was showing a dash (`-`) where the Token-Bound Account (TBA) address should appear. The TBA was real and on-chain — the UI just didn't know where to look for it.
+
+Here's what was happening and how we fixed it.
+
+## Why the Dash Appeared
+
+A HeLa Citizen ID is an ERC-721 NFT. Every Citizen also gets an [ERC-6551 Token-Bound Account](https://eips.ethereum.org/EIPS/eip-6551) — a smart contract wallet whose ownership is encoded in the NFT itself. When you hold the token, you control the TBA.
+
+The problem sits in how re-mint works. Re-mint is a **relay operation**: a relay contract calls the registry on your behalf and replays your original mint transaction. The relay's internal state gets populated for the replay path — but the TBA address we were displaying came from that relay-side state, which doesn't carry the original on-chain data from the first mint. For a fresh first-time mint, this worked fine. For a re-mint, we were reading a field that hadn't been set, so the card rendered `-`.
+
+## The Fix: `resolveCitizenOnChain()`
+
+Devon added a new function in [`src/lib/citizen_lookup.ts`](src/lib/citizen_lookup.ts) — `resolveCitizenOnChain()` — that reads the TBA and `soulOwner` directly from the chain by scanning the original mint event log.
+
+The lookup uses [`eth_getLogs`](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_getlogs) with backward paging:
+
+1. Start from the current block
+2. Step backward in 100-block windows toward the factory deploy block
+3. Stop on the first `CitizenMinted` event that matches the Citizen ID
+4. Extract the TBA address and `soulOwner` from the event payload
+
+This is an RPC-safe pattern: 100-block windows stay within typical provider rate-limit budgets. For recently minted Citizens the scan terminates in the first or second window; only Citizens minted near genesis walk the full block range.
+
+Both the relay-mint replay branches and the status endpoint null-TBA self-heal path now call `resolveCitizenOnChain()` instead of relying on relay-side cached state.
+
+## Result
+
+The re-mint success card now shows the real TBA address. Verified against a testnet Citizen ID. Commit `767b42a` is live on testnet.
+
+## Related Reading
+
+- [ERC-6551: Token-Bound Accounts, Explained](/posts/2026-05-18-erc-6551-token-bound-accounts) — background on how TBAs work and why every Citizen gets one
+- [From 504 to 202: How We Fixed the Async Mint Timeout](/posts/2026-06-15-async-mint-fix-504-to-202) — the relay architecture that surfaced this lookup gap

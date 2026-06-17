@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" style="image-rendering: pixelated; background: #060a1a;" width="120" height="80">
+  <rect width="120" height="80" fill="#060a1a"/>
+
+  <!-- BEFORE panel -->
+  <rect x="3" y="8" width="51" height="54" fill="#0a1a30"/>
+  <text x="28" y="16" font-family="'Press Start 2P', monospace" font-size="4" fill="#5a5a7a" text-anchor="middle">BEFORE</text>
+  <rect x="12" y="28" width="30" height="12" fill="#0a0a20"/>
+  <rect x="19" y="32" width="16" height="4" fill="#ff3c6f" opacity="0.75"/>
+  <text x="28" y="49" font-family="'Press Start 2P', monospace" font-size="3" fill="#5a5a7a" text-anchor="middle">relay state</text>
+  <text x="28" y="55" font-family="'Press Start 2P', monospace" font-size="3" fill="#ff3c6f" text-anchor="middle">TBA: -</text>
+
+  <!-- Arrow -->
+  <rect x="56" y="34" width="8" height="2" fill="#3cf0ff" opacity="0.6"/>
+  <rect x="62" y="32" width="2" height="2" fill="#3cf0ff" opacity="0.6"/>
+  <rect x="62" y="37" width="2" height="2" fill="#3cf0ff" opacity="0.6"/>
+
+  <!-- AFTER panel -->
+  <rect x="66" y="8" width="51" height="54" fill="#0a0a20"/>
+  <text x="91" y="16" font-family="'Press Start 2P', monospace" font-size="4" fill="#3cf0ff" text-anchor="middle">AFTER</text>
+  <rect x="72" y="22" width="38" height="4" fill="#0a1a30" opacity="0.6"/>
+  <rect x="72" y="28" width="38" height="4" fill="#0a1a30" opacity="0.6"/>
+  <rect x="72" y="34" width="38" height="8" fill="#0a1a30"/>
+  <rect x="72" y="34" width="38" height="8" fill="#C6F135" opacity="0.18"/>
+  <rect x="74" y="35" width="2" height="6" fill="#C6F135"/>
+  <text x="91" y="41" font-family="'Press Start 2P', monospace" font-size="4" fill="#C6F135" text-anchor="middle">FOUND</text>
+  <text x="91" y="50" font-family="'Press Start 2P', monospace" font-size="3" fill="#3cf0ff" text-anchor="middle">getLogs</text>
+  <text x="91" y="55" font-family="'Press Start 2P', monospace" font-size="3" fill="#5a5a7a" text-anchor="middle">100-blk paged</text>
+
+  <!-- Bottom label -->
+  <text x="60" y="72" font-family="'Press Start 2P', monospace" font-size="5" fill="#3cf0ff" text-anchor="middle">TBA LOOKUP FIX</text>
+</svg>
