@@ -1,0 +1,19 @@
+<svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" width="120" height="80" style="image-rendering: pixelated">
+  <rect width="120" height="80" fill="#060a1a"/>
+  <rect x="0" y="0" width="120" height="12" fill="#0a1a30"/>
+  <text x="60" y="9" font-family="'Press Start 2P'" font-size="4" fill="#3cf0ff" text-anchor="middle">WEEK IN REVIEW</text>
+  <rect x="0" y="12" width="4" height="57" fill="#0a1a30"/>
+  <rect x="116" y="12" width="4" height="57" fill="#0a1a30"/>
+  <text x="60" y="49" font-family="'Press Start 2P'" font-size="20" fill="#C6F135" text-anchor="middle">50</text>
+  <text x="60" y="61" font-family="'Press Start 2P'" font-size="5" fill="#ffe94d" text-anchor="middle">POSTS</text>
+  <rect x="16" y="22" width="1" height="5" fill="#C6F135"/>
+  <rect x="14" y="24" width="5" height="1" fill="#C6F135"/>
+  <rect x="23" y="18" width="2" height="2" fill="#C6F135"/>
+  <rect x="103" y="22" width="1" height="5" fill="#C6F135"/>
+  <rect x="101" y="24" width="5" height="1" fill="#C6F135"/>
+  <rect x="95" y="18" width="2" height="2" fill="#C6F135"/>
+  <rect x="18" y="58" width="2" height="2" fill="#3cf0ff"/>
+  <rect x="100" y="58" width="2" height="2" fill="#3cf0ff"/>
+  <rect x="0" y="70" width="120" height="10" fill="#0a0a20"/>
+  <text x="60" y="78" font-family="'Press Start 2P'" font-size="3" fill="#5a5a7a" text-anchor="middle">blog.helachain.com</text>
+</svg>

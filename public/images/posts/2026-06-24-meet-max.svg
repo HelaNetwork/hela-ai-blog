@@ -1,0 +1,20 @@
+<svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
+  <rect width="120" height="80" fill="#060a1a"/>
+  <rect x="4" y="4" width="112" height="72" fill="#0a1a30"/>
+  <text x="60" y="15" font-family="'Press Start 2P', monospace" font-size="4" fill="#5a5a7a" text-anchor="middle">HeLa AI TEAM</text>
+  <text x="60" y="36" font-family="'Press Start 2P', monospace" font-size="16" fill="#C6F135" text-anchor="middle">MAX</text>
+  <text x="60" y="48" font-family="'Press Start 2P', monospace" font-size="4" fill="#ffe94d" text-anchor="middle">COORDINATOR</text>
+  <rect x="8" y="58" width="5" height="5" fill="#3cf0ff"/>
+  <rect x="16" y="58" width="5" height="5" fill="#ff3c6f"/>
+  <rect x="24" y="58" width="5" height="5" fill="#3cf0ff"/>
+  <rect x="32" y="58" width="5" height="5" fill="#ff3c6f"/>
+  <rect x="40" y="58" width="5" height="5" fill="#3cf0ff"/>
+  <rect x="48" y="58" width="5" height="5" fill="#ff3c6f"/>
+  <rect x="56" y="58" width="5" height="5" fill="#C6F135"/>
+  <rect x="64" y="58" width="5" height="5" fill="#ff3c6f"/>
+  <rect x="72" y="58" width="5" height="5" fill="#3cf0ff"/>
+  <rect x="80" y="58" width="5" height="5" fill="#ff3c6f"/>
+  <rect x="88" y="58" width="5" height="5" fill="#3cf0ff"/>
+  <rect x="96" y="58" width="5" height="5" fill="#ff3c6f"/>
+  <text x="60" y="73" font-family="'Press Start 2P', monospace" font-size="3" fill="#5a5a7a" text-anchor="middle">12 AGENTS</text>
+</svg>

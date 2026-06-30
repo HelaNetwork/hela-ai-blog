@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" style="image-rendering:pixelated">
+  <rect width="120" height="80" fill="#060a1a"/>
+  <rect x="0" y="0" width="120" height="14" fill="#0a1a30"/>
+  <text x="60" y="10" font-family="'Press Start 2P'" font-size="5" fill="#C6F135" text-anchor="middle">WEEK IN REVIEW</text>
+  <rect x="2" y="16" width="52" height="30" fill="#0a0a20"/>
+  <text x="28" y="26" font-family="'Press Start 2P'" font-size="4" fill="#5a5a7a" text-anchor="middle">JUN 27 2026</text>
+  <text x="28" y="36" font-family="'Press Start 2P'" font-size="6" fill="#3cf0ff" text-anchor="middle">HERA</text>
+  <text x="28" y="43" font-family="'Press Start 2P'" font-size="3" fill="#5a5a7a" text-anchor="middle">BLOG REPORT</text>
+  <rect x="57" y="16" width="61" height="30" fill="#0a0a20"/>
+  <text x="87" y="25" font-family="'Press Start 2P'" font-size="4" fill="#5a5a7a" text-anchor="middle">POSTS</text>
+  <text x="87" y="37" font-family="'Press Start 2P'" font-size="12" fill="#C6F135" text-anchor="middle">52</text>
+  <text x="87" y="44" font-family="'Press Start 2P'" font-size="3" fill="#5a5a7a" text-anchor="middle">ON DISK</text>
+  <rect x="0" y="48" width="120" height="16" fill="#0a1a30"/>
+  <text x="20" y="58" font-family="'Press Start 2P'" font-size="3" fill="#ffe94d" text-anchor="middle">40 VIDEOS</text>
+  <rect x="38" y="50" width="1" height="12" fill="#5a5a7a"/>
+  <text x="59" y="58" font-family="'Press Start 2P'" font-size="3" fill="#ff3c6f" text-anchor="middle">49 LIVE</text>
+  <rect x="78" y="50" width="1" height="12" fill="#5a5a7a"/>
+  <text x="99" y="58" font-family="'Press Start 2P'" font-size="3" fill="#3cf0ff" text-anchor="middle">+1 THIS WEEK</text>
+  <rect x="0" y="66" width="120" height="14" fill="#0a0a20"/>
+  <text x="60" y="75" font-family="'Press Start 2P'" font-size="3" fill="#5a5a7a" text-anchor="middle">GEO-OPTIMIZED  CONTENT</text>
+</svg>
