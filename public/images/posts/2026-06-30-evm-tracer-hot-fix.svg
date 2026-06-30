@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" style="image-rendering:pixelated;background:#060a1a">
+  <!-- Background panel -->
+  <rect x="4" y="4" width="112" height="56" fill="#0a1a30"/>
+  <!-- Header bar -->
+  <rect x="4" y="4" width="112" height="8" fill="#0a0a20"/>
+  <!-- Header label: TRACE -->
+  <text x="60" y="10" font-family="'Press Start 2P',monospace" font-size="4" fill="#ffe94d" text-anchor="middle">DEBUG TRACE</text>
+  <!-- Left trace frame (broken - red tint) -->
+  <rect x="8" y="15" width="48" height="5" fill="#1a0a0a"/>
+  <rect x="8" y="15" width="48" height="5" fill="#ff3c6f" opacity="0.18"/>
+  <text x="12" y="19" font-family="'Press Start 2P',monospace" font-size="3" fill="#ff3c6f">FROM: 0xTARGET</text>
+  <rect x="8" y="22" width="48" height="5" fill="#0a1a30"/>
+  <text x="12" y="26" font-family="'Press Start 2P',monospace" font-size="3" fill="#5a5a7a">TO:   0xTARGET</text>
+  <rect x="8" y="29" width="48" height="5" fill="#0a1a30"/>
+  <text x="12" y="33" font-family="'Press Start 2P',monospace" font-size="3" fill="#5a5a7a">TYPE: CALL</text>
+  <!-- X mark on broken frame -->
+  <rect x="48" y="13" width="4" height="4" fill="#ff3c6f" opacity="0.8"/>
+  <rect x="49" y="14" width="2" height="2" fill="#060a1a"/>
+  <!-- Arrow: broken to fixed -->
+  <rect x="58" y="27" width="4" height="2" fill="#C6F135"/>
+  <rect x="60" y="25" width="2" height="2" fill="#C6F135"/>
+  <rect x="60" y="29" width="2" height="2" fill="#C6F135"/>
+  <!-- Right trace frame (fixed - lime/yellow) -->
+  <rect x="64" y="15" width="52" height="5" fill="#0a1a30"/>
+  <rect x="64" y="15" width="52" height="5" fill="#C6F135" opacity="0.12"/>
+  <text x="68" y="19" font-family="'Press Start 2P',monospace" font-size="3" fill="#C6F135">FROM: 0xORIGIN</text>
+  <rect x="64" y="22" width="52" height="5" fill="#0a1a30"/>
+  <text x="68" y="26" font-family="'Press Start 2P',monospace" font-size="3" fill="#ffe94d">TO:   0xTARGET</text>
+  <rect x="64" y="29" width="52" height="5" fill="#0a1a30"/>
+  <text x="68" y="33" font-family="'Press Start 2P',monospace" font-size="3" fill="#ffe94d">TYPE: CALL</text>
+  <!-- Check mark on fixed frame -->
+  <rect x="108" y="13" width="4" height="4" fill="#C6F135" opacity="0.8"/>
+  <!-- CREATE2 row (bottom of panel) -->
+  <rect x="8" y="36" width="104" height="5" fill="#0a0a20"/>
+  <text x="12" y="40" font-family="'Press Start 2P',monospace" font-size="3" fill="#3cf0ff">CREATE2  CODE: OK  FEEDBACK: OK</text>
+  <!-- MR label -->
+  <rect x="8" y="43" width="50" height="5" fill="#0a0a20"/>
+  <text x="12" y="47" font-family="'Press Start 2P',monospace" font-size="3" fill="#5a5a7a">MR !11  SHA 650bf639</text>
+  <!-- Mainnet live indicator -->
+  <rect x="62" y="43" width="50" height="5" fill="#0a0a20"/>
+  <rect x="62" y="43" width="5" height="5" fill="#C6F135" opacity="0.6"/>
+  <text x="70" y="47" font-family="'Press Start 2P',monospace" font-size="3" fill="#C6F135">MAINNET LIVE</text>
+  <!-- Bottom label -->
+  <text x="60" y="72" font-family="'Press Start 2P',monospace" font-size="6" fill="#ffe94d" text-anchor="middle">TRACER FIX</text>
+</svg>

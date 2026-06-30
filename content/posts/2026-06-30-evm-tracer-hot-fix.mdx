@@ -1,0 +1,79 @@
+---
+title: "EVM Debug Tracer Hot-Fix: Correcting Caller Attribution and CREATE2 Feedback on HeLa Mainnet"
+date: "2026-06-30"
+description: "Two bugs in the HeLa EVM debug tracer shipped with MR !7 and were caught during post-deploy verification. The hot-fix (MR !11, merged 2026-06-24) corrects wrong caller attribution in trace frames and dropped init-code feedback for CREATE/CREATE2 deployments. No funds or on-chain state were ever at risk — only trace output was affected."
+tags: ["evm", "debug-tracer", "mainnet", "hot-fix", "developer-tools", "hela-chain"]
+author: "HeLa Labs Engineering"
+image: "/images/posts/2026-06-30-evm-tracer-hot-fix.svg"
+excerpt: "The HeLa EVM debug tracer shipped two bugs in MR !7. MR !11 (merged 2026-06-24) fixes wrong msg.sender attribution in trace frames and dropped CREATE2 init-code feedback. Only trace output was wrong — no state or funds at risk."
+---
+
+<video src="/videos/evm-tracer-hotfix-2026-06-30.mp4" autoPlay muted loop playsInline style={{width: '100%', maxWidth: '480px', margin: '1.5rem auto', display: 'block'}} />
+
+## Background
+
+HeLa mainnet (chain ID 8668 / 0x21dc) activated an EVM debug tracer in MR !7, enabling `debug_traceCall` and `debug_traceTransaction` for block explorers, scanner indexers, and developer tooling. Post-deploy verification uncovered two bugs in the tracer implementation. Both were fixed in hot-fix MR !11 (`hot-fix/wrong-caller-tracer`), [merged 2026-06-24 06:04 UTC](https://ember9.snapinnovations.io/hela-dev/oasis-sdk/-/merge_requests/11) by quan.nguyen.helalabs into develop (merge commit `45743852`, head SHA `650bf639`).
+
+This post describes the two bugs, their effects on trace consumers, and what you need to do if your tooling ingested traces before the fix.
+
+---
+
+## Bug A: Wrong Source Address in Trace Frames
+
+**File:** `oasis-sdk/runtime-sdk/modules/evm/src/tracer.rs`
+**Fix commit:** [`d1f6e807`](https://ember9.snapinnovations.io/hela-dev/oasis-sdk/-/merge_requests/11) (~line 481)
+
+The tracer populated `context.caller` and `transaction_context.origin` from the **destination** (`to`) address rather than the actual source address. Every call frame reported the wrong `msg.sender` and `tx.origin`.
+
+This affected all call types. The symptom was most visible in proxy and delegatecall chains: because the destination address was used as the source, calls routed through a proxy appeared to show the proxy address propagating incorrectly through nested frames, rather than the true originating account.
+
+The EVM execution engine was unaffected. Only the trace output was wrong. Funds, on-chain state, and actual execution results remained correct throughout.
+
+**Practical effect on consumers:** any `debug_traceCall` or `debug_traceTransaction` response received before the fix shows incorrect `from` addresses in call frames. The error is systematic — every trace was affected, not a subset.
+
+---
+
+## Bug B: CREATE / CREATE2 Init-Code Feedback Dropped
+
+**File:** `oasis-sdk/runtime-sdk/modules/evm/src/tracer.rs` — `collect_with_interpreter_full`
+**Fix commits:** [`26d1a916`](https://ember9.snapinnovations.io/hela-dev/oasis-sdk/-/merge_requests/11) (~lines 1276 and 1316)
+
+Two related issues in the CREATE and CREATE2 trace path:
+
+**B-1 — Trap feedback not propagated.** When a child frame trapped (a `Capture::Trap` event during internal calls inside a deployment), the tracer did not call `child_interp.feedback()` with the appropriate `ParentFeedback::Call` or `ParentFeedback::Create` value back to the parent interpreter. CREATE2 deployments that triggered internal calls during init-code execution had their feedback silently dropped.
+
+**B-2 — Runtime code not written to overlay on successful exit.** When a child frame exited successfully (`res.is_ok()`), the freshly-deployed contract's runtime bytecode was not written into the trace's `StorageOverlay` via `overlay.borrow_mut().code_set(addr, child_interp.retval.clone())`. Trace consumers could not observe the deployed contract's code at its address within the same trace execution context.
+
+The fix adds `ParentFeedback` propagation on trap and `code_set` on successful create exit. Again, this was an observability defect only — actual contract deployments succeeded and runtime code was written to chain state correctly.
+
+---
+
+## Impact and Remediation for Downstream Consumers
+
+**Was my trace data wrong?**
+
+Yes, if your tooling called `debug_traceCall` or `debug_traceTransaction` against HeLa mainnet after MR !7 activated and before MR !11 was merged (2026-06-24 06:04 UTC).
+
+Specifically:
+- All `from` / `caller` / `origin` fields in trace frames will show the destination address, not the real source. Any index or attribution built from these fields is incorrect.
+- Any trace involving a CREATE or CREATE2 that called into other contracts during deployment will have missing or incomplete feedback in the trace tree. The deployed code may not appear in the trace overlay.
+
+**Do I need to do anything?**
+
+Re-index or discard any trace data collected during the affected window if caller attribution or CREATE2 trace completeness matters for your use case. Current RPC responses are correct as of the fix.
+
+No chain re-org, no rollback, and no state change is required or has occurred. The on-chain state was always correct; only the trace read-path was producing wrong output.
+
+**Is the tracer correct now?**
+
+Yes. Block production on mainnet is stable. `debug_traceTransaction` is returning structurally correct traces with correct caller attribution and CREATE2 feedback as of the hot-fix deployment.
+
+---
+
+## Open Questions / Next Steps
+
+The [release notes](https://ember9.snapinnovations.io/hela-dev/oasis-sdk/-/merge_requests/11) for this fix are in `docs/release-notes/RELEASE_NOTES_DELEGATECALL_FIX.md` (commit `650bf639`). If you have specific trace responses you believe are still incorrect after the fix date, open an issue against the [oasis-sdk repo](https://ember9.snapinnovations.io/hela-dev/oasis-sdk) with the transaction hash and the anomalous output.
+
+---
+
+*HeLa mainnet runtime ID: `00000000000000000000000000000000000000000000000064884141bb9ca059`. Chain ID: 8668 (0x21dc).*
