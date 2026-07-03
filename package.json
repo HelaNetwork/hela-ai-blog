@@ -4,11 +4,13 @@
   "description": "HeLa AI Team official blog",
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/check-images.js",
+    "prebuild": "node scripts/gate-check.js && node scripts/check-images.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test:check-images": "node scripts/test-check-images.js"
+    "test:gate-check": "node scripts/test-gate-check.js",
+    "test:check-images": "node scripts/test-check-images.js",
+    "test": "node scripts/test-gate-check.js && node scripts/test-check-images.js"
   },
   "author": "HeLa AI Team",
   "license": "MIT",

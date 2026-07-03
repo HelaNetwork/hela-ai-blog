@@ -28,6 +28,7 @@
 |------|----------|-----|-------|
 | 2026-03-26 | Tex | https://eeb3fc8f.hela-ai-blog.pages.dev | First deploy, 15 pages |
 | 2026-03-26 | Tex | https://blog.helachain.com | Custom domain verified live |
+| 2026-07-03 | auto-deploy | https://5474ed14.hela-ai-blog.pages.dev | commit 1e95ea9 — task-bench-floor-bug + week-in-review; gated posts excluded |
 
 ## Changes — 2026-03-30 (Hera, Devon)
 - SVG thumbnails (Hera) + retro pixel-art restyle (Devon). Archived to `AUDIT_HISTORY.md`.
@@ -84,6 +85,39 @@
 | 05 | External Giscus script, no SRI | LOW | Open |
 | 06 | `privateKeyToAccount` in example, no server-side note | LOW | Open |
 | 07 | `/drafts` route publicly accessible, no auth | MEDIUM | Open — flag for KC |
+| 08 | Pipeline has NO Quinn-gate check — any `.mdx` + hero asset in `content/posts/` auto-deploys | CRITICAL | FIXED (branch `devon/deploy-gate-check`) — `scripts/gate-check.js` fail-closed marker gate; see Changes 2026-07-03 (Devon) |
+
+## Changes — 2026-07-03 (Tex — pipeline incident: gated posts blocking deploy)
+
+**Incident summary:** From 2026-06-30 14:14 UTC, 7 consecutive auto-deploy runs failed because `check-images.js` scanned ALL files in `content/posts/`, including `2026-06-30-helasyn-cloud-launch.mdx` (Quinn-gated, do-not-deploy), which referenced a missing hero SVG. This blocked `2026-07-01-task-bench-floor-bug.mdx` and `2026-07-03-week-in-review.mdx` from reaching production.
+
+A second issue: `2026-06-30-evm-tracer-hot-fix.mdx` (already deployed in commit `655aa8a` at 2026-06-30 13:59:35) had accumulated pending edits in the working tree (new "affected epoch window" section + minor citation/punctuation fixes). These were not yet Quinn-cleared; auto-deploy would have staged and published them on the next successful run.
+
+**Actions taken:**
+- `content/posts/2026-06-30-helasyn-cloud-launch.mdx` moved to `content/_held/` (outside scan path). File is untracked — no git history impact.
+- Modified `content/posts/2026-06-30-evm-tracer-hot-fix.mdx` restored to committed HEAD. Pending edits backed up to `content/_held/2026-06-30-evm-tracer-hot-fix.pending.mdx` for Quinn review.
+- `node scripts/check-images.js` now exits 0 (59 posts verified).
+- Auto-deploy ran at 2026-07-03T09:10:22+08:00 (commit `1e95ea9`): published `2026-07-01-task-bench-floor-bug.mdx` + `2026-07-03-week-in-review.mdx` only. Deploy URL: https://5474ed14.hela-ai-blog.pages.dev
+
+**Gate gap finding (escalate to KC):** The pipeline has NO gate-check mechanism. `scripts/auto-deploy.sh` checks only: (a) correct branch (`main`), (b) file-change detection in watched paths, (c) `check-images.js` asset completeness. It has zero awareness of Quinn-gate status or any `do-not-deploy` frontmatter marker. Any `.mdx` file placed in `content/posts/` with a present hero image will auto-deploy on the next cron run — there is no hold/approval step.
+
+**Still gated (no action without KC+Quinn sign-off):**
+- `content/_held/2026-06-30-helasyn-cloud-launch.mdx` — awaiting Quinn review and SVG production. Do not move back to `content/posts/` or create SVG until cleared.
+- `content/_held/2026-06-30-evm-tracer-hot-fix.pending.mdx` — pending edits (epoch window section, MR !7 link, punctuation). Quinn gate required before applying back to `content/posts/`.
+- The already-deployed 2026-06-30 evm-tracer post (commit `655aa8a`) has no recall path on a static CDN without a wrangler rollback. KC decision needed on whether to roll back or leave live pending Quinn review.
+
+## Changes — 2026-07-03 (Devon — fail-closed Quinn-gate check, DEVON: deploy-gate-check)
+
+Fixes finding #08 (CRITICAL). Branch `devon/deploy-gate-check`.
+
+- **New `scripts/gate-check.js` (fail-closed gate):** every post in `content/posts/` that is NEW or MODIFIED versus git `HEAD` MUST carry front matter `gate: pass`. Absent / `pending` / any other value → the run aborts (exit 1, names the post, prints remediation). Already-committed, unchanged posts are **grandfathered** (already live) and never re-checked — this is the grandfather choice (git-tracked-and-unchanged, NOT a date cutoff or bulk marker), so the 59 published posts needed **zero edits**. If `content/posts` is not in a git work tree the gate fails closed (can't tell published from draft).
+- **Wired in two places:** npm `prebuild` now runs `gate-check.js && check-images.js`; `scripts/auto-deploy.sh` also calls `gate-check.js` explicitly BEFORE the build/git-add step. A gated post can no longer be swept into an auto-publish batch.
+- **`content/_held/` is now a tracked convention** (added `content/_held/README.md`). It sits outside the build path (`lib/posts.js` reads only `content/posts/`), so it is the primary exclusion mechanism; the gate is the safety net for leaks. Tex's containment files (`2026-06-30-helasyn-cloud-launch.mdx`, `2026-06-30-evm-tracer-hot-fix.pending.mdx`) remain untouched.
+- **`scripts/check-images.js` extended + scoped (Quinn addendum):** now also scans raw `<video src=...>` and `<img src=...>` (previously only frontmatter `image:` + `<VideoEmbed>`), local site-absolute refs only (external http(s)/`//`/`data:` ignored). Scoped to eligible posts: held posts (`gate:` != pass) are skipped; missing media on a NEW/MODIFIED (or no-git-baseline) post is FATAL; missing media on a GRANDFATHERED post is a loud **non-fatal** `STALE` warning so a pre-existing live 404 cannot block new publishes (avoids re-creating the head-of-line block that this task fixes).
+- **Live 404 found (escalate — needs Quinn + media, NOT fixed here):** `content/posts/2026-06-30-evm-tracer-hot-fix.mdx` (already published, commit `655aa8a`) references raw `<video src="/videos/evm-tracer-hotfix-2026-06-30.mp4">` which does not exist on disk → renders as a live 404. Reported non-fatally by the new check. Fix = produce the video or remove the tag via a Quinn gate (content change, out of Devon's lane).
+- **Tests:** new `scripts/test-gate-check.js` (real git-sandbox: grandfathered/new-no-gate/new-gate-pass/modified/pending/no-git — 15 assertions). `scripts/test-check-images.js` extended to 9 cases (adds raw `<video>`, raw `<img>`, held-skip, git grandfathered-stale-non-fatal, git new-media-fatal — 32 assertions). `npm test` runs both; both green. Also live-verified: gate-check OK on clean tree; simulated a new post with image but no marker → BLOCKED, then `gate: pass` → cleared.
+- **Shared helper `scripts/gate-lib.js`** (front-matter marker parse, git baseline, local-media-ref extraction) used by both gate-check and check-images. Plain Node + git, no new deps.
+- Constraints honored: branch only, NOT merged/deployed, cron untouched; staged explicit paths only (no `git add .`); did not touch `app/hip/page.jsx` or `public/dapps.html`; committed Tex's uncommitted 2026-07-03 AUDIT section in the same commit.
 
 ## Error Handling Coverage
 - `lib/posts.js` — no try/catch on `fs.readFileSync` / `matter()` calls (build-time risk only)

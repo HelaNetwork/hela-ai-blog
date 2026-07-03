@@ -87,9 +87,14 @@ Custom MDX components: `YouTubeEmbed`, `ImageFull`, `VideoEmbed` (from `componen
 
 ## Deployment
 
-- **Build:** `npm run build` (Next.js static export to `out/`). A `prebuild` hook runs `scripts/check-images.js` first and fails the build if any post's frontmatter `image:` does not resolve under `public/`. `<VideoEmbed>` references print a non-fatal warning. Tests at `scripts/test-check-images.js` (positive + negative + mixed + video-warn), invoke via `npm run test:check-images`.
+- **Build:** `npm run build` (Next.js static export to `out/`). The `prebuild` hook runs `scripts/gate-check.js && scripts/check-images.js` — the build fails if either aborts. Tests: `npm test` (runs `test:gate-check` + `test:check-images`).
+- **Publish gate (fail-closed):** because `next build` renders every `.mdx` in `content/posts/` and wrangler ships the built `out/` regardless of git staging, the only reliable exclusion is keeping a post out of `content/posts/`.
+  - `content/_held/` is the tracked holding area for gated/draft posts and pending edits — it is outside the build path (`lib/posts.js` reads only `content/posts/`), so nothing there deploys. See `content/_held/README.md`.
+  - `scripts/gate-check.js` is the safety net: every post in `content/posts/` that is NEW or MODIFIED vs git `HEAD` must carry front matter `gate: pass`; absent/`pending`/other → deploy aborts (exit 1). Committed-and-unchanged posts are **grandfathered** (already live), so no marker is needed on existing content. Runs in `prebuild` and explicitly in `auto-deploy.sh` before git-add. No git baseline → fails closed.
+- **Asset check:** `scripts/check-images.js` validates local (leading-`/`) media refs — frontmatter `image:`, `<VideoEmbed src>`, raw `<video src>`, raw `<img src>` — against `public/`. Held posts (`gate:` != pass) are skipped. Missing media on a new/modified post is FATAL; missing media on a grandfathered post is a non-fatal `STALE` (live-404) warning so a pre-existing broken ref cannot block new publishes.
+- **Shared logic:** `scripts/gate-lib.js` (marker parse, git baseline, media-ref extraction) — plain Node + git, no new deps.
 - **Deploy:** `wrangler pages deploy out/ --project-name hela-ai-blog`
-- **Auto-deploy:** `scripts/auto-deploy.sh` watches `content/posts public/images/posts public/videos`; gates on `main` branch only (refuses to deploy from any other checked-out branch). The production branch is `main` (wrangler deploys `--branch=main`).
+- **Auto-deploy:** `scripts/auto-deploy.sh` watches `content/posts public/images/posts public/videos`; gates on `main` branch only (refuses to deploy from any other checked-out branch) and runs the publish gate before build/commit. The production branch is `main` (wrangler deploys `--branch=main`).
 - **Live URLs:**
   - `https://blog.helachain.com` (custom domain)
   - `https://eeb3fc8f.hela-ai-blog.pages.dev` (Cloudflare Pages direct)
