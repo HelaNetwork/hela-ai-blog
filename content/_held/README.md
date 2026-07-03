@@ -37,6 +37,11 @@ swept into an auto-publish batch because the pipeline published any `.mdx` in
   and any video under `public/videos/`). The next auto-deploy publishes it.
 - **Never** move an un-cleared post into `content/posts/`. If you do, the gate
   aborts the whole deploy until it is removed or cleared.
+- **Never commit a draft directly into `content/posts/`** (bypassing this
+  folder), even with `gate: pending` in its front matter. `gate-check.js` only
+  checks posts that are new/modified vs the last commit — a `gate: pending`
+  post committed once and left unchanged is grandfathered on the next run and
+  will publish uncleared. (Quinn gate finding N1, 2026-07-03.)
 
 ## Naming
 
