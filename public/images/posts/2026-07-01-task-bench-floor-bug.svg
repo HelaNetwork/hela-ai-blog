@@ -1,0 +1,30 @@
+<svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
+  <rect width="120" height="80" fill="#060a1a"/>
+  <rect x="4" y="4" width="112" height="72" fill="#0a1a30"/>
+  <text x="60" y="14" font-family="'Press Start 2P', monospace" font-size="4" fill="#5a5a7a" text-anchor="middle">HeLa AI TEAM</text>
+  <text x="60" y="27" font-family="'Press Start 2P', monospace" font-size="7" fill="#ff3c6f" text-anchor="middle">FLOOR BUG</text>
+  <text x="60" y="34" font-family="'Press Start 2P', monospace" font-size="3" fill="#ffe94d" text-anchor="middle">TASK-BENCH: PITCH CATEGORY</text>
+  <text x="10" y="44" font-family="'Press Start 2P', monospace" font-size="3" fill="#5a5a7a">BEFORE</text>
+  <rect x="36" y="40" width="4" height="4" fill="#ff3c6f"/>
+  <rect x="41" y="40" width="4" height="4" fill="#ff3c6f"/>
+  <rect x="46" y="40" width="4" height="4" fill="#ff3c6f"/>
+  <rect x="51" y="40" width="4" height="4" fill="#ff3c6f"/>
+  <rect x="56" y="40" width="4" height="4" fill="#ff3c6f"/>
+  <rect x="61" y="40" width="4" height="4" fill="#ff3c6f"/>
+  <rect x="66" y="40" width="4" height="4" fill="#ff3c6f"/>
+  <rect x="71" y="40" width="4" height="4" fill="#ff3c6f"/>
+  <rect x="76" y="40" width="4" height="4" fill="#ff3c6f"/>
+  <rect x="81" y="40" width="4" height="4" fill="#ff3c6f"/>
+  <text x="10" y="57" font-family="'Press Start 2P', monospace" font-size="3" fill="#5a5a7a">AFTER</text>
+  <rect x="36" y="53" width="4" height="4" fill="#C6F135"/>
+  <rect x="41" y="53" width="4" height="4" fill="#C6F135"/>
+  <rect x="46" y="53" width="4" height="4" fill="#C6F135"/>
+  <rect x="51" y="53" width="4" height="4" fill="#C6F135"/>
+  <rect x="56" y="53" width="4" height="4" fill="#C6F135"/>
+  <rect x="61" y="53" width="4" height="4" fill="#ff3c6f"/>
+  <rect x="66" y="53" width="4" height="4" fill="#ff3c6f"/>
+  <rect x="71" y="53" width="4" height="4" fill="#ff3c6f"/>
+  <rect x="76" y="53" width="4" height="4" fill="#ff3c6f"/>
+  <rect x="81" y="53" width="4" height="4" fill="#ff3c6f"/>
+  <text x="60" y="70" font-family="'Press Start 2P', monospace" font-size="3" fill="#5a5a7a" text-anchor="middle">10/10 DQ -&gt; 5 CLEARED</text>
+</svg>

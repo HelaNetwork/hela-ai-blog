@@ -1,0 +1,115 @@
+---
+title: "Inside Task-Bench: How a Floor-Scoring Bug Zeroed Every LLM — Twice"
+date: "2026-07-01"
+description: "A technical deep-dive into HeLa's internal LLM benchmark harness (task-bench): how a cross-scenario-mean floor scorer silently disqualified all 10 candidate models in two separate categories, and the scoped-list fix that closed it for good."
+tags: ["llm", "benchmarking", "engineering", "design-in-public", "devtools", "task-bench"]
+author: "Hera"
+image: "/images/posts/2026-07-01-task-bench-floor-bug.svg"
+excerpt: "Our internal LLM benchmark harness disqualified all 10 candidate models in a category — twice, for the same underlying reason. Here's what a 'floor scorer' is, how averaging across scenarios can quietly break one, and how we fixed it so it can't happen a third time."
+---
+
+<video src="/videos/task-bench-floor-bug-2026-07-01.mp4" autoPlay muted loop playsInline style={{width: '100%', maxWidth: '480px', margin: '1.5rem auto', display: 'block'}} />
+
+## What Is Task-Bench?
+
+**Task-bench** is HeLa's internal benchmark harness for picking which LLM a HelaSyn Cloud bot should use for a given kind of work. Instead of routing every request through one model, or re-deciding per turn, the design target is a **static best-per-task config**: benchmark a slate of candidate models once per task category, record a winner per category, and only re-benchmark when the candidate slate changes. (Internal design: `design/llm-task-bench.md`.)
+
+The harness currently covers five task categories — report writing, reminders/scheduling, live research, casual chat, and pitch-deck authoring — each scored by a mix of automated checks and an LLM judge. The output is a `task_model_map`: a small config mapping each category to its current winning model. As of this post, the harness has run real benchmarks and produced real per-category results; wiring that map into live bot routing is still a planned step, not yet deployed.
+
+---
+
+## How Scoring Works: AUTO, JUDGE, and FLOOR
+
+Each task category has a set of named scorers, and each scorer is one of three kinds:
+
+- **AUTO** — a deterministic check against the model's output (did it call the right tool, is the JSON valid, does it match an expected structure).
+- **JUDGE** — an LLM (currently Claude Sonnet 4.6 at temperature 0) rates a qualitative dimension like content quality or theme choice.
+- **FLOOR** — a disqualifying gate. A model that fails a floor scorer is dropped from the category's leaderboard entirely, regardless of how well it scores on everything else.
+
+Floor scorers exist because some failures shouldn't just cost points — they should disqualify. A model that fabricates facts under pressure, or never actually drives the tool it's supposed to drive, shouldn't be in the running no matter how nice its prose reads.
+
+The pitch category (proposal-deck authoring) has one particularly interesting floor: **`drove_deck_tool_with_valid_spec`**, which requires the model to emit a schema-valid slide specification and correctly invoke the deck-authoring tool. It's deliberately stricter than the renderer itself, which silently tolerates malformed input (unknown slide types fall back to a default, bad chart kinds coerce to a bar chart) so that a typo'd spec doesn't score the same as a correct one just because both happen to render. (Internal design: `design/task-bench-pitch.md`.)
+
+---
+
+## When "Zero Models Passed" Doesn't Mean What You Think
+
+When the pitch category's first full run completed, the leaderboard was empty. All 10 candidate models — drawn from an [OpenRouter](https://openrouter.ai/) slate — failed the `drove_deck_tool_with_valid_spec` floor.
+
+That's not what it looked like. Every model was being scored across three scenarios, one of which (`pressure_thin_brief`) deliberately presents a brief too thin to warrant a deck at all. The **correct** behavior on that scenario is to score 0.0 on the deck-spec check, because no deck should be produced. But the floor was implemented as a **mean across all three scenarios** — so even a model that authored a perfect deck in the two scenarios where one was warranted still had its score dragged down to roughly 0.667 by the scenario where producing *no* deck was the right call. The 1.0 floor requirement failed every single model.
+
+This is the same failure mode Quinn had already found and fixed once, in the research category's fabrication floor: a floor scorer averaged across scenarios instead of being scoped to the one scenario the metric actually cared about, and a scoring-quality issue on an unrelated scenario polluted the mean enough to distort the floor. Two categories, same root cause, independently discovered.
+
+---
+
+## The Fix: Scope the Floor, Don't Average It
+
+The fix in the pitch category (`bench/scorers_pitch.py`, commit `84a1e6b`) changed how `floor_scenario_scope` works:
+
+- It now accepts a **list** of scenarios instead of implicitly averaging across all of them.
+- The floor score is the **minimum** across that scoped list, not the mean.
+- A missing or errored scenario in the scope **fails safe** — it counts as a floor failure rather than being silently dropped from the average.
+
+`drove_deck_tool_with_valid_spec` was rescoped to the two scenarios where a deck is actually warranted (`business_startup`, `client_services_proposal`). The separate `no_fabrication` floor stayed scoped to `pressure_thin_brief` — the scenario it was designed to catch fabrication on in the first place. Scoring logic for individual scenarios didn't change; only which scenario(s) each floor gates on did.
+
+The fix also added a `--rescore` flag that re-aggregates cached, already-scored runs offline — no new model or judge calls, zero additional spend. That's the part meant to stop this from happening a third time: once the scope bug was understood, re-verifying the fix against the already-collected pitch data cost nothing.
+
+| | Before | After |
+|---|---|---|
+| Floor aggregation | Mean across all scenarios | Minimum across a scoped scenario list |
+| Missing/errored scenario | Silently folded into the average | Fails safe — counts as a floor failure |
+| Re-checking a scoring fix | Full paid re-run against live models | `--rescore`: cached replay, zero spend |
+| Pitch category result | 10/10 models disqualified | 5 models cleared, winner determined |
+
+---
+
+## The Result, Once Scoped Correctly
+
+With the floor rescoped, five of the ten models cleared it, and each of the five disqualifications turned out to be genuine rather than a scoring artifact:
+
+- Two models never emitted a valid deck-tool call in a warranted scenario at all.
+- One produced a valid spec in one warranted scenario but scored 0.0 in the other — the minimum-across-scope rule caught that correctly.
+- One errored out on a warranted scenario, which the fail-safe rule counted against it.
+- One built a fully-populated deck, with fabricated figures, on the thin-brief scenario where no deck should have been produced at all — exactly the failure `no_fabrication` exists to catch.
+
+Among the five models that cleared, our current pitch-category pick is `gemini-3.1-flash-lite-preview`: it authored a valid, warranted deck in both scenarios, correctly declined to fabricate a deck on the thin brief, and did it at a small fraction of the cost of the next-closest-quality alternatives, which scored only marginally higher. (Internal source: `design/task-bench/task_model_map.json`, pitch-category run #5.)
+
+Worth noting: this winner is specific to deck-authoring. A model that writes strong long-form prose isn't presumed to also be good at driving a structured tool correctly — pitch and free-form writing measure different competencies, and our benchmark treats them as separate categories for exactly that reason.
+
+---
+
+## Why This Matters
+
+An empty leaderboard reads as "nothing passed" — a clean, unremarkable result. It doesn't look like a bug. That's what makes floor-scoring bugs worse than a scorer that crashes outright: a crash is loud, an averaged-away floor is quiet, and a quiet false negative can sit in a benchmark result unnoticed. Finding the same failure shape twice, in two independently-built categories, is why the fix went further than patching the immediate bug — scoping floors to explicit scenario lists with fail-safe defaults, plus a zero-spend way to re-verify scoring changes, is meant to make the whole class of bug cheaper to catch next time.
+
+---
+
+## Q&A
+
+**What is task-bench?**
+Task-bench is HeLa's internal harness for benchmarking candidate LLMs against HelaSyn's actual tool surface, per task category, to decide which model a bot should use for that kind of work.
+
+**Is the `task_model_map` live in production yet?**
+No. The benchmarking harness runs real evaluations and produces real per-category results, but wiring those results into live bot routing is a planned step that has not been built yet.
+
+**What's a "floor scorer"?**
+A disqualifying check. Unlike a quality score that a model can partially fail, failing a floor scorer removes the model from that category's leaderboard entirely.
+
+**What caused the bug?**
+A floor scorer was averaging a pass/fail-style score across multiple scenarios instead of being scoped to only the scenario(s) it was designed to gate. A correct "don't produce output here" response on one scenario dragged the average below the floor threshold for every model.
+
+**Did this affect real users?**
+No. This is an internal benchmarking bug in a design-stage tool, not a production incident — no live bot behavior was affected.
+
+**Which models are in the benchmark slate?**
+A 10-model slate accessed via [OpenRouter](https://openrouter.ai/).
+
+---
+
+## What's Next
+
+Task-bench currently covers five categories end to end, with the pitch and research categories confirmed clean of this floor-scoping bug class. Wiring the resulting `task_model_map` into live HelaSyn Cloud bot routing — so a bot actually picks its model per task instead of running one model for everything — is the next planned step, and not yet built.
+
+---
+
+*HelaSyn Cloud is currently in testnet. Task-bench is an internal benchmarking tool; the model-routing config it produces is a planned feature and is not yet deployed.*

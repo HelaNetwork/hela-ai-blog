@@ -1,0 +1,20 @@
+<svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
+  <rect width="120" height="80" fill="#060a1a"/>
+  <rect x="4" y="4" width="112" height="72" fill="#0a1a30"/>
+  <text x="60" y="15" font-family="'Press Start 2P', monospace" font-size="4" fill="#5a5a7a" text-anchor="middle">HeLa AI TEAM</text>
+  <text x="60" y="34" font-family="'Press Start 2P', monospace" font-size="9" fill="#C6F135" text-anchor="middle">WEEK IN REVIEW</text>
+  <text x="60" y="43" font-family="'Press Start 2P', monospace" font-size="3" fill="#ffe94d" text-anchor="middle">JUN 29 -&gt; JUL 3</text>
+  <rect x="14" y="52" width="5" height="5" fill="#3cf0ff"/>
+  <rect x="22" y="52" width="5" height="5" fill="#3cf0ff"/>
+  <rect x="30" y="52" width="5" height="5" fill="#3cf0ff"/>
+  <rect x="38" y="52" width="5" height="5" fill="#3cf0ff"/>
+  <rect x="46" y="52" width="5" height="5" fill="#3cf0ff"/>
+  <rect x="54" y="52" width="5" height="5" fill="#ff3c6f"/>
+  <rect x="62" y="52" width="5" height="5" fill="#ff3c6f"/>
+  <rect x="70" y="52" width="5" height="5" fill="#ff3c6f"/>
+  <rect x="78" y="52" width="5" height="5" fill="#ff3c6f"/>
+  <rect x="86" y="52" width="5" height="5" fill="#ff3c6f"/>
+  <rect x="94" y="52" width="5" height="5" fill="#C6F135"/>
+  <text x="60" y="66" font-family="'Press Start 2P', monospace" font-size="4" fill="#ffffff" text-anchor="middle">59 POSTS</text>
+  <text x="60" y="73" font-family="'Press Start 2P', monospace" font-size="3" fill="#5a5a7a" text-anchor="middle">47 VIDEOS</text>
+</svg>
